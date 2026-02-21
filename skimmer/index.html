@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skimmer Android — Reliability Sprint Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f4f8;
+    color: #1a2332;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0a3d6b 0%, #1565c0 100%);
+    color: white;
+    padding: 32px 24px 40px;
+    text-align: center;
+  }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 15px; opacity: 0.85; max-width: 460px; margin: 0 auto; }
+
+  /* Rating banner */
+  .rating-banner {
+    background: white;
+    margin: -20px 16px 0;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 8px;
+  }
+  .rating-item { text-align: center; flex: 1; }
+  .rating-item .platform { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 4px; }
+  .rating-item .stars { font-size: 24px; font-weight: 800; }
+  .rating-item .stars.good { color: #16a34a; }
+  .rating-item .stars.bad { color: #dc2626; }
+  .rating-item .count { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .rating-divider { text-align: center; }
+  .rating-divider .gap-label { font-size: 10px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+  .rating-divider .gap-value { font-size: 22px; font-weight: 800; color: #dc2626; }
+
+  /* Section */
+  .section { padding: 28px 16px 4px; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin-bottom: 14px;
+  }
+
+  /* Phones container */
+  .phones {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 0 24px;
+  }
+
+  /* Phone mockup */
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .phone-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .phone-label.before { color: #dc2626; }
+  .phone-label.after { color: #16a34a; }
+
+  .phone {
+    width: 200px;
+    background: #1a2332;
+    border-radius: 28px;
+    padding: 10px 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .phone::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: #2d3f54;
+    border-radius: 2px;
+    margin: 0 auto 8px;
+  }
+  .screen {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 280px;
+  }
+
+  /* App chrome */
+  .app-bar {
+    background: #0052cc;
+    color: white;
+    padding: 10px 12px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .app-bar .back { font-size: 16px; opacity: 0.8; }
+
+  /* Route card */
+  .route-card {
+    padding: 10px;
+  }
+  .route-stop {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .route-stop .stop-num {
+    background: #0052cc;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  .route-stop .stop-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #1a2332;
+  }
+  .route-stop .stop-addr { color: #64748b; font-size: 10px; padding-left: 26px; }
+  .route-stop .stop-done {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-top: 6px;
+    margin-left: 26px;
+    display: inline-block;
+  }
+  .stop-done.complete { background: #dcfce7; color: #15803d; }
+  .stop-done.pending { background: #fef3c7; color: #92400e; }
+
+  /* Error overlay */
+  .error-overlay {
+    background: rgba(220,38,38,0.95);
+    color: white;
+    border-radius: 10px;
+    padding: 12px;
+    margin: 8px;
+    font-size: 11px;
+    text-align: center;
+  }
+  .error-overlay .error-icon { font-size: 20px; margin-bottom: 6px; }
+  .error-overlay .error-title { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
+  .error-overlay .error-msg { opacity: 0.9; line-height: 1.4; }
+
+  /* Camera screen */
+  .camera-screen {
+    background: #0d1117;
+    min-height: 200px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .camera-viewfinder {
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .camera-viewfinder::before,
+  .camera-viewfinder::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: white;
+    border-style: solid;
+  }
+  .camera-viewfinder::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .camera-viewfinder::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .camera-icon { font-size: 28px; }
+
+  .camera-controls {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.6);
+    width: 100%;
+  }
+  .shutter-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .shutter-btn.broken {
+    background: rgba(220,38,38,0.3);
+    border-color: rgba(220,38,38,0.6);
+  }
+  .shutter-btn.broken::after {
+    content: '✕';
+    color: #ef4444;
+    font-size: 14px;
+  }
+  .shutter-btn.working {
+    background: white;
+  }
+  .shutter-btn.working::after {
+    content: '◎';
+    color: #0052cc;
+    font-size: 16px;
+  }
+  .shutter-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Save indicator */
+  .save-bar {
+    padding: 8px 10px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .save-bar.saving { background: #fef3c7; color: #92400e; }
+  .save-bar.saved { background: #dcfce7; color: #15803d; }
+  .save-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .save-dot.spinning { background: #f59e0b; animation: pulse 1s infinite; }
+  .save-dot.done { background: #22c55e; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Sprint cards */
+  .sprint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 16px 24px;
+  }
+  .sprint-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .sprint-card .sc-week {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0052cc;
+    margin-bottom: 6px;
+  }
+  .sprint-card .sc-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a2332;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .sprint-card .sc-desc {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+  .sprint-card.highlight { border: 2px solid #0052cc; }
+
+  /* Metrics */
+  .metrics-row {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 24px;
+    flex-wrap: wrap;
+  }
+  .metric-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  .metric-card .mc-label { font-size: 10px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .metric-card .mc-before { font-size: 13px; color: #dc2626; font-weight: 700; text-decoration: line-through; }
+  .metric-card .mc-arrow { color: #22c55e; font-size: 14px; margin: 2px 0; }
+  .metric-card .mc-after { font-size: 18px; color: #16a34a; font-weight: 800; }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, #0a3d6b 0%, #1565c0 100%);
+    margin: 0 16px 24px;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    color: white;
+  }
+  .cta-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .cta-section p { font-size: 13px; opacity: 0.85; margin-bottom: 16px; line-height: 1.5; }
+  .cta-price {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .cta-price strong { display: block; font-size: 22px; font-weight: 800; }
+  .cta-btn {
+    display: inline-block;
+    background: white;
+    color: #0052cc;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 12px 24px;
+    text-decoration: none;
+  }
+  .cta-contact {
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    margin: 0 16px 32px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="badge">Android Reliability Sprint</div>
+  <h1>Skimmer Android</h1>
+  <p>From 2.8 to 4.5★ — what 6 weeks of focused Android engineering looks like</p>
+</div>
+
+<!-- Rating gap -->
+<div class="rating-banner">
+  <div class="rating-item">
+    <div class="platform">iOS</div>
+    <div class="stars good">4.6★</div>
+    <div class="count">2,431 reviews</div>
+  </div>
+  <div class="rating-divider">
+    <div class="gap-label">gap</div>
+    <div class="gap-value">1.8★</div>
+  </div>
+  <div class="rating-item">
+    <div class="platform">Android · Now</div>
+    <div class="stars bad">2.8★</div>
+    <div class="count">~200 reviews</div>
+  </div>
+  <div class="rating-divider">
+    <div class="gap-label">target</div>
+    <div class="gap-value" style="color:#16a34a">4.5★</div>
+  </div>
+  <div class="rating-item">
+    <div class="platform">Android · After</div>
+    <div class="stars good">4.5★</div>
+    <div class="count">sprint goal</div>
+  </div>
+</div>
+
+<!-- Before/After phones -->
+<div class="section">
+  <div class="section-title">Bug Fix #1 — Route State Loss</div>
+</div>
+<div class="phones">
+  <div class="phone-wrap">
+    <div class="phone-label before">Before</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="app-bar"><span class="back">←</span> Today's Route</div>
+        <div class="route-card">
+          <div class="route-stop">
+            <div class="stop-header"><span class="stop-num">1</span>Johnson Residence</div>
+            <div class="stop-addr">248 Palm Dr, Scottsdale AZ</div>
+            <div class="stop-done complete">✓ Completed</div>
+          </div>
+          <div class="route-stop">
+            <div class="stop-header"><span class="stop-num">2</span>Miller Pool</div>
+            <div class="stop-addr">891 Cactus Rd, Scottsdale AZ</div>
+            <div class="stop-done complete">✓ Completed</div>
+          </div>
+        </div>
+        <div class="error-overlay">
+          <div class="error-icon">⚠️</div>
+          <div class="error-title">Route Reset</div>
+          <div class="error-msg">App was minimized. Completed stops lost. Re-enter service data.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone-label after">After Sprint</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="app-bar"><span class="back">←</span> Today's Route</div>
+        <div class="save-bar saved"><span class="save-dot done"></span>Route auto-saved · 2 of 6 complete</div>
+        <div class="route-card">
+          <div class="route-stop">
+            <div class="stop-header"><span class="stop-num">1</span>Johnson Residence</div>
+            <div class="stop-addr">248 Palm Dr, Scottsdale AZ</div>
+            <div class="stop-done complete">✓ Completed · Synced</div>
+          </div>
+          <div class="route-stop">
+            <div class="stop-header"><span class="stop-num">2</span>Miller Pool</div>
+            <div class="stop-addr">891 Cactus Rd, Scottsdale AZ</div>
+            <div class="stop-done complete">✓ Completed · Synced</div>
+          </div>
+          <div class="route-stop" style="border-color:#bfdbfe; background:#eff6ff">
+            <div class="stop-header"><span class="stop-num" style="background:#0052cc">3</span>Rivera Property</div>
+            <div class="stop-addr">1140 Sunrise Blvd, Scottsdale AZ</div>
+            <div class="stop-done pending">→ Next stop</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Camera bug fix -->
+<div class="section">
+  <div class="section-title">Bug Fix #2 — Camera Shutter Regression</div>
+</div>
+<div class="phones">
+  <div class="phone-wrap">
+    <div class="phone-label before">Before</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="app-bar"><span class="back">←</span> Photo Documentation</div>
+        <div class="camera-screen">
+          <div class="camera-viewfinder"><span class="camera-icon">📷</span></div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.5);margin-bottom:8px">Touch screen only — button broken</div>
+        </div>
+        <div class="camera-controls">
+          <div>
+            <div class="shutter-btn broken"></div>
+            <div class="shutter-label">Shutter<br>BROKEN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone-label after">After Sprint</div>
+    <div class="phone">
+      <div class="screen">
+        <div class="app-bar"><span class="back">←</span> Photo Documentation</div>
+        <div class="camera-screen">
+          <div class="camera-viewfinder"><span class="camera-icon">📷</span></div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-bottom:8px">Pool chemicals verified ✓</div>
+        </div>
+        <div class="camera-controls">
+          <div>
+            <div class="shutter-btn working"></div>
+            <div class="shutter-label">Capture</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sprint plan -->
+<div class="section">
+  <div class="section-title">6-Week Sprint Roadmap</div>
+</div>
+<div class="sprint-grid">
+  <div class="sprint-card highlight">
+    <div class="sc-week">Week 1</div>
+    <div class="sc-title">Root Cause Audit</div>
+    <div class="sc-desc">ADB crash logs · Firebase traces · Android Studio profiler · crash signature report</div>
+  </div>
+  <div class="sprint-card">
+    <div class="sc-week">Weeks 2–3</div>
+    <div class="sc-title">Camera + State Fixes</div>
+    <div class="sc-desc">Camera bridge patch · lifecycle-aware persistence · AsyncStorage hardening</div>
+  </div>
+  <div class="sprint-card">
+    <div class="sc-week">Week 4</div>
+    <div class="sc-title">Device Coverage</div>
+    <div class="sc-desc">Samsung One UI · Pixel 6/7/8 · Galaxy A series regression testing</div>
+  </div>
+  <div class="sprint-card">
+    <div class="sc-week">Weeks 5–6</div>
+    <div class="sc-title">QA + Delivery</div>
+    <div class="sc-desc">Smoke test suite · crash rate benchmark · documentation handoff</div>
+  </div>
+</div>
+
+<!-- Impact metrics -->
+<div class="section">
+  <div class="section-title">Expected Outcomes (60 Days Post-Sprint)</div>
+</div>
+<div class="metrics-row">
+  <div class="metric-card">
+    <div class="mc-label">Android Rating</div>
+    <div class="mc-before">2.8★</div>
+    <div class="mc-arrow">↓</div>
+    <div class="mc-after">4.5★</div>
+  </div>
+  <div class="metric-card">
+    <div class="mc-label">Crash Rate</div>
+    <div class="mc-before">High</div>
+    <div class="mc-arrow">↓</div>
+    <div class="mc-after">−60%</div>
+  </div>
+  <div class="metric-card">
+    <div class="mc-label">Time to Fix</div>
+    <div class="mc-before">6 mo hire</div>
+    <div class="mc-arrow">↓</div>
+    <div class="mc-after">6 wks</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h3>Android Reliability Sprint</h3>
+  <p>2 dedicated Elinext Android engineers · Fixed scope · You own all code and the diagnostic report</p>
+  <div class="cta-price">
+    Fixed scope engagement
+  </div>
+  <br>
+  <div class="cta-btn" style="pointer-events:none;opacity:0.9;">Prepared by Elinext Mobile Engineering</div>
+  <div class="cta-contact">Elinext Mobile Engineering · elinext.com/contacts/ · Elinext Mobile Engineering</div>
+</div>
+
+<div class="footer">
+  Prepared by Elinext for Skimmer · February 2026 · getskimmer.com<br>
+  Elinext Mobile Engineering</div>
+
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veryable Android Reliability — Elinext Proposal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0e1a; color: #e8ecf0; line-height: 1.6; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+      border-bottom: 1px solid #1e293b;
+      padding: 64px 24px 48px;
+      text-align: center;
+    }
+    .hero-label {
+      display: inline-block;
+      background: #1e3a5f;
+      color: #60a5fa;
+      border: 1px solid #2563eb;
+      border-radius: 20px;
+      padding: 4px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 38px; font-weight: 800; color: #f1f5f9; line-height: 1.2; margin-bottom: 16px; }
+    .hero h1 span { color: #ef4444; }
+    .hero-sub { font-size: 17px; color: #94a3b8; max-width: 600px; margin: 0 auto 32px; }
+    .hero-stats {
+      display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num { font-size: 36px; font-weight: 800; color: #f1f5f9; }
+    .hero-stat .num.red { color: #ef4444; }
+    .hero-stat .num.green { color: #22c55e; }
+    .hero-stat .label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Section */
+    .section { max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+    .section-title {
+      font-size: 11px; font-weight: 700; color: #60a5fa;
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px;
+    }
+    .section h2 { font-size: 28px; font-weight: 800; color: #f1f5f9; margin-bottom: 8px; }
+    .section-desc { color: #94a3b8; font-size: 15px; margin-bottom: 40px; }
+
+    /* Before/After panels */
+    .ba-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 16px; }
+    @media (max-width: 640px) { .ba-panels { grid-template-columns: 1fr; } }
+
+    .panel {
+      border-radius: 12px; padding: 28px;
+      border: 1px solid #1e293b;
+    }
+    .panel.before { background: #12141e; border-color: #3b1010; }
+    .panel.after { background: #0f1a12; border-color: #14532d; }
+
+    .panel-tag {
+      display: inline-block; border-radius: 6px; padding: 3px 10px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 16px;
+    }
+    .panel.before .panel-tag { background: #3b1010; color: #ef4444; }
+    .panel.after .panel-tag { background: #14532d; color: #22c55e; }
+
+    .panel h3 { font-size: 16px; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+    .panel p { font-size: 14px; color: #94a3b8; margin-bottom: 16px; }
+
+    .evidence-box {
+      background: #1a0f0f; border: 1px solid #3b1010;
+      border-radius: 8px; padding: 12px 14px;
+      font-size: 13px; color: #fca5a5; font-style: italic;
+      margin-bottom: 14px;
+    }
+    .evidence-box.blue { background: #0f1629; border-color: #1e3a5f; color: #93c5fd; }
+
+    .step-list { list-style: none; }
+    .step-list li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; color: #94a3b8; margin-bottom: 8px;
+    }
+    .step-list li .icon { font-size: 14px; min-width: 18px; margin-top: 1px; }
+
+    /* Code block */
+    .code-block {
+      background: #0d1117; border: 1px solid #1e293b; border-radius: 8px;
+      padding: 14px 16px; font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 12px; color: #7dd3fc; margin-bottom: 14px; overflow-x: auto;
+      white-space: pre;
+    }
+    .code-block .comment { color: #475569; }
+    .code-block .keyword { color: #c084fc; }
+    .code-block .string { color: #86efac; }
+    .code-block .fn { color: #fbbf24; }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid #1e293b; margin: 0; }
+
+    /* Competitor table */
+    .comp-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .comp-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; color: #64748b;
+      padding: 10px 14px; border-bottom: 1px solid #1e293b;
+    }
+    .comp-table td {
+      padding: 12px 14px; font-size: 14px; color: #94a3b8;
+      border-bottom: 1px solid #1e293b;
+    }
+    .comp-table tr.highlight td { background: #0f1629; }
+    .comp-table tr.highlight td:first-child { color: #f1f5f9; font-weight: 600; }
+    .badge {
+      display: inline-block; border-radius: 5px; padding: 2px 8px;
+      font-size: 12px; font-weight: 700;
+    }
+    .badge.red { background: #3b0c0c; color: #f87171; }
+    .badge.yellow { background: #2d1f0a; color: #fbbf24; }
+    .badge.green { background: #052e16; color: #4ade80; }
+    .badge.blue { background: #0c1e3b; color: #60a5fa; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px;
+      width: 2px; background: #1e293b;
+    }
+    .tl-item { position: relative; margin-bottom: 24px; }
+    .tl-dot {
+      position: absolute; left: -24px; top: 4px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #2563eb; border: 2px solid #1e3a5f;
+    }
+    .tl-item h4 { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .tl-item p { font-size: 13px; color: #64748b; }
+
+    /* CTA Box */
+    .cta-box {
+      background: linear-gradient(135deg, #0f1a2e 0%, #1a0f1a 100%);
+      border: 1px solid #2563eb; border-radius: 16px; padding: 40px;
+      text-align: center; margin-top: 40px;
+    }
+    .cta-box h2 { font-size: 26px; font-weight: 800; color: #f1f5f9; margin-bottom: 12px; }
+    .cta-box p { color: #94a3b8; font-size: 15px; max-width: 520px; margin: 0 auto 24px; }
+    .price-box {
+      display: inline-block; background: #1e3a5f; border: 1px solid #2563eb;
+      border-radius: 10px; padding: 12px 28px; margin-bottom: 24px;
+    }
+    .price-box .price { font-size: 32px; font-weight: 800; color: #f1f5f9; }
+    .price-box .price-note { font-size: 13px; color: #64748b; }
+    .cta-email {
+      display: block; margin: 0 auto 8px; font-size: 14px; color: #60a5fa;
+      text-decoration: none; font-weight: 600;
+    }
+    .cta-email:hover { text-decoration: underline; }
+    .cta-note { font-size: 12px; color: #475569; }
+  </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-label">Android Reliability Audit — Veryable</div>
+  <h1>Your Android workers are<br>hitting a wall at <span>6 AM</span></h1>
+  <p class="hero-sub">
+    Two fixable Android bugs are breaking shift entry and GPS sign-out for your manufacturing workers every week — and your 4.2★ Android rating is the paper trail.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num red">4.2★</div>
+      <div class="label">Android Rating</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num green">4.6★</div>
+      <div class="label">iOS Rating</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">11,400+</div>
+      <div class="label">Android Reviews</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num red">0.4★</div>
+      <div class="label">iOS/Android Gap</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== PAIN 1: UPDATE LOOP ===== -->
+<div class="section">
+  <div class="section-title">Issue #1 — Confirmed in App Store Reviews</div>
+  <h2>The Update Loop: Workers Can't Clock In</h2>
+  <p class="section-desc">
+    Your app's version gate fires a force-update prompt on Android — but the update doesn't clear the gate. Workers download the update and get sent back to "you need to update." At 6 AM shift start.
+  </p>
+
+  <div class="ba-panels">
+    <div class="panel before">
+      <span class="panel-tag">Before</span>
+      <h3>The loop workers hit at shift start</h3>
+      <div class="evidence-box">
+        "The app constantly tells me I need to update, [and] when updated does not allow me into the app and just goes back to telling me I need to update."
+        <br><br>— App Store / user complaint (confirmed)
+      </div>
+      <ul class="step-list">
+        <li><span class="icon">📱</span>Worker opens Veryable at 6:00 AM</li>
+        <li><span class="icon">⚠️</span>Version gate fires: "Update required"</li>
+        <li><span class="icon">⬇️</span>Worker downloads update from Play Store</li>
+        <li><span class="icon">🔄</span>Relaunches app — gate fires again</li>
+        <li><span class="icon">❌</span>Can't clock in. Operator marks no-show.</li>
+        <li><span class="icon">📉</span>Worker's reliability rating drops permanently</li>
+      </ul>
+    </div>
+
+    <div class="panel after">
+      <span class="panel-tag">After</span>
+      <h3>Graceful version gate with Android OEM handling</h3>
+      <div class="evidence-box blue">
+        Staged rollout-aware version gate with retry logic, OEM metadata flush, and fallback to last-known-good version for in-progress shifts.
+      </div>
+      <div class="code-block"><span class="comment">// Android OEM-aware version check</span>
+<span class="keyword">fun</span> <span class="fn">checkVersionGate</span>(): VersionStatus {
+  <span class="keyword">val</span> installed = getInstalledVersion()
+  <span class="keyword">val</span> minimum = getServerMinimumVersion()
+  <span class="comment">// Flush OEM version metadata cache</span>
+  PackageManager.flushVersionCache()
+  <span class="keyword">return if</span> (installed >= minimum)
+    VersionStatus.OK
+  <span class="keyword">else</span>
+    VersionStatus.UPDATE_REQUIRED
+}</div>
+      <ul class="step-list">
+        <li><span class="icon">✅</span>Version check uses flushed metadata (Samsung / Xiaomi safe)</li>
+        <li><span class="icon">✅</span>Staged rollout gate updated atomically with Play rollout</li>
+        <li><span class="icon">✅</span>Workers mid-shift are never blocked by version gate</li>
+        <li><span class="icon">✅</span>Error shown with clear retry + support link if gate still fails</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== PAIN 2: GPS SIGN-OUT ===== -->
+<div class="section">
+  <div class="section-title">Issue #2 — GPS & Android Lifecycle</div>
+  <h2>GPS Sign-Out Failures: Pay Disputes at Scale</h2>
+  <p class="section-desc">
+    Android's background location stack is the most brittle surface in mobile. When a worker's GPS sign-out fails, their time is recorded wrong. Every wrong time record is a dispute — and disputes destroy trust on both sides of your marketplace.
+  </p>
+
+  <div class="ba-panels">
+    <div class="panel before">
+      <span class="panel-tag">Before</span>
+      <h3>7-point failure chain for GPS sign-out</h3>
+      <div class="evidence-box">
+        "Issues with GPS tracking, sign-out failures, and support accessibility during off-hours."
+        <br><br>— App Store 1★ review (confirmed)
+        <br><br>"My rating and time being falsified."
+        <br><br>— PissedConsumer complaint (confirmed)
+      </div>
+      <ul class="step-list">
+        <li><span class="icon">📍</span>Worker taps Sign Out → LocationManager called</li>
+        <li><span class="icon">😴</span>Doze mode (screen off) blocks background location</li>
+        <li><span class="icon">🔋</span>Samsung/Xiaomi battery optimizer kills the process</li>
+        <li><span class="icon">🏭</span>Metal warehouse roof = poor GPS signal</li>
+        <li><span class="icon">⚡</span>Network timeout before GPS ping sent to server</li>
+        <li><span class="icon">❌</span>Sign-out recorded as incomplete</li>
+        <li><span class="icon">💸</span>Incorrect hours → pay dispute → 1-star review</li>
+      </ul>
+    </div>
+
+    <div class="panel after">
+      <span class="panel-tag">After</span>
+      <h3>Offline-first foreground service with retry queue</h3>
+      <div class="evidence-box blue">
+        WorkManager-persisted sign-out event survives app kill, device reboot, and GPS signal loss. Foreground service with persistent notification keeps the OS from garbage collecting the shift session.
+      </div>
+      <div class="code-block"><span class="comment">// Foreground service — OS can't kill active shift</span>
+<span class="keyword">class</span> ShiftTrackingService : ForegroundService() {
+  <span class="keyword">override fun</span> <span class="fn">onStartCommand</span>(intent: Intent): Int {
+    startForeground(NOTIF_ID, buildShiftNotification())
+    <span class="comment">// WorkManager persists sign-out to Room DB</span>
+    enqueueSignOutWork(RETRY_EXPONENTIAL_BACKOFF)
+    <span class="comment">// WiFi/cell fallback when GPS unavailable</span>
+    locationProvider.enableFallbackProviders()
+    <span class="keyword">return</span> START_STICKY
+  }
+}</div>
+      <ul class="step-list">
+        <li><span class="icon">✅</span>Foreground service with persistent "Shift Active" notification</li>
+        <li><span class="icon">✅</span>WorkManager retry queue — survives reboot</li>
+        <li><span class="icon">✅</span>WiFi/cell tower fallback for warehouse GPS dead zones</li>
+        <li><span class="icon">✅</span>Android 12+ precise location permission flow with rationale</li>
+        <li><span class="icon">✅</span>Sign-out stored in local Room DB first; synced when online</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== PAIN 3: FCM NOTIFICATIONS ===== -->
+<div class="section">
+  <div class="section-title">Issue #3 — Silent Bid Acceptance</div>
+  <h2>Workers Don't Know Their Bid Was Accepted</h2>
+  <p class="section-desc">
+    Android Doze batches FCM notifications every 5–15 minutes. Your bid acceptance window is smaller than that. Workers think they weren't selected — they never show up. Operator records a no-show. Worker's reliability score takes a hit they didn't deserve.
+  </p>
+
+  <div class="ba-panels">
+    <div class="panel before">
+      <span class="panel-tag">Before</span>
+      <h3>FCM delayed → silent no-show</h3>
+      <div class="evidence-box">
+        "None of my bids were being accepted for unknown reasons."
+        <br><br>— App Store 1★ review (confirmed)
+      </div>
+      <ul class="step-list">
+        <li><span class="icon">🙋</span>Worker bids on 6 AM operation at 9 PM prior day</li>
+        <li><span class="icon">✅</span>Operator accepts bid at 9:05 PM</li>
+        <li><span class="icon">😴</span>Doze batches FCM — notification queued</li>
+        <li><span class="icon">⏰</span>Notification delivered at 9:22 PM</li>
+        <li><span class="icon">😴</span>Worker already asleep, doesn't confirm</li>
+        <li><span class="icon">❌</span>Operation cancelled. Worker recorded as unreliable.</li>
+      </ul>
+    </div>
+
+    <div class="panel after">
+      <span class="panel-tag">After</span>
+      <h3>FCM high-priority + in-app bid status polling</h3>
+      <div class="evidence-box blue">
+        FCM high-priority messages bypass Doze. In-app status polling as fallback. OEM-specific auto-start documentation in onboarding for Samsung / Xiaomi users.
+      </div>
+      <ul class="step-list">
+        <li><span class="icon">✅</span>FCM priority: "high" — bypasses Doze on all Android versions</li>
+        <li><span class="icon">✅</span>Server-side delivery receipt — retry if not acknowledged</li>
+        <li><span class="icon">✅</span>In-app bid status indicator (not push-only)</li>
+        <li><span class="icon">✅</span>Samsung/Xiaomi setup guide in first-run onboarding</li>
+        <li><span class="icon">✅</span>Bid acceptance window extended with grace period</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== COMPETITOR TABLE ===== -->
+<div class="section">
+  <div class="section-title">Competitive Context</div>
+  <h2>The Android Gap in the Gig Economy</h2>
+  <p class="section-desc">Manufacturing and warehouse workers use Android. This is where your marketplace competes.</p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>iOS Rating</th>
+        <th>Android Rating</th>
+        <th>Gap</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="highlight">
+        <td>Veryable</td>
+        <td>4.6★ (13,319)</td>
+        <td>4.2★ (11,400+)</td>
+        <td><span class="badge red">−0.4★</span></td>
+        <td><span class="badge yellow">Closing needed</span></td>
+      </tr>
+      <tr>
+        <td>Instawork</td>
+        <td>4.5★</td>
+        <td>4.3★</td>
+        <td><span class="badge yellow">−0.2★</span></td>
+        <td><span class="badge blue">Narrowing gap</span></td>
+      </tr>
+      <tr>
+        <td>Wonolo</td>
+        <td>4.4★</td>
+        <td>4.0★</td>
+        <td><span class="badge red">−0.4★</span></td>
+        <td><span class="badge red">Same exposure</span></td>
+      </tr>
+      <tr>
+        <td>Bluecrew</td>
+        <td>4.2★</td>
+        <td>3.8★</td>
+        <td><span class="badge red">−0.4★</span></td>
+        <td><span class="badge red">Falling behind</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size: 13px; color: #64748b;">
+    In manufacturing/warehouse gig economy, Android IS the primary worker device. The 0.4★ gap is not a cosmetic issue — it's a retention signal. Workers who hit the update loop once or have a GPS pay dispute once do not give a second chance. They download Instawork.
+  </p>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== SPRINT TIMELINE ===== -->
+<div class="section">
+  <div class="section-title">Proposed Sprint</div>
+  <h2>6-Week Android Fix Sprint</h2>
+  <p class="section-desc">
+    Two dedicated Android engineers. Fixed-scope. No roadmap disruption to your existing team.
+  </p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <h4>Week 1–2: Audit & Instrumentation</h4>
+      <p>Full audit of version gate logic, GPS sign-out flow, FCM configuration. Add instrumentation to measure current failure rates per Android OEM and OS version. Identify exact root cause.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <h4>Week 2–3: Version Gate Fix</h4>
+      <p>Implement OEM-aware version check, staged rollout coordination, and in-shift gate bypass. QA on Samsung Galaxy S (OneUI), Xiaomi (MIUI), Pixel (stock Android).</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <h4>Week 3–5: GPS Sign-Out Rearchitecture</h4>
+      <p>Foreground service for active shifts, WorkManager retry queue, Android 12+ precise location permission flow, WiFi/cell fallback for warehouse dead zones. Offline-first sign-out with Room DB.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <h4>Week 5–6: FCM High-Priority + OEM Onboarding</h4>
+      <p>Upgrade bid acceptance notifications to FCM high-priority, add delivery receipt tracking, build Samsung/Xiaomi auto-start setup guide in onboarding flow.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ===== CTA ===== -->
+<div class="section">
+  <div class="cta-box">
+    <h2>Fixed Sprint. No Surprises.</h2>
+    <p>
+      2 dedicated Android engineers from Elinext Mobile Engineering.</p>
+    <div class="price-box">
+      <div class="price">Fixed scope</div>
+      <div class="price-note">fixed-price / 6-week sprint / 2 Android engineers</div>
+    </div>
+    <br />
+    elinext.com/contacts/
+    <div class="cta-note">Elinext Mobile Engineering · Elinext Mobile Partnerships</div>
+    <br />
+    <p style="font-size: 12px; color: #475569; margin-top: 12px;">
+      Elinext Mobile Engineering<br>
+      AI-powered development pipeline · 30x productivity demonstrated.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

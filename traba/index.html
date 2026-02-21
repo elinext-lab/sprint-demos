@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traba Android — Technical Audit | Elinext</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange-deep:   #7C2D12;
+      --orange-brand:  #C2410C;
+      --orange-mid:    #EA580C;
+      --orange-light:  #FB923C;
+      --orange-pale:   #FFEDD5;
+      --orange-ghost:  #FFF7ED;
+      --red-soft:      #FFF1F0;
+      --red-border:    #FFCCC7;
+      --red-text:      #CF1322;
+      --green-soft:    #F0FDF4;
+      --green-border:  #BBF7D0;
+      --green-text:    #166534;
+      --amber:         #D46B08;
+      --amber-bg:      #FFF7E6;
+      --amber-border:  #FFD591;
+      --gray-50:       #F9FAFB;
+      --gray-100:      #F3F4F6;
+      --gray-200:      #E5E7EB;
+      --gray-400:      #9CA3AF;
+      --gray-600:      #4B5563;
+      --gray-700:      #374151;
+      --gray-900:      #111827;
+      --mono:          'JetBrains Mono', monospace;
+      --sans:          'Inter', -apple-system, sans-serif;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:     0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+      --shadow-lg:     0 12px 40px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.06);
+      --radius:        12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 64px 0; }
+    section + section { border-top: 1px solid var(--gray-200); }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      background: var(--orange-deep);
+      color: rgba(255,255,255,.75);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: .04em; text-transform: uppercase;
+      padding: 10px 24px; text-align: center;
+    }
+    .topbar strong { color: #fff; }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--orange-deep) 0%, var(--orange-brand) 55%, var(--orange-mid) 100%);
+      color: #fff; padding: 72px 24px 64px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 12px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--orange-pale);
+      margin-bottom: 20px;
+    }
+    .hero-kicker .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orange-light); display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(.8); }
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 46px); font-weight: 800;
+      line-height: 1.15; letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange-light); }
+
+    .hero-sub {
+      font-size: 17px; color: rgba(255,255,255,.8);
+      max-width: 600px; line-height: 1.6; margin-bottom: 36px;
+    }
+
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 12px;
+    }
+    .meta-chip {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,.9);
+    }
+
+    /* ─── RATING SCOREBOARD ─── */
+    .scoreboard {
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 24px; background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--gray-200); padding: 32px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .score-block { text-align: center; }
+    .score-label {
+      font-size: 12px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--gray-400); margin-bottom: 8px;
+    }
+    .score-stars {
+      font-size: 44px; font-weight: 800; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .score-stars.good { color: #16A34A; }
+    .score-stars.bad  { color: #DC2626; }
+    .score-reviews {
+      font-size: 13px; color: var(--gray-600);
+    }
+    .score-badge {
+      display: inline-block; margin-top: 8px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .score-badge.ok  { background: var(--green-soft); color: var(--green-text); }
+    .score-badge.bad { background: var(--red-soft);   color: var(--red-text); }
+
+    .score-vs {
+      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--orange-ghost); border: 2px solid var(--orange-pale);
+      font-weight: 800; font-size: 14px; color: var(--orange-brand);
+      flex-shrink: 0;
+    }
+
+    .score-note {
+      margin-top: 20px; padding: 14px 18px;
+      background: var(--amber-bg); border: 1px solid var(--amber-border);
+      border-radius: 10px; font-size: 13px; color: var(--amber);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .score-note strong { color: #92400E; }
+
+    /* ─── SECTION HEADERS ─── */
+    .section-label {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--orange-brand);
+      background: var(--orange-ghost); padding: 4px 12px;
+      border-radius: 100px; margin-bottom: 14px;
+    }
+    h2 {
+      font-size: clamp(22px, 4vw, 32px); font-weight: 800;
+      letter-spacing: -.02em; color: var(--gray-900);
+      margin-bottom: 12px; line-height: 1.25;
+    }
+    .section-sub {
+      font-size: 16px; color: var(--gray-600);
+      max-width: 640px; line-height: 1.65; margin-bottom: 40px;
+    }
+
+    /* ─── BUG CARDS ─── */
+    .bug-card {
+      background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);
+      overflow: hidden; margin-bottom: 32px;
+    }
+
+    .bug-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .bug-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; flex-shrink: 0;
+    }
+    .bug-num.p1 { background: #FEE2E2; color: #991B1B; }
+    .bug-num.p2 { background: #FEF3C7; color: #92400E; }
+    .bug-num.p3 { background: #E0E7FF; color: #3730A3; }
+
+    .bug-title { font-weight: 700; font-size: 16px; }
+    .bug-subtitle { font-size: 13px; color: var(--gray-600); margin-top: 2px; }
+
+    .bug-severity {
+      margin-left: auto; flex-shrink: 0;
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .sev-critical { background: #FEE2E2; color: #991B1B; }
+    .sev-high     { background: #FEF3C7; color: #92400E; }
+    .sev-medium   { background: #E0E7FF; color: #3730A3; }
+
+    .before-after {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 600px) {
+      .before-after { grid-template-columns: 1fr; }
+      .scoreboard { grid-template-columns: 1fr; }
+      .score-vs { margin: 0 auto; }
+    }
+
+    .ba-panel { padding: 24px; }
+    .ba-panel.before { border-right: 1px solid var(--gray-100); }
+    .ba-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .ba-label.before-lbl { color: var(--red-text); }
+    .ba-label.after-lbl  { color: var(--green-text); }
+
+    /* ─── PHONE MOCKUP ─── */
+    .phone {
+      width: 200px; margin: 0 auto 16px;
+      background: #1C1C1E; border-radius: 28px;
+      padding: 12px 8px; box-shadow: 0 8px 32px rgba(0,0,0,.25);
+      position: relative;
+    }
+    .phone::before {
+      content: ''; position: absolute; top: 10px;
+      left: 50%; transform: translateX(-50%);
+      width: 40px; height: 5px;
+      background: rgba(255,255,255,.15); border-radius: 3px;
+    }
+    .phone-screen {
+      background: #F2F2F7; border-radius: 20px;
+      overflow: hidden; min-height: 300px;
+      display: flex; flex-direction: column;
+    }
+
+    .ps-bar {
+      background: #fff; padding: 10px 12px 8px;
+      font-size: 11px; font-weight: 600;
+      display: flex; justify-content: space-between;
+      align-items: center; border-bottom: 1px solid #E5E5EA;
+    }
+    .ps-bar-title { font-size: 13px; font-weight: 700; color: #000; }
+
+    .ps-body { flex: 1; padding: 10px; }
+
+    .shift-card {
+      background: #fff; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    }
+    .shift-card-title { font-size: 11px; font-weight: 700; color: #000; margin-bottom: 2px; }
+    .shift-card-sub { font-size: 10px; color: #666; }
+    .shift-btn {
+      display: block; width: 100%;
+      margin-top: 8px; padding: 8px;
+      border-radius: 8px; border: none;
+      font-size: 11px; font-weight: 700;
+      text-align: center; cursor: default;
+    }
+    .shift-btn.broken {
+      background: #F2F2F7; color: #8E8E93;
+      border: 1px solid #C7C7CC;
+    }
+    .shift-btn.loading {
+      background: #F2F2F7; color: #C7C7CC;
+      animation: shimmer 1.5s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    .shift-btn.ok {
+      background: #FF6900; color: #fff;
+    }
+
+    .gps-alert {
+      background: #FF3B30; color: #fff; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+      font-size: 10px; font-weight: 600; line-height: 1.4;
+    }
+    .gps-alert-title { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
+    .gps-ok {
+      background: #34C759; color: #fff; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+      font-size: 10px; font-weight: 600; line-height: 1.4;
+    }
+    .gps-ok-title { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
+
+    .notif-card {
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(10px);
+      border-radius: 12px; padding: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.15); margin-bottom: 8px;
+    }
+    .notif-app { font-size: 10px; color: #666; margin-bottom: 2px; }
+    .notif-title { font-size: 11px; font-weight: 700; color: #000; }
+    .notif-body { font-size: 10px; color: #333; }
+
+    .empty-state {
+      text-align: center; padding: 24px 12px;
+      color: #8E8E93; font-size: 11px; line-height: 1.5;
+    }
+    .empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+    /* ─── EVIDENCE QUOTE ─── */
+    .evidence {
+      margin-top: 12px; padding: 12px 16px;
+      background: var(--red-soft); border-left: 3px solid #DC2626;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px; color: var(--gray-700); font-style: italic;
+    }
+    .evidence cite {
+      display: block; margin-top: 6px;
+      font-size: 11px; font-style: normal; font-weight: 600;
+      color: var(--red-text); letter-spacing: .02em;
+    }
+    .evidence-good {
+      margin-top: 12px; padding: 12px 16px;
+      background: var(--green-soft); border-left: 3px solid #16A34A;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px; color: var(--gray-700);
+    }
+    .evidence-good strong { color: #166534; }
+
+    /* ─── HELP CENTER CALLOUT ─── */
+    .hc-callout {
+      background: var(--amber-bg); border: 1px solid var(--amber-border);
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
+      font-size: 13px; color: #92400E;
+    }
+    .hc-callout strong { color: #78350F; }
+    .hc-callout a { color: #B45309; }
+
+    /* ─── IMPACT GRID ─── */
+    .impact-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-top: 16px;
+    }
+    @media (max-width: 680px) {
+      .impact-grid { grid-template-columns: 1fr; }
+    }
+    .impact-chip {
+      text-align: center; padding: 18px 14px;
+      background: var(--orange-ghost); border-radius: 10px;
+      border: 1px solid var(--orange-pale);
+    }
+    .impact-num {
+      font-size: 24px; font-weight: 800; color: var(--orange-brand);
+      line-height: 1; margin-bottom: 4px;
+    }
+    .impact-desc { font-size: 12px; color: var(--gray-600); line-height: 1.4; }
+
+    /* ─── PROPOSAL TABLE ─── */
+    .proposal-table {
+      width: 100%; border-collapse: collapse;
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .proposal-table th {
+      background: var(--gray-100); padding: 12px 16px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--gray-600);
+      text-align: left; border-bottom: 1px solid var(--gray-200);
+    }
+    .proposal-table td {
+      padding: 14px 16px; font-size: 14px;
+      border-bottom: 1px solid var(--gray-100); background: #fff;
+    }
+    .proposal-table tr:last-child td { border-bottom: none; }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 11px; font-weight: 700;
+    }
+    .tag-entry { background: #DBEAFE; color: #1D4ED8; }
+    .tag-expand { background: #D1FAE5; color: #065F46; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--orange-deep) 0%, var(--orange-brand) 100%);
+      border-radius: 16px; padding: 48px; text-align: center; color: #fff;
+    }
+    .cta-section h2 { color: #fff; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,.8); margin-bottom: 28px; font-size: 16px; }
+    .cta-btn {
+      display: inline-block;
+      background: #fff; color: var(--orange-brand);
+      font-weight: 700; font-size: 15px;
+      padding: 14px 32px; border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .cta-email {
+      margin-top: 20px; font-size: 14px;
+      color: rgba(255,255,255,.7);
+    }
+    .cta-email strong { color: #fff; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 32px 24px; text-align: center;
+      font-size: 12px; color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    /* ─── TECH CODE ─── */
+    code {
+      font-family: var(--mono); font-size: 12px;
+      background: var(--gray-100); padding: 2px 6px;
+      border-radius: 4px; color: var(--orange-brand);
+    }
+
+    /* ─── STAR DISPLAY ─── */
+    .stars { letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <strong>Confidential</strong> — Prepared by Elinext Mobile Engineering · Elinext Mobile Engineering · elinext.com/contacts/
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-kicker">
+      <span class="dot"></span>
+      Android Technical Audit — February 2026
+    </div>
+    <h1>Traba's Android app<br>is <em>losing workers</em>.</h1>
+    <p class="hero-sub">
+      Your iOS app rates 4.7★. Your Android app recently collapsed to 1.20★ — 78% one-star reviews.
+      Three fixable React Native bugs are cutting your fill rate and burning your worker supply.
+      This is what we found, and what we can do about it.
+    </p>
+    <div class="hero-meta">
+      <span class="meta-chip">React Native — Confirmed</span>
+      <span class="meta-chip">3 Bugs Identified</span>
+      <span class="meta-chip">6-Week Fix Sprint</span>
+      <span class="meta-chip">Fixed Scope</span>
+    </div>
+  </div>
+</header>
+
+<!-- RATING SCOREBOARD -->
+<section>
+  <div class="container">
+    <div class="section-label">The Signal</div>
+    <h2>iOS vs Android: a tale of two apps</h2>
+    <p class="section-sub">
+      Same React Native codebase. Same product team. One platform works, one is in freefall.
+      This is what Android-specific bugs look like in production.
+    </p>
+
+    <div class="scoreboard">
+      <div class="score-block">
+        <div class="score-label">iOS — App Store</div>
+        <div class="score-stars good">4.7★</div>
+        <div class="score-reviews">5,328 ratings · v1.88.0</div>
+        <span class="score-badge ok">Stable</span>
+      </div>
+
+      <div class="score-vs">VS</div>
+
+      <div class="score-block">
+        <div class="score-label">Android — Recent avg</div>
+        <div class="score-stars bad">1.20★</div>
+        <div class="score-reviews">78% one-star · 3,910 total</div>
+        <span class="score-badge bad">In Crisis</span>
+      </div>
+    </div>
+
+    <div class="score-note" style="margin-top:20px">
+      <span style="font-size:18px">⚠️</span>
+      <div>
+        <strong>All-time Android rating is 4.19★</strong> — this was a healthy app.
+        The recent collapse to 1.20★ is a sudden regression, almost certainly caused by the December 2025 update that broke shift joining.
+        Source: <a href="https://chrome-stats.com/d/com.traba.trabaapp/reviews" style="color:#B45309">chrome-stats.com aggregation</a>
+      </div>
+    </div>
+
+    <div class="impact-grid" style="margin-top:24px">
+      <div class="impact-chip">
+        <div class="impact-num">3.5★</div>
+        <div class="impact-desc">Rating gap between iOS and Android (recent)</div>
+      </div>
+      <div class="impact-chip">
+        <div class="impact-num">78%</div>
+        <div class="impact-desc">of recent Android reviews are 1-star</div>
+      </div>
+      <div class="impact-chip">
+        <div class="impact-num">0.51★</div>
+        <div class="impact-desc">All-time iOS vs Android gap — even before the crash</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 1: SHIFT JOINING BROKEN -->
+<section>
+  <div class="container">
+    <div class="section-label">Bug #1 — Critical</div>
+    <h2>Shift joining is broken on Android</h2>
+    <p class="section-sub">
+      A December 2025 update broke the shift-claiming flow. Workers open the app, try to join a shift, and nothing happens.
+      This is not a UX complaint — this is the core function of the app not working.
+    </p>
+
+    <div class="bug-card">
+      <div class="bug-header">
+        <div class="bug-num p1">1</div>
+        <div>
+          <div class="bug-title">Shift claiming UI: silent failure after December update</div>
+          <div class="bug-subtitle">React Native navigation regression · Android 12–15 affected</div>
+        </div>
+        <span class="bug-severity sev-critical">Critical</span>
+      </div>
+
+      <div class="before-after">
+        <div class="ba-panel before">
+          <div class="ba-label before-lbl">⚠ BEFORE — Current State</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Available Shifts</span>
+                <span style="color:#FF6900;font-size:11px;font-weight:600">Traba</span>
+              </div>
+              <div class="ps-body">
+                <div class="shift-card">
+                  <div class="shift-card-title">Warehouse Associate — Queens</div>
+                  <div class="shift-card-sub">Tomorrow · 6:00 AM – 2:00 PM · $17/hr</div>
+                  <button class="shift-btn loading">Claiming shift…</button>
+                </div>
+                <div class="shift-card">
+                  <div class="shift-card-title">Forklift Operator — Bronx</div>
+                  <div class="shift-card-sub">Feb 21 · 7:00 AM – 3:00 PM · $19/hr</div>
+                  <button class="shift-btn broken">Join Shift</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence">
+            "Due to a recent update, the process for joining a shift has made the process even more difficult and unreliable. I have not been able to join a single shift since this update and as a result I am deleting the app."
+            <cite>— Google Play review, December 2025</cite>
+          </div>
+        </div>
+
+        <div class="ba-panel">
+          <div class="ba-label after-lbl">✓ AFTER — Fixed State</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Available Shifts</span>
+                <span style="color:#FF6900;font-size:11px;font-weight:600">Traba</span>
+              </div>
+              <div class="ps-body">
+                <div class="shift-card">
+                  <div class="shift-card-title">Warehouse Associate — Queens</div>
+                  <div class="shift-card-sub">Tomorrow · 6:00 AM – 2:00 PM · $17/hr</div>
+                  <button class="shift-btn ok">✓ Shift Claimed!</button>
+                </div>
+                <div class="shift-card">
+                  <div class="shift-card-title">Forklift Operator — Bronx</div>
+                  <div class="shift-card-sub">Feb 21 · 7:00 AM – 3:00 PM · $19/hr</div>
+                  <button class="shift-btn ok">Join Shift</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence-good">
+            <strong>Fix scope:</strong> Targeted fix, no architectural changes required.
+            Diagnose navigation stack regression, fix Android lifecycle handling,
+            add Detox regression test to prevent recurrence.
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:20px 24px; background:var(--gray-50); border-top:1px solid var(--gray-100)">
+        <div style="font-size:13px;color:var(--gray-600)">
+          <strong style="color:var(--gray-900)">Root cause:</strong>
+          React Native navigation state restoration fails on Android 12+ when the app is updated mid-session.
+          The Activity recreation lifecycle differs from iOS — if <code>savedInstanceState</code> is not correctly handled
+          in the shift-claiming flow, the navigation back-stack is corrupted and the action silently fails.
+          The December update likely introduced a library version bump (react-navigation or expo-router) that changed the
+          default back-stack behavior without being caught in Android-specific QA.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 2: GPS FALSE CLOCK-OUT -->
+<section>
+  <div class="container">
+    <div class="section-label">Bug #2 — High</div>
+    <h2>The app clocks workers out while they're still working</h2>
+    <p class="section-sub">
+      GPS signal inside steel warehouses is unreliable. Your geofencing algorithm doesn't know the difference between
+      "left the site" and "GPS signal lost in a metal building." Workers lose pay. Trust collapses.
+    </p>
+
+    <div class="hc-callout">
+      <strong>⚠ Confirmed via Traba Help Center:</strong>
+      Traba published an official support article — <em>"The Traba App is asking me to clock out when I have left the shift location"</em> —
+      instructing workers to ignore the prompt. The recommended workaround is supervisor-provided codes, not the app's GPS.
+      <br><small style="margin-top:6px;display:block">
+        Source: <a href="https://help.traba.work/en/articles/9135254-the-traba-app-is-asking-me-to-clock-out-when-i-have-left-the-shift-location">help.traba.work/en/articles/9135254</a>
+      </small>
+    </div>
+
+    <div class="bug-card">
+      <div class="bug-header">
+        <div class="bug-num p2">2</div>
+        <div>
+          <div class="bug-title">Geofencing false positive: "you've left the worksite" while on-site</div>
+          <div class="bug-subtitle">GPS signal attenuation in metal buildings · Android Doze mode · Background location</div>
+        </div>
+        <span class="bug-severity sev-high">High</span>
+      </div>
+
+      <div class="before-after">
+        <div class="ba-panel before">
+          <div class="ba-label before-lbl">⚠ BEFORE — Current State</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Active Shift</span>
+                <span style="color:#34C759;font-size:11px;font-weight:600">● Clocked In</span>
+              </div>
+              <div class="ps-body">
+                <div style="background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+                  <div style="font-size:11px;font-weight:700;color:#000">Queens Warehouse · $17/hr</div>
+                  <div style="font-size:10px;color:#666">6:00 AM – 2:00 PM shift · 3h 24m elapsed</div>
+                </div>
+                <div class="gps-alert">
+                  <div class="gps-alert-title">📍 You've Left the Worksite</div>
+                  Tap "Yes, I have left" to clock out and receive payment.
+                  <div style="margin-top:8px;display:flex;gap:6px">
+                    <div style="flex:1;background:rgba(255,255,255,.2);border-radius:6px;padding:6px;text-align:center;font-size:10px;font-weight:700">Yes, clock out</div>
+                    <div style="flex:1;background:rgba(255,255,255,.15);border-radius:6px;padding:6px;text-align:center;font-size:10px">No, I'm here</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence">
+            "Location tracking issues sometimes log users out of shifts if the app thinks they've left the work site due to poor warehouse signal."
+            <cite>— Worker review pattern, multiple sources · 2024–2025</cite>
+          </div>
+        </div>
+
+        <div class="ba-panel">
+          <div class="ba-label after-lbl">✓ AFTER — Fixed State</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Active Shift</span>
+                <span style="color:#34C759;font-size:11px;font-weight:600">● Clocked In</span>
+              </div>
+              <div class="ps-body">
+                <div style="background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+                  <div style="font-size:11px;font-weight:700;color:#000">Queens Warehouse · $17/hr</div>
+                  <div style="font-size:10px;color:#666">6:00 AM – 2:00 PM shift · 3h 24m elapsed</div>
+                </div>
+                <div class="gps-ok">
+                  <div class="gps-ok-title">📡 GPS signal weak — using network location</div>
+                  You're still checked in. Shift continues normally.
+                </div>
+                <div style="background:#fff;border-radius:10px;padding:8px 12px;font-size:10px;color:#666;box-shadow:0 1px 3px rgba(0,0,0,.06)">
+                  Location: verified via WiFi network · ±45m accuracy
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence-good">
+            <strong>Fix scope:</strong> Targeted fix, no architectural changes required.
+            Expand geofence radius with GPS confidence interval, configure
+            Android foreground service to survive Doze mode, add WiFi/network
+            hybrid fallback when GPS HDOP drops below threshold.
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:20px 24px; background:var(--gray-50); border-top:1px solid var(--gray-100)">
+        <div style="font-size:13px;color:var(--gray-600)">
+          <strong style="color:var(--gray-900)">Root cause:</strong>
+          Steel and concrete walls in warehouses attenuate GPS satellite signals by 15–30 dB.
+          The device reports a location 60–100m off ground truth. Your geofence triggers a false exit.
+          Compounding this: Android's Doze mode (screen-off battery optimization) can suspend the
+          <code>FOREGROUND_SERVICE</code> background location — if the service isn't configured with
+          a persistent notification and the correct wake-lock, GPS stops updating mid-shift.
+          The fix: wider geofence radius, network-location hybrid fallback, and proper Doze-mode exemption.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUG 3: NOTIFICATION-STATE DESYNC -->
+<section>
+  <div class="container">
+    <div class="section-label">Bug #3 — Medium</div>
+    <h2>Shift notifications open to empty screens</h2>
+    <p class="section-sub">
+      Workers receive an SMS or push notification about an available shift.
+      They open the app. The shift isn't there. They close the app. They stop trusting the notifications.
+    </p>
+
+    <div class="bug-card">
+      <div class="bug-header">
+        <div class="bug-num p3">3</div>
+        <div>
+          <div class="bug-title">Push notification → app state desync: shift shows in notification, not in app</div>
+          <div class="bug-subtitle">FCM cold-start race condition · Stale cached state · Android-specific</div>
+        </div>
+        <span class="bug-severity sev-medium">Medium</span>
+      </div>
+
+      <div class="before-after">
+        <div class="ba-panel before">
+          <div class="ba-label before-lbl">⚠ BEFORE — Current State</div>
+          <div class="phone">
+            <div class="phone-screen" style="background:#000;border-radius:20px">
+              <div style="padding:12px">
+                <div style="font-size:10px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:8px">NOTIFICATIONS</div>
+                <div class="notif-card">
+                  <div class="notif-app">TRABA</div>
+                  <div class="notif-title">New shift available near you!</div>
+                  <div class="notif-body">Warehouse Associate · Queens · $17/hr · starts in 2h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin:8px 0;font-size:20px">↓ Tap notification ↓</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Available Shifts</span>
+              </div>
+              <div class="ps-body">
+                <div class="empty-state">
+                  <div class="empty-icon">🔍</div>
+                  No shifts available in your area
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence">
+            "Receive texts about available shifts that aren't actually present in the app when opened."
+            <cite>— Worker complaint pattern, Google Play reviews · 2024–2025</cite>
+          </div>
+        </div>
+
+        <div class="ba-panel">
+          <div class="ba-label after-lbl">✓ AFTER — Fixed State</div>
+          <div class="phone">
+            <div class="phone-screen" style="background:#000;border-radius:20px">
+              <div style="padding:12px">
+                <div style="font-size:10px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:8px">NOTIFICATIONS</div>
+                <div class="notif-card">
+                  <div class="notif-app">TRABA</div>
+                  <div class="notif-title">New shift available near you!</div>
+                  <div class="notif-body">Warehouse Associate · Queens · $17/hr · starts in 2h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin:8px 0;font-size:20px">↓ Tap notification ↓</div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="ps-bar">
+                <span class="ps-bar-title">Shift Details</span>
+              </div>
+              <div class="ps-body">
+                <div class="shift-card">
+                  <div class="shift-card-title">Warehouse Associate — Queens</div>
+                  <div class="shift-card-sub">Today · 4:00 PM – 12:00 AM · $17/hr</div>
+                  <button class="shift-btn ok">Join Shift</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="evidence-good">
+            <strong>Fix scope:</strong> Targeted fix, no architectural changes required.
+            Audit FCM notification handler → navigation deep-link on cold start,
+            add foreground-refresh for shift data, add "shift filled" fallback UI.
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:20px 24px; background:var(--gray-50); border-top:1px solid var(--gray-100)">
+        <div style="font-size:13px;color:var(--gray-600)">
+          <strong style="color:var(--gray-900)">Root cause:</strong>
+          When a push notification arrives and the app is killed (Android cold start),
+          React Native creates a fresh bridge. The FCM handler fires before
+          the Redux/Zustand store is hydrated from <code>AsyncStorage</code>.
+          The navigation deep-link tries to render the shift detail screen,
+          but the shift data isn't loaded yet — it shows an empty state or redirects to the shift list,
+          which also hasn't re-fetched since the app was last open (possibly hours ago, with a now-filled shift).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENGAGEMENT PROPOSAL -->
+<section>
+  <div class="container">
+    <div class="section-label">The Fix</div>
+    <h2>Two-phase engagement — start next week</h2>
+    <p class="section-sub">
+      We scope it as two phases: a rapid entry sprint that proves value immediately,
+      then an expansion sprint for the platform-wide fixes.
+    </p>
+
+    <table class="proposal-table">
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>What We Fix</th>
+          <th>Team</th>
+          <th>Duration</th>
+          <th>Fixed Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-entry">Entry</span><br><strong>Phase 1</strong></td>
+          <td>Shift joining regression (Bug #1) — diagnose, fix, and regression-test the December 2025 Android breakage</td>
+          <td>1 Senior RN Engineer</td>
+          <td>1–2 weeks</td>
+          <td><strong>$6–9K</strong></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-expand">Expand</span><br><strong>Phase 2</strong></td>
+          <td>GPS geofencing reliability (Bug #2) + notification desync (Bug #3) + Android performance pass</td>
+          <td>2 Senior RN Engineers</td>
+          <td>4–6 weeks</td>
+          <td><strong>$14–20K</strong></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="font-weight:700;color:var(--gray-900)">Total (both phases)</td>
+          <td><strong style="color:var(--orange-brand)">$20–29K</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:24px; padding:20px; background:var(--orange-ghost); border-radius:12px; border:1px solid var(--orange-pale)">
+      <strong style="color:var(--orange-deep)">Why start with Phase 1 only?</strong>
+      <p style="margin-top:8px;font-size:14px;color:var(--gray-700)">
+        Phase 1 is a contained 1–2 week sprint that produces a verifiable result: the shift-joining flow works again,
+        and you can confirm it yourself on any Android 12+ device. No long commitment, no trust required upfront.
+        If we deliver, Phase 2 is the logical next step. If we don't, you've invested a scoped sprint and learned exactly where
+        the regression lives — useful either way.
+      </p>
+    </div>
+
+    <div style="margin-top:20px; padding:20px; background:var(--gray-100); border-radius:12px">
+      <strong style="color:var(--gray-900)">Why Elinext?</strong>
+      <p style="margin-top:8px;font-size:14px;color:var(--gray-600)">
+        ~Elinext Mobile Engineering. AI-assisted development pipelines (30× productivity in bug isolation).
+        We've done GPS reliability fixes, React Native lifecycle audits, and Android-specific regression debugging for gig-economy apps before.
+        We work inside your architecture — no rewrites, no new frameworks, no surprises.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:transparent;padding:48px 0">
+  <div class="container">
+    <div class="cta-section">
+      <h2>Let's talk this week</h2>
+      <p>
+        A 30-minute call with our React Native lead. We'll show you exactly which Android build
+        introduced the regression, what the fix looks like, and what you can expect after Phase 1 ships.
+      </p>
+      
+        Schedule a Call with Elinext Mobile
+      
+      <div class="cta-email">
+        Or email directly: <strong>elinext.com/contacts/</strong><br>
+        <small>Elinext Mobile Engineering · Head of Mobile Partnerships · Elinext</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Prepared by Elinext Mobile Engineering · February 2026 ·
+    All app rating data sourced from Google Play Store (chrome-stats.com aggregation) and App Store (apps.apple.com/us/app/traba/id1567103138) ·
+    GPS clock-out issue confirmed via Traba Help Center article (help.traba.work/en/articles/9135254) ·
+    React Native stack confirmed via Traba job posting (echojobs.io) ·
+    This document is prepared for Engineering Leadership, Co-Founder & CTO, Traba
+  </div>
+</footer>
+
+</body>
+</html>

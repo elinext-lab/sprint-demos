@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOVER Android Reliability — Elinext Proposal</title>
+<style>
+  :root {
+    --hover-blue: #1E3A5F;
+    --hover-teal: #0FA3B1;
+    --hover-light: #E8F4F8;
+    --danger: #C0392B;
+    --danger-light: #FDECEA;
+    --success: #1B6B3A;
+    --success-light: #E8F5EC;
+    --warning: #E67E22;
+    --warning-light: #FEF5E7;
+    --gray: #6B7280;
+    --gray-light: #F3F4F6;
+    --text: #1A1A2E;
+    --border: #D1D5DB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #FAFBFC;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--hover-blue);
+    color: white;
+    padding: 48px 40px 40px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--hover-teal);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .header p {
+    font-size: 16px;
+    opacity: 0.8;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* ─── RATING BANNER ─── */
+  .rating-banner {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .rating-item {
+    text-align: center;
+  }
+  .rating-stars {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .rating-stars.bad { color: var(--danger); }
+  .rating-stars.good { color: #16A34A; }
+  .rating-platform {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .rating-reviews {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+  .rating-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray);
+    font-size: 13px;
+  }
+  .rating-gap {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--danger);
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--hover-teal);
+    margin-bottom: 8px;
+  }
+  .section-heading {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--hover-blue);
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 15px;
+    color: var(--gray);
+    margin-bottom: 36px;
+    max-width: 700px;
+  }
+
+  /* ─── EVIDENCE QUOTE ─── */
+  .evidence-strip {
+    background: var(--danger-light);
+    border-left: 4px solid var(--danger);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .evidence-strip blockquote {
+    font-size: 14px;
+    font-style: italic;
+    color: #7B1A1A;
+    margin-bottom: 6px;
+  }
+  .evidence-source {
+    font-size: 11px;
+    color: var(--danger);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .help-center-quote {
+    background: #FFF8E1;
+    border-left: 4px solid #F59E0B;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .help-center-quote p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #78350F;
+    margin-bottom: 4px;
+  }
+  .help-center-quote span {
+    font-size: 11px;
+    color: #92400E;
+  }
+
+  /* ─── BEFORE / AFTER ─── */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .comparison { grid-template-columns: 1fr; }
+    .rating-banner { gap: 24px; }
+    .section { padding: 36px 20px; }
+    .header { padding: 36px 20px 32px; }
+    .header h1 { font-size: 24px; }
+  }
+
+  .panel {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .panel-header {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header.before {
+    background: var(--danger);
+    color: white;
+  }
+  .panel-header.after {
+    background: var(--success);
+    color: white;
+  }
+  .panel-body {
+    background: white;
+    padding: 24px 20px;
+  }
+
+  /* ─── PHONE MOCKUP ─── */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .phone {
+    width: 200px;
+    border-radius: 24px;
+    border: 3px solid #374151;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  .phone-notch {
+    background: #1F2937;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-notch-bar {
+    width: 60px;
+    height: 6px;
+    background: #4B5563;
+    border-radius: 3px;
+  }
+  .phone-screen {
+    background: #F9FAFB;
+    min-height: 300px;
+    padding: 12px 10px;
+    position: relative;
+  }
+  .phone-status-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: #6B7280;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .app-header-bar {
+    background: var(--hover-blue);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .upload-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 9px;
+  }
+  .upload-card-title {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+  .upload-bar-wrap {
+    background: #E5E7EB;
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 4px;
+    overflow: hidden;
+  }
+  .upload-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--hover-teal);
+  }
+  .upload-bar.danger { background: var(--danger); }
+  .upload-status {
+    font-size: 8px;
+    font-weight: 600;
+  }
+  .upload-status.bad { color: var(--danger); }
+  .upload-status.ok { color: var(--success); }
+  .upload-status.pending { color: var(--warning); }
+  .notification-bubble {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 8px;
+  }
+  .notif-header {
+    font-weight: 700;
+    font-size: 8px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .notif-icon { font-size: 10px; }
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .badge-dot.red { background: var(--danger); }
+  .badge-dot.green { background: #16A34A; }
+  .badge-dot.orange { background: var(--warning); }
+
+  .safe-to-leave {
+    background: var(--success-light);
+    border: 1px solid #86EFAC;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    font-size: 9px;
+    color: var(--success);
+    font-weight: 700;
+  }
+  .safe-to-leave .icon { font-size: 16px; margin-bottom: 3px; }
+
+  .timeline {
+    border-left: 2px solid var(--border);
+    margin-left: 12px;
+    padding-left: 16px;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-item::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    left: -21px;
+    top: 4px;
+  }
+  .timeline-item.fail::before { background: var(--danger); }
+  .timeline-item.ok::before { background: #16A34A; }
+  .timeline-item.blocked::before { background: var(--border); border: 2px solid var(--danger); }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .timeline-label.fail { color: var(--danger); }
+  .timeline-label.ok { color: var(--success); }
+  .timeline-label.blocked { color: var(--gray); }
+  .timeline-detail {
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .timeline-tag {
+    display: inline-block;
+    background: var(--danger-light);
+    color: var(--danger);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .timeline-tag.ok-tag {
+    background: var(--success-light);
+    color: var(--success);
+  }
+
+  /* ─── TECHNICAL ROOT CAUSE ─── */
+  .tech-card {
+    background: var(--gray-light);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .tech-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .code-line {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    background: #1F2937;
+    color: #A5F3FC;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 2px 0;
+    display: block;
+  }
+  .code-line.red { color: #FCA5A5; }
+  .code-line.green { color: #86EFAC; }
+
+  /* ─── COST TABLE ─── */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .cost-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 8px 12px;
+    background: var(--gray-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .cost-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .cost-table td.cost { color: var(--danger); font-weight: 700; }
+  .cost-table td.ok { color: var(--success); font-weight: 700; }
+  .cost-table tr:last-child td { border-bottom: none; }
+
+  /* ─── WORKFLOW CHAIN ─── */
+  .workflow-chain {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .workflow-step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .wf-box {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .wf-box.entry { background: var(--hover-blue); color: white; }
+  .wf-box.blocked-step { background: #FEE2E2; color: var(--danger); border: 1px solid #FECACA; }
+  .wf-box.ok-step { background: var(--success-light); color: var(--success); border: 1px solid #86EFAC; }
+  .wf-arrow {
+    font-size: 14px;
+    color: var(--border);
+    padding: 0 4px;
+    font-weight: 700;
+  }
+  .wf-arrow.fail { color: var(--danger); }
+  .wf-arrow.ok-arrow { color: var(--success); }
+
+  /* ─── ENGAGEMENT BOX ─── */
+  .engagement-box {
+    background: var(--hover-blue);
+    color: white;
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  @media (max-width: 768px) {
+    .engagement-box { grid-template-columns: 1fr; padding: 24px; }
+  }
+  .eng-item h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .eng-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--hover-teal);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .eng-detail {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--hover-blue);
+    margin-bottom: 8px;
+  }
+  .footer-contact {
+    font-size: 14px;
+    color: var(--gray);
+  }
+  .footer-contact a {
+    color: var(--hover-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  .label-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .pill-danger { background: var(--danger); color: white; }
+  .pill-success { background: var(--success); color: white; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Elinext Mobile Engineering · Confidential Proposal</div>
+  <h1>HOVER Android: From 2.8★ to Field-Ready</h1>
+  <p>Your Connected Platform launched in January 2026. A failed Android capture now blocks estimate, proposal, e-signature, and fulfillment. Here's exactly where it breaks — and how to fix it.</p>
+</div>
+
+<!-- RATING BANNER -->
+<div class="rating-banner">
+  <div class="rating-item">
+    <div class="rating-stars good">4.5★</div>
+    <div class="rating-platform">iOS App Store</div>
+    <div class="rating-reviews">~3,000 reviews</div>
+  </div>
+  <div class="rating-divider">
+    <div class="rating-gap">1.7★ gap</div>
+    <div style="font-size:12px;color:var(--gray);margin-top:2px;">structural, not noise</div>
+  </div>
+  <div class="rating-item">
+    <div class="rating-stars bad">2.8★</div>
+    <div class="rating-platform">Google Play</div>
+    <div class="rating-reviews">~1,570 reviews · to.hover.android.app</div>
+  </div>
+</div>
+
+<!-- EVIDENCE SECTION -->
+<div class="section">
+  <div class="section-title">Evidence from your own help center</div>
+  <div class="section-heading">Your engineers already documented the problem</div>
+  <div class="section-sub">These are not user complaints. These are your engineering team's official workarounds for known failure modes.</div>
+
+  <div class="help-center-quote">
+    <p>"Stay in the Hover app until the job status says 'Evaluating.'"</p>
+    <span>— HOVER Help Center · Troubleshooting · Official workaround for upload failure on background</span>
+  </div>
+
+  <div class="evidence-strip">
+    <blockquote>"You will get failed completions long after you leave the job."</blockquote>
+    <div class="evidence-source">★★ Google Play · to.hover.android.app · 2023-2024</div>
+  </div>
+  <div class="evidence-strip">
+    <blockquote>"Without a cellular signal, you can't use the app because it requires you to log in."</blockquote>
+    <div class="evidence-source">★★ Google Play · to.hover.android.app</div>
+  </div>
+  <div class="evidence-strip">
+    <blockquote>"It simply freezes and has to restart constantly. Almost useless."</blockquote>
+    <div class="evidence-source">★★ Google Play · to.hover.android.app</div>
+  </div>
+  <div class="evidence-strip">
+    <blockquote>"Generic information on failures such as 'No good corner shot,' without knowing which specific corner [failed], wasting time shooting and uploading unnecessary photos, especially on complex structures."</blockquote>
+    <div class="evidence-source">★★ Capterra · Verified Contractor · 2024</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- BEFORE / AFTER SECTION -->
+<div class="section">
+  <div class="section-title">Before vs. After</div>
+  <div class="section-heading">The silent upload failure — from contractor's view</div>
+  <div class="section-sub">January 2026: you consolidated five separate tools into one Connected Platform. The field capture is now the entry point for the entire job workflow. What happens when Android kills the upload?</div>
+
+  <div class="comparison">
+
+    <!-- BEFORE PANEL -->
+    <div class="panel">
+      <div class="panel-header before">
+        <span>⚠</span> BEFORE — Today's Android
+      </div>
+      <div class="panel-body">
+
+        <!-- Phone Mockup -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar">
+                <span>9:41 AM</span>
+                <span>⚠ No signal</span>
+              </div>
+              <div class="app-header-bar">
+                <span>HOVER</span>
+                <span style="font-size:8px;opacity:0.7;">Job #4821 · Oak Street</span>
+              </div>
+              <div class="upload-card">
+                <div class="upload-card-title">Uploading photos…</div>
+                <div class="upload-bar-wrap"><div class="upload-bar" style="width:65%"></div></div>
+                <div class="upload-status">8 of 12 uploaded</div>
+              </div>
+              <!-- Phone call interrupts -->
+              <div class="notification-bubble">
+                <div class="notif-header">
+                  <span class="notif-icon">📞</span>
+                  <span>Incoming Call · Client</span>
+                </div>
+                <div style="color:var(--gray);font-size:8px;">Contractor backgrounds HOVER to take call</div>
+              </div>
+              <!-- Upload killed -->
+              <div class="upload-card" style="margin-top:8px;border-color:#FCA5A5;">
+                <div class="upload-card-title" style="color:var(--danger);">Upload — KILLED</div>
+                <div class="upload-bar-wrap"><div class="upload-bar danger" style="width:65%"></div></div>
+                <div class="upload-status bad">Android terminated background process</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">Upload killed in background</div>
+            <div class="timeline-detail">Android OEM battery management terminates React Native upload process. No WorkManager job queued. Photos at 65% — lost.</div>
+            <div class="timeline-tag">No retry queue</div>
+          </div>
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">Contractor leaves site</div>
+            <div class="timeline-detail">No "safe to leave" check. Job status shows nothing. Contractor drives to next property.</div>
+          </div>
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">6 hours later: failure notification</div>
+            <div class="timeline-detail">"Failed completions" email arrives. Contractor is at a different property 40 miles away.</div>
+            <div class="timeline-tag">$200–$800 return visit</div>
+          </div>
+          <div class="timeline-item blocked">
+            <div class="timeline-label blocked">Entire pipeline blocked</div>
+            <div class="timeline-detail">Estimate cannot generate. Proposal cannot be sent. E-signature pending. Customer waiting.</div>
+          </div>
+        </div>
+
+        <!-- Workflow chain -->
+        <div style="margin-top:20px;">
+          <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Connected Platform — all blocked</div>
+          <div class="workflow-chain">
+            <div class="workflow-step">
+              <div class="wf-box entry">📷 Capture</div>
+              <div class="wf-arrow fail">✕</div>
+            </div>
+            <div class="wf-box blocked-step">Estimate</div>
+            <div class="wf-arrow">→</div>
+            <div class="wf-box blocked-step">Proposal</div>
+            <div class="wf-arrow">→</div>
+            <div class="wf-box blocked-step">e-Sign</div>
+            <div class="wf-arrow">→</div>
+            <div class="wf-box blocked-step">Fulfillment</div>
+          </div>
+        </div>
+
+        <!-- Tech root cause -->
+        <div class="tech-card">
+          <h4>Root Cause</h4>
+          <code class="code-line red">// Fire-and-forget fetch — no retry on background kill</code>
+          <code class="code-line red">fetch(uploadURL, &#123; body: photos &#125;)</code>
+          <code class="code-line red">// No WorkManager · No foreground service · No queue</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER PANEL -->
+    <div class="panel">
+      <div class="panel-header after">
+        <span>✓</span> AFTER — With Elinext WorkManager Queue
+      </div>
+      <div class="panel-body">
+
+        <!-- Phone Mockup -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar">
+                <span>9:41 AM</span>
+                <span style="color:#16A34A;">● Queued</span>
+              </div>
+              <div class="app-header-bar">
+                <span>HOVER</span>
+                <span style="font-size:8px;opacity:0.7;">Job #4821 · Oak Street</span>
+              </div>
+              <div class="upload-card" style="border-color:#86EFAC;">
+                <div class="upload-card-title" style="color:var(--success);">WorkManager — Upload Queued</div>
+                <div class="upload-bar-wrap"><div class="upload-bar" style="width:65%;background:var(--success);"></div></div>
+                <div class="upload-status ok">Continues in background · Will retry if interrupted</div>
+              </div>
+              <!-- Contractor can leave -->
+              <div class="safe-to-leave">
+                <div class="icon">✅</div>
+                <div>Safe to leave this job</div>
+                <div style="font-size:8px;font-weight:400;margin-top:2px;color:#374151;">Photos queued · Upload continues automatically</div>
+              </div>
+              <!-- Success notification -->
+              <div class="notification-bubble" style="margin-top:8px;border-color:#86EFAC;">
+                <div class="notif-header" style="color:var(--success);">
+                  <span class="notif-icon">✅</span>
+                  <span>HOVER · Upload Complete</span>
+                </div>
+                <div style="color:var(--gray);font-size:8px;">Oak Street · 12/12 photos · Processing started</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">WorkManager queues upload</div>
+            <div class="timeline-detail">Persistent job persisted to disk. Constraint: network available. Survives app backgrounding, process kill, device restart.</div>
+            <div class="timeline-tag ok-tag">Exponential backoff · Auto-retry</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">Contractor leaves with confidence</div>
+            <div class="timeline-detail">"Safe to leave" confirmation shown when upload queue is committed. Foreground service notification shows live progress.</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">FCM push when complete</div>
+            <div class="timeline-detail">Contractor receives push when measurement results are ready — even hours later on WiFi at the next site.</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">Full pipeline flows</div>
+            <div class="timeline-detail">Estimate generates automatically. Proposal ready same day. No return visit. No lost job.</div>
+          </div>
+        </div>
+
+        <!-- Workflow chain -->
+        <div style="margin-top:20px;">
+          <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Connected Platform — fully unblocked</div>
+          <div class="workflow-chain">
+            <div class="workflow-step">
+              <div class="wf-box entry">📷 Capture</div>
+              <div class="wf-arrow ok-arrow">✓</div>
+            </div>
+            <div class="wf-box ok-step">Estimate</div>
+            <div class="wf-arrow ok-arrow">→</div>
+            <div class="wf-box ok-step">Proposal</div>
+            <div class="wf-arrow ok-arrow">→</div>
+            <div class="wf-box ok-step">e-Sign</div>
+            <div class="wf-arrow ok-arrow">→</div>
+            <div class="wf-box ok-step">Fulfillment</div>
+          </div>
+        </div>
+
+        <!-- Tech fix -->
+        <div class="tech-card">
+          <h4>Implementation</h4>
+          <code class="code-line green">// WorkManager — persistent, constraint-aware</code>
+          <code class="code-line green">WorkManager.enqueue(UploadWorker(jobId, photos))</code>
+          <code class="code-line green">// Survives: background kill, Doze, device restart</code>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SECOND FAILURE: NO OFFLINE AUTH -->
+<div class="section">
+  <div class="section-title">Second failure mode</div>
+  <div class="section-heading">No offline auth — app unusable without cellular</div>
+  <div class="section-sub">From your own job posting (July 2024): <strong>"Offline support for business critical functionality."</strong> That was an open requirement. Here's what it means in the field today.</div>
+
+  <div class="comparison">
+    <div class="panel">
+      <div class="panel-header before"><span>⚠</span> BEFORE — Today</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>8:02 AM</span><span style="color:var(--danger);">No Signal</span></div>
+              <div style="text-align:center;padding:40px 10px 20px;">
+                <div style="font-size:32px;margin-bottom:8px;">🔒</div>
+                <div style="font-size:11px;font-weight:700;color:var(--danger);">Cannot Connect</div>
+                <div style="font-size:9px;color:var(--gray);margin-top:4px;">Login requires network access.<br>No cellular signal detected.</div>
+                <div style="margin-top:12px;background:var(--danger);color:white;font-size:9px;font-weight:700;padding:6px 12px;border-radius:6px;">Retry</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--gray);text-align:center;margin-top:4px;">Contractor drove 45 min to rural property.<br>App won't start. Job cancelled.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after"><span>✓</span> AFTER — Encrypted Token Persistence</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>8:02 AM</span><span style="color:var(--warning);">Offline Mode</span></div>
+              <div class="app-header-bar">
+                <span>HOVER</span>
+                <span style="font-size:8px;">● Offline</span>
+              </div>
+              <div style="background:var(--warning-light);border:1px solid #FDE68A;border-radius:6px;padding:8px;font-size:9px;color:#78350F;margin-bottom:8px;">
+                <strong>Offline mode</strong> · Token verified locally<br>Photos will upload when signal returns
+              </div>
+              <div class="upload-card">
+                <div class="upload-card-title">Job ready to start</div>
+                <div style="font-size:9px;color:var(--success);">✓ Authenticated · Capture available offline</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--gray);text-align:center;margin-top:4px;">Android Keystore stores token securely.<br>Local auth validation. Capture starts immediately.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- COST TABLE -->
+<div class="section">
+  <div class="section-title">Business impact</div>
+  <div class="section-heading">What each Android failure costs at scale</div>
+  <div class="section-sub">300,000+ field professionals. Android is the majority device category for contractors in the US.</div>
+
+  <table class="cost-table">
+    <thead>
+      <tr>
+        <th>Failure Mode</th>
+        <th>Frequency Signal</th>
+        <th>Cost Per Event</th>
+        <th>After Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Silent upload killed on background</strong></td>
+        <td>Help Center dedicated article + "Stay in app" workaround</td>
+        <td class="cost">$200–$800 return visit</td>
+        <td class="ok">$0 — WorkManager retries</td>
+      </tr>
+      <tr>
+        <td><strong>No offline auth — login fails</strong></td>
+        <td>Own job posting cites "offline support" as open requirement</td>
+        <td class="cost">Job abandoned; contractor churn</td>
+        <td class="ok">Secure local auth token</td>
+      </tr>
+      <tr>
+        <td><strong>App freeze on mid-range Android</strong></td>
+        <td>"Freezes and has to restart constantly. Almost useless."</td>
+        <td class="cost">Capture session lost; uninstall</td>
+        <td class="ok">Native Kotlin image processing</td>
+      </tr>
+      <tr>
+        <td><strong>Post-job failure — non-actionable error</strong></td>
+        <td>"No good corner shot" without specifying which corner</td>
+        <td class="cost">Full re-shoot; 24hr delay</td>
+        <td class="ok">Per-photo confidence at capture</td>
+      </tr>
+      <tr>
+        <td><strong>Measurement inaccuracy on Android</strong></td>
+        <td>5% of jobs: walls 10–15 ft off (Capterra, verified contractor)</td>
+        <td class="cost">Material overorder; contractor dispute</td>
+        <td class="ok">Native camera2 Kotlin module</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- THE SDK ASYMMETRY -->
+<div class="section">
+  <div class="section-title">Technical root cause</div>
+  <div class="section-heading">iOS capture is native. Android is not.</div>
+  <div class="section-sub">This is the structural reason the gap exists — and why it won't close without a dedicated Android engineering pass.</div>
+
+  <div class="comparison">
+    <div class="panel">
+      <div class="panel-header after"><span>✓</span> iOS — Native SDK (hover-capture-ios)</div>
+      <div class="panel-body">
+        <div class="tech-card">
+          <h4>github.com/hoverinc/hover-capture-ios</h4>
+          <code class="code-line green">// Native AVFoundation · ARKit access</code>
+          <code class="code-line green">// Direct camera2-equivalent on iPhone</code>
+          <code class="code-line green">// Consistent across all iOS hardware</code>
+          <code class="code-line green">// EXIF metadata stable · orientation reliable</code>
+        </div>
+        <p style="font-size:13px;color:var(--gray);margin-top:12px;">Apple's unified camera API + iOS process management = predictable capture behavior across all iPhone models. HOVER already solved this for iOS.</p>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header before"><span>⚠</span> Android — React Native Bridge</div>
+      <div class="panel-body">
+        <div class="tech-card">
+          <h4>No hover-capture-android in hoverinc GitHub org</h4>
+          <code class="code-line red">// RN bridge → camera2 API</code>
+          <code class="code-line red">// Samsung One UI: aggressive bg kill</code>
+          <code class="code-line red">// Xiaomi MIUI: camera API deviations</code>
+          <code class="code-line red">// EXIF orientation inconsistent by OEM</code>
+        </div>
+        <p style="font-size:13px;color:var(--gray);margin-top:12px;">Android device fragmentation: hundreds of OEM configurations. Camera2 API behavior differs by device, OS version, and OEM skin. The RN bridge can't abstract all of this cleanly.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENGAGEMENT BOX -->
+<div class="section" style="padding-bottom: 0;">
+  <div class="engagement-box">
+    <div class="eng-item">
+      <h3>Phase 1 Entry</h3>
+      <div class="eng-value">Scoped engagement</div>
+      <div class="eng-detail">6–8 weeks · 2 React Native engineers (Android-native expertise)</div>
+    </div>
+    <div class="eng-item">
+      <h3>Deliverables</h3>
+      <div class="eng-value" style="font-size:18px;margin-top:4px;">WorkManager · Offline Auth · FCM Push</div>
+      <div class="eng-detail">Upload retry queue + encrypted token persistence + completion push notification</div>
+    </div>
+    <div class="eng-item">
+      <h3>Phase 2</h3>
+      <div class="eng-value">Scoped engagement</div>
+      <div class="eng-detail">Native Kotlin camera module · 3D scan performance pass · Per-photo QA signals</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer" style="margin-top:48px;">
+  <div class="footer-logo">Elinext</div>
+  <div class="footer-contact">
+    Elinext Mobile Engineering</div>
+</div>
+
+</body>
+</html>

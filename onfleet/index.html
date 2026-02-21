@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onfleet Driver — Elinext Engineering Prototype</title>
+<style>
+  /* ───────── Reset & Base ───────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0F1929;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px 40px;
+    color: #1A1A2E;
+  }
+
+  /* ───────── Header Bar ───────── */
+  .page-header {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+  .page-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    background: #4CC9FF;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4CC9FF88;
+  }
+  .logo-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E0E6F0;
+    letter-spacing: 0.04em;
+  }
+  .logo-sub {
+    font-size: 11px;
+    color: #5E7A99;
+    font-weight: 400;
+  }
+  .badge-elinext {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4CC9FF;
+    border: 1px solid #4CC9FF44;
+    border-radius: 6px;
+    padding: 4px 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #4CC9FF11;
+  }
+
+  /* ───────── Screen Selector ───────── */
+  .screen-nav {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .screen-nav::-webkit-scrollbar { display: none; }
+  .screen-btn {
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: 1px solid #1E3555;
+    background: #131F30;
+    color: #7A96B5;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .screen-btn:hover { border-color: #4CC9FF44; color: #A0C4E0; }
+  .screen-btn.active {
+    background: #183352;
+    border-color: #4CC9FF;
+    color: #4CC9FF;
+  }
+
+  /* ───────── Layout ───────── */
+  .main-layout {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  @media (max-width: 700px) {
+    .main-layout { flex-direction: column; }
+    .side-panel { display: none; }
+  }
+
+  /* ───────── Phone Frame ───────── */
+  .phone-frame {
+    flex-shrink: 0;
+    width: 240px;
+    background: #0A1520;
+    border-radius: 40px;
+    border: 2px solid #1E3555;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px #0F1929;
+    position: relative;
+  }
+  .phone-notch {
+    width: 80px;
+    height: 28px;
+    background: #0A1520;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .notch-cam {
+    width: 10px; height: 10px;
+    background: #1A2D42;
+    border-radius: 50%;
+    border: 1px solid #243A52;
+  }
+  .notch-sensor {
+    width: 6px; height: 6px;
+    background: #243A52;
+    border-radius: 50%;
+  }
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7A96B5;
+  }
+  .status-bar .time { color: #C0D4E8; font-size: 13px; font-weight: 700; }
+  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .signal-bars { display: flex; gap: 1px; align-items: flex-end; }
+  .signal-bar { width: 3px; background: #C0D4E8; border-radius: 1px; }
+
+  /* ───────── App Screens ───────── */
+  .app-screen {
+    display: none;
+    flex-direction: column;
+    background: #F4F6F9;
+    min-height: 720px;
+  }
+  .app-screen.active { display: flex; }
+
+  /* App Nav Bar */
+  .app-nav {
+    background: #FFFFFF;
+    padding: 12px 20px 10px;
+    border-bottom: 1px solid #E8ECF2;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .app-nav-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1A2A3A;
+    text-align: center;
+    letter-spacing: -0.2px;
+  }
+  .app-nav-sub {
+    font-size: 11px;
+    color: #7A96B5;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .app-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .nav-icon-btn {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #3B7DD8;
+    font-size: 18px;
+  }
+  .nav-icon-btn.ghost { color: transparent; pointer-events: none; }
+
+  /* ──────────────────────────────────── */
+  /* SCREEN 1: TASK LIST                  */
+  /* ──────────────────────────────────── */
+
+  /* Offline Banner */
+  .offline-banner {
+    background: #FF6B35;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .offline-banner.online-mode {
+    background: #00C896;
+  }
+  .offline-banner.syncing-mode {
+    background: #3B7DD8;
+  }
+  .offline-icon { font-size: 14px; }
+  .offline-action { margin-left: auto; font-size: 11px; opacity: 0.85; }
+
+  /* Stats Strip */
+  .stats-strip {
+    background: #FFFFFF;
+    padding: 12px 20px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #E8ECF2;
+  }
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid #E8ECF2;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1A2A3A;
+    letter-spacing: -0.5px;
+  }
+  .stat-val.green { color: #00C896; }
+  .stat-val.orange { color: #FF8C42; }
+  .stat-val.blue { color: #3B7DD8; }
+  .stat-lbl {
+    font-size: 10px;
+    color: #7A96B5;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 1px;
+  }
+
+  /* Section Header */
+  .section-hdr {
+    padding: 14px 16px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #7A96B5;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Task Card */
+  .task-card {
+    background: #FFFFFF;
+    margin: 0 10px 8px;
+    border-radius: 14px;
+    border: 1px solid #E8ECF2;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .task-card:active { transform: scale(0.98); }
+  .task-card.completed-card {
+    opacity: 0.65;
+    border-style: dashed;
+  }
+  .task-card-body {
+    padding: 14px 14px 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .task-number-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .task-number-circle.pending { background: #EEF2FF; color: #4361CC; }
+  .task-number-circle.active-task { background: #EEF8FF; color: #3B7DD8; }
+  .task-number-circle.done { background: #EEFBF5; color: #00C896; }
+  .task-number-circle.cached { background: #FFF5EE; color: #FF8C42; }
+
+  .task-info { flex: 1; min-width: 0; }
+  .task-name {
+    font-size: 14px; font-weight: 700; color: #1A2A3A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .task-addr {
+    font-size: 12px; color: #5A7A9A;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .task-meta {
+    display: flex; align-items: center; gap: 6px; margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .task-tag {
+    font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .task-tag.eta { background: #EEF2FF; color: #4361CC; }
+  .task-tag.window { background: #FFF8EE; color: #CC7B00; }
+  .task-tag.priority { background: #FFEEEE; color: #CC3333; }
+  .task-tag.done-tag { background: #EEFBF5; color: #00A87A; }
+  .task-tag.cached { background: #FFF5EE; color: #FF6B35; }
+  .task-right {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 6px; flex-shrink: 0;
+  }
+  .task-eta-time { font-size: 13px; font-weight: 700; color: #3B7DD8; }
+  .task-arrow { color: #C0D0E0; font-size: 14px; }
+  .sync-status {
+    font-size: 9px; font-weight: 600; color: #FF8C42;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .sync-dot { width: 5px; height: 5px; background: #FF8C42; border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* Active task strip */
+  .active-task-strip {
+    background: linear-gradient(135deg, #1B5C9B 0%, #0E3D70 100%);
+    padding: 12px 16px;
+    margin: 0 10px 8px;
+    border-radius: 14px;
+    color: #FFFFFF;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .active-task-strip::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 100%;
+    background: radial-gradient(circle at 80% 50%, rgba(76,201,255,0.15), transparent 70%);
+  }
+  .active-label { font-size: 10px; font-weight: 700; color: #4CC9FF; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .active-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+  .active-addr { font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+  .active-actions { display: flex; gap: 8px; }
+  .active-btn {
+    flex: 1; padding: 8px 0;
+    border-radius: 9px; border: none;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .active-btn:active { transform: scale(0.96); }
+  .active-btn.nav-btn { background: #4CC9FF; color: #0A1520; }
+  .active-btn.pod-btn { background: rgba(255,255,255,0.15); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.25); }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    background: #FFFFFF;
+    border-top: 1px solid #E8ECF2;
+    padding: 8px 0 20px;
+    display: flex;
+    justify-content: space-around;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 9px; font-weight: 600; color: #7A96B5;
+    cursor: pointer; flex: 1;
+    padding: 4px 0;
+    transition: color 0.15s;
+  }
+  .nav-item.nav-active { color: #3B7DD8; }
+  .nav-icon { font-size: 20px; }
+  .nav-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: #FF3B30; color: white; border-radius: 10px;
+    font-size: 9px; font-weight: 800; padding: 1px 5px;
+  }
+  .nav-item { position: relative; }
+
+  /* ──────────────────────────────────── */
+  /* SCREEN 2: PROOF OF DELIVERY          */
+  /* ──────────────────────────────────── */
+  .pod-screen { background: #FFFFFF; }
+
+  .delivery-header {
+    background: linear-gradient(180deg, #1B5C9B 0%, #145299 100%);
+    padding: 16px 16px 20px;
+    color: white;
+  }
+  .delivery-stop { font-size: 11px; color: #4CC9FF; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .delivery-name { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .delivery-addr { font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+  .delivery-note {
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.9);
+    border-left: 3px solid #4CC9FF;
+  }
+  .delivery-note-lbl { font-size: 10px; font-weight: 700; color: #4CC9FF; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+
+  /* POD Steps */
+  .pod-steps {
+    background: #F4F6F9;
+    padding: 0 16px 12px;
+    border-bottom: 1px solid #E8ECF2;
+  }
+  .steps-label { font-size: 11px; font-weight: 700; color: #7A96B5; text-transform: uppercase; letter-spacing: 0.08em; padding: 12px 0 8px; }
+  .step-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .step-bubble {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+    transition: all 0.3s;
+  }
+  .step-bubble.step-done { background: #00C896; color: white; }
+  .step-bubble.step-active { background: #3B7DD8; color: white; box-shadow: 0 0 0 3px #3B7DD822; }
+  .step-bubble.step-pending { background: #E8ECF2; color: #7A96B5; }
+  .step-label { font-size: 13px; font-weight: 600; color: #1A2A3A; }
+  .step-label.active-label-step { color: #3B7DD8; }
+  .step-label.done-label { color: #7A96B5; text-decoration: line-through; }
+  .step-connector { width: 2px; height: 16px; background: #E8ECF2; margin-left: 13px; }
+  .step-connector.done-line { background: #00C896; }
+
+  /* POD Content */
+  .pod-content { padding: 16px; flex: 1; }
+
+  /* Photo Step */
+  .photo-zone {
+    border: 2px dashed #C8D8E8;
+    border-radius: 16px;
+    background: #F8FAFC;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .photo-zone.has-photo {
+    border-style: solid;
+    border-color: #00C896;
+    background: #EEFBF5;
+    padding: 0;
+  }
+  .photo-zone:hover { border-color: #3B7DD8; background: #F0F6FF; }
+  .photo-icon { font-size: 36px; color: #B0C8E0; margin-bottom: 8px; }
+  .photo-prompt { font-size: 15px; font-weight: 700; color: #3B7DD8; margin-bottom: 4px; }
+  .photo-sub { font-size: 12px; color: #7A96B5; }
+  .photo-preview {
+    width: 100%; border-radius: 14px;
+    position: relative;
+    display: none;
+  }
+  .photo-preview.visible { display: block; }
+  .photo-placeholder {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
+    border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 14px; color: #388E3C; font-weight: 600; gap: 8px;
+  }
+  .upload-progress {
+    background: rgba(255,255,255,0.9);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: #1A2A3A; font-weight: 600;
+  }
+  .progress-bar-wrap { flex: 1; height: 4px; background: #E8ECF2; border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #3B7DD8; border-radius: 2px; transition: width 0.3s ease; }
+  .upload-pct { font-size: 11px; font-weight: 700; color: #3B7DD8; min-width: 30px; }
+  .upload-error {
+    background: #FFF0EE; border: 1px solid #FFD0C8;
+    border-radius: 12px; padding: 12px 14px; margin: 8px 0;
+    display: none; align-items: center; gap: 10px;
+    font-size: 12px; color: #CC3333;
+  }
+  .upload-error.show { display: flex; }
+  .retry-btn {
+    margin-left: auto; background: #CC3333; color: white;
+    border: none; border-radius: 8px; padding: 5px 12px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+
+  /* Signature Zone */
+  .sig-zone {
+    border: 2px solid #E8ECF2;
+    border-radius: 16px;
+    background: #FAFBFC;
+    padding: 0;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .sig-header {
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid #E8ECF2;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sig-label { font-size: 12px; font-weight: 700; color: #1A2A3A; }
+  .sig-clear { font-size: 11px; color: #3B7DD8; font-weight: 600; cursor: pointer; }
+  canvas.sig-canvas {
+    display: block;
+    width: 100%;
+    height: 100px;
+    background: white;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  /* Barcode zone */
+  .barcode-zone {
+    border: 1px solid #E8ECF2;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .barcode-zone:hover { border-color: #3B7DD8; }
+  .barcode-zone.scanned { border-color: #00C896; background: #EEFBF5; }
+  .barcode-icon { font-size: 24px; color: #3B7DD8; }
+  .barcode-icon.scanned-icon { color: #00C896; }
+  .barcode-info { flex: 1; }
+  .barcode-label { font-size: 13px; font-weight: 600; color: #1A2A3A; }
+  .barcode-val { font-size: 11px; color: #7A96B5; font-family: monospace; }
+
+  /* Complete Button */
+  .complete-btn-wrap { padding: 0 0 8px; }
+  .complete-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: -0.2px;
+  }
+  .complete-btn.ready {
+    background: linear-gradient(135deg, #00C896 0%, #00A87A 100%);
+    color: white;
+    box-shadow: 0 8px 24px rgba(0,200,150,0.3);
+  }
+  .complete-btn.ready:active { transform: scale(0.97); box-shadow: none; }
+  .complete-btn.not-ready {
+    background: #E8ECF2;
+    color: #7A96B5;
+    cursor: not-allowed;
+  }
+  .offline-queue-note {
+    text-align: center; font-size: 11px; color: #FF8C42; font-weight: 600;
+    margin-top: 8px; display: none;
+  }
+  .offline-queue-note.show { display: block; }
+
+  /* Success State */
+  .success-overlay {
+    display: none;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    z-index: 50;
+    text-align: center;
+  }
+  .success-overlay.show { display: flex; }
+  .success-icon { font-size: 64px; margin-bottom: 16px; }
+  .success-title { font-size: 22px; font-weight: 800; color: #1A2A3A; margin-bottom: 8px; }
+  .success-sub { font-size: 14px; color: #7A96B5; margin-bottom: 24px; }
+  .success-detail { background: #F4F6F9; border-radius: 14px; padding: 16px; width: 100%; text-align: left; margin-bottom: 24px; }
+  .success-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; }
+  .success-row-key { color: #7A96B5; }
+  .success-row-val { font-weight: 700; color: #1A2A3A; }
+  .next-task-btn {
+    width: 100%; padding: 14px;
+    background: #3B7DD8; color: white;
+    border: none; border-radius: 14px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+
+  /* ──────────────────────────────────── */
+  /* SCREEN 3: ROUTE CHANGED              */
+  /* ──────────────────────────────────── */
+  .route-screen { background: #F4F6F9; }
+
+  .ai-banner {
+    background: linear-gradient(135deg, #1B2A4A 0%, #0E1E35 100%);
+    padding: 16px;
+    color: white;
+    border-bottom: 1px solid #1E3555;
+  }
+  .ai-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(76,201,255,0.15); border: 1px solid rgba(76,201,255,0.3);
+    border-radius: 8px; padding: 3px 10px; font-size: 10px;
+    font-weight: 700; color: #4CC9FF; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 10px;
+  }
+  .ai-dot { width: 6px; height: 6px; background: #4CC9FF; border-radius: 50%; animation: pulse 1.5s infinite; }
+  .ai-headline { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .ai-sub { font-size: 12px; color: rgba(255,255,255,0.65); }
+
+  .route-content { padding: 12px 12px; flex: 1; }
+
+  /* Route comparison */
+  .route-compare {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E8ECF2;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .route-compare-hdr {
+    display: flex; align-items: center;
+    background: #F8FAFC;
+    border-bottom: 1px solid #E8ECF2;
+    font-size: 10px; font-weight: 700; color: #7A96B5;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .route-col {
+    flex: 1; padding: 10px 14px;
+    border-right: 1px solid #E8ECF2;
+  }
+  .route-col:last-child { border-right: none; }
+  .route-col-bad { color: #CC3333; }
+  .route-col-good { color: #00A87A; }
+
+  .stop-list { padding: 6px 0; }
+  .stop-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #F0F3F7;
+    position: relative;
+  }
+  .stop-row:last-child { border-bottom: none; }
+  .stop-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+  .stop-num.old { background: #F0F3F7; color: #7A96B5; }
+  .stop-num.new-order { background: #EEF8FF; color: #3B7DD8; }
+  .stop-num.moved-up { background: #EEFBF5; color: #00A87A; }
+  .stop-detail { flex: 1; min-width: 0; }
+  .stop-name { font-size: 13px; font-weight: 700; color: #1A2A3A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stop-eta { font-size: 11px; color: #7A96B5; }
+  .stop-delta {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .stop-delta.saved { background: #EEFBF5; color: #00A87A; }
+  .stop-delta.no-change { color: #B0C0D0; }
+
+  /* Savings bar */
+  .savings-bar {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E8ECF2;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex; gap: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .saving-item {
+    flex: 1; text-align: center;
+    padding: 12px 8px;
+    background: #F4F9FF;
+    border-radius: 12px;
+  }
+  .saving-val { font-size: 20px; font-weight: 800; color: #3B7DD8; letter-spacing: -0.5px; margin-bottom: 2px; }
+  .saving-val.green { color: #00C896; }
+  .saving-lbl { font-size: 10px; color: #7A96B5; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Action buttons for route */
+  .route-actions { display: flex; gap: 10px; padding: 0 0 8px; }
+  .route-accept-btn {
+    flex: 2; padding: 14px;
+    background: linear-gradient(135deg, #3B7DD8 0%, #2560B0 100%);
+    color: white; border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(59,125,216,0.3);
+    transition: all 0.2s;
+  }
+  .route-accept-btn:active { transform: scale(0.97); box-shadow: none; }
+  .route-dismiss-btn {
+    flex: 1; padding: 14px;
+    background: #E8ECF2; color: #7A96B5;
+    border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  /* Accepted state */
+  .route-accepted {
+    background: #EEFBF5;
+    border: 2px solid #00C896;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .route-accepted.show { display: block; }
+  .route-accepted-icon { font-size: 40px; margin-bottom: 8px; }
+  .route-accepted-title { font-size: 16px; font-weight: 800; color: #00A87A; margin-bottom: 4px; }
+  .route-accepted-sub { font-size: 12px; color: #7A96B5; }
+
+  /* ───────── Side Panel ───────── */
+  .side-panel {
+    flex: 1;
+    min-width: 280px;
+    max-width: 400px;
+  }
+  .panel-card {
+    background: #131F30;
+    border: 1px solid #1E3555;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .panel-title {
+    font-size: 13px; font-weight: 700; color: #7A96B5;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .panel-dot.blue { background: #4CC9FF; }
+  .panel-dot.green { background: #00C896; }
+  .panel-dot.orange { background: #FF8C42; }
+
+  /* Workstream item */
+  .ws-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #1E3555;
+  }
+  .ws-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .ws-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .ws-num {
+    width: 20px; height: 20px; border-radius: 6px;
+    background: #1B3A5E; color: #4CC9FF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; flex-shrink: 0;
+  }
+  .ws-title { font-size: 13px; font-weight: 700; color: #C0D8F0; }
+  .ws-desc { font-size: 11px; color: #5A7A99; line-height: 1.5; padding-left: 28px; }
+  .ws-tag {
+    font-size: 9px; font-weight: 700; padding: 2px 6px;
+    border-radius: 5px; text-transform: uppercase; letter-spacing: 0.05em;
+    margin-left: auto; flex-shrink: 0;
+  }
+  .ws-tag.fix { background: #1A3A5A; color: #4CC9FF; }
+  .ws-tag.new { background: #1A3A2A; color: #00C896; }
+
+  /* Stats in panel */
+  .panel-stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid #1E3555;
+    font-size: 12px;
+  }
+  .panel-stat-row:last-child { border-bottom: none; }
+  .panel-stat-key { color: #5A7A99; }
+  .panel-stat-val { color: #C0D8F0; font-weight: 700; }
+  .panel-stat-val.highlight { color: #4CC9FF; }
+
+  /* Engineering note */
+  .eng-note {
+    background: #0F1929;
+    border-left: 3px solid #4CC9FF;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: #5A7A99;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+  .eng-note strong { color: #8BB4D0; }
+
+  /* Footer */
+  .page-footer {
+    width: 100%; max-width: 900px;
+    margin-top: 32px;
+    padding: 0 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #2E4A66;
+  }
+  .footer-built { color: #3A5E82; }
+  .footer-built span { color: #4CC9FF; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE HEADER
+═══════════════════════════════════════════════════════ -->
+<div class="page-header">
+  <div class="logo">
+    <div class="logo-dot"></div>
+    <div>
+      <div class="logo-text">Onfleet Driver</div>
+      <div class="logo-sub">Elinext Engineering Prototype</div>
+    </div>
+  </div>
+  <div class="badge-elinext">Elinext</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SCREEN NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<div class="screen-nav">
+  <button class="screen-btn active" onclick="showScreen('s1')">
+    1 · Task List + Offline Sync
+  </button>
+  <button class="screen-btn" onclick="showScreen('s2')">
+    2 · Proof of Delivery
+  </button>
+  <button class="screen-btn" onclick="showScreen('s3')">
+    3 · AI Route Optimization
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN LAYOUT
+═══════════════════════════════════════════════════════ -->
+<div class="main-layout">
+
+  <!-- ─── PHONE FRAME ─── -->
+  <div class="phone-frame">
+    <div class="phone-notch">
+      <div class="notch-cam"></div>
+      <div class="notch-sensor"></div>
+    </div>
+    <div class="status-bar">
+      <span class="time">9:41</span>
+      <div class="status-icons">
+        <div class="signal-bars">
+          <div class="signal-bar" style="height:4px;"></div>
+          <div class="signal-bar" style="height:7px;"></div>
+          <div class="signal-bar" style="height:10px;"></div>
+          <div class="signal-bar" style="height:13px;"></div>
+        </div>
+        <span style="font-size:12px;">WiFi</span>
+        <span style="font-size:12px;">🔋87</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SCREEN 1: TASK LIST + OFFLINE SYNC
+    ══════════════════════════════════════ -->
+    <div class="app-screen active" id="s1">
+
+      <!-- App Nav -->
+      <div class="app-nav">
+        <div class="app-nav-row">
+          <div class="nav-icon-btn ghost">←</div>
+          <div>
+            <div class="app-nav-title">Today's Deliveries</div>
+            <div class="app-nav-sub">Thursday, Feb 19 · Downtown SF</div>
+          </div>
+          <div class="nav-icon-btn" onclick="cycleSync()">⟳</div>
+        </div>
+      </div>
+
+      <!-- Offline/Online Banner -->
+      <div class="offline-banner" id="syncBanner" onclick="cycleSync()">
+        <span class="offline-icon" id="syncIcon">⚠</span>
+        <span id="syncText">Offline — 2 completions queued for upload</span>
+        <span class="offline-action" id="syncAction">Tap to retry</span>
+      </div>
+
+      <!-- Stats Strip -->
+      <div class="stats-strip">
+        <div class="stat-item">
+          <div class="stat-val green" id="statDone">2</div>
+          <div class="stat-lbl">Done</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val blue">1</div>
+          <div class="stat-lbl">Active</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val orange">4</div>
+          <div class="stat-lbl">Remaining</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">7</div>
+          <div class="stat-lbl">Total</div>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div style="flex:1; overflow-y:auto; padding-bottom: 4px;">
+
+        <!-- Completed -->
+        <div class="section-hdr">Completed</div>
+
+        <div class="task-card completed-card">
+          <div class="task-card-body">
+            <div class="task-number-circle done">✓</div>
+            <div class="task-info">
+              <div class="task-name">Sage Wellness Pharmacy</div>
+              <div class="task-addr">840 Market St, #2A — 3 packages</div>
+              <div class="task-meta">
+                <div class="task-tag done-tag">Signed</div>
+                <div class="task-tag done-tag">9:02 AM</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-arrow">✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-card completed-card">
+          <div class="task-card-body">
+            <div class="task-number-circle cached">⏳</div>
+            <div class="task-info">
+              <div class="task-name">Bay Books & Coffee</div>
+              <div class="task-addr">215 Fremont St, B2 parking</div>
+              <div class="task-meta">
+                <div class="task-tag cached">Queued offline</div>
+                <div class="sync-status"><div class="sync-dot"></div> Uploading</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-arrow">⇧</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active -->
+        <div class="section-hdr">Active</div>
+
+        <div class="active-task-strip" onclick="showScreen('s2'); highlightScreen('s2');">
+          <div class="active-label">🚚 Delivering Now — Stop 3 of 7</div>
+          <div class="active-name">Civic Center Medical</div>
+          <div class="active-addr">350 Golden Gate Ave · 0.4 mi</div>
+          <div class="active-actions">
+            <button class="active-btn nav-btn">▶ Navigate</button>
+            <button class="active-btn pod-btn">📷 Mark Delivered</button>
+          </div>
+        </div>
+
+        <!-- Upcoming -->
+        <div class="section-hdr">Up Next</div>
+
+        <div class="task-card">
+          <div class="task-card-body">
+            <div class="task-number-circle pending">4</div>
+            <div class="task-info">
+              <div class="task-name">The Grove Restaurant</div>
+              <div class="task-addr">690 Van Ness Ave — 1 package</div>
+              <div class="task-meta">
+                <div class="task-tag eta">ETA 10:15 AM</div>
+                <div class="task-tag window">Window: 10–11am</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-eta-time">10:15</div>
+              <div class="task-arrow">›</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-card-body">
+            <div class="task-number-circle pending">5</div>
+            <div class="task-info">
+              <div class="task-name">Pacific Heights Dental</div>
+              <div class="task-addr">2340 Clay St — 2 packages</div>
+              <div class="task-meta">
+                <div class="task-tag eta">ETA 10:45 AM</div>
+                <div class="task-tag priority">Priority</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-eta-time">10:45</div>
+              <div class="task-arrow">›</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-card" onclick="showScreen('s3'); highlightScreen('s3');">
+          <div class="task-card-body">
+            <div class="task-number-circle pending" style="background:#EEF4FF;color:#3B7DD8;font-size:10px;">AI</div>
+            <div class="task-info">
+              <div class="task-name">Nopa Neighborhood Market</div>
+              <div class="task-addr">560 Divisadero St — route updated</div>
+              <div class="task-meta">
+                <div class="task-tag" style="background:#EEF4FF;color:#3B7DD8;">🤖 Reordered</div>
+                <div class="task-tag eta">ETA 11:10 AM</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-eta-time">11:10</div>
+              <div class="task-arrow">›</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="task-card">
+          <div class="task-card-body">
+            <div class="task-number-circle pending">7</div>
+            <div class="task-info">
+              <div class="task-name">Inner Sunset Flowers</div>
+              <div class="task-addr">1291 9th Ave — call ahead</div>
+              <div class="task-meta">
+                <div class="task-tag eta">ETA 11:50 AM</div>
+                <div class="task-tag window">Window: 11:30–noon</div>
+              </div>
+            </div>
+            <div class="task-right">
+              <div class="task-eta-time">11:50</div>
+              <div class="task-arrow">›</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /scrollable area -->
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item nav-active">
+          <span class="nav-icon">📋</span>
+          Tasks
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">🗺</span>
+          Map
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">💬</span>
+          Chat
+          <div class="nav-badge">1</div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-icon">👤</span>
+          Profile
+        </div>
+      </div>
+
+    </div><!-- /screen 1 -->
+
+    <!-- ══════════════════════════════════════
+         SCREEN 2: PROOF OF DELIVERY
+    ══════════════════════════════════════ -->
+    <div class="app-screen pod-screen" id="s2" style="position:relative;">
+
+      <!-- Success Overlay (hidden by default) -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Delivery Complete!</div>
+        <div class="success-sub" id="successSubText">All proof uploaded successfully</div>
+        <div class="success-detail">
+          <div class="success-row">
+            <span class="success-row-key">Recipient</span>
+            <span class="success-row-val">Civic Center Medical</span>
+          </div>
+          <div class="success-row">
+            <span class="success-row-key">Completed</span>
+            <span class="success-row-val" id="successTime">9:53 AM</span>
+          </div>
+          <div class="success-row">
+            <span class="success-row-key">Proof</span>
+            <span class="success-row-val">Photo + Signature</span>
+          </div>
+          <div class="success-row">
+            <span class="success-row-key">Upload</span>
+            <span class="success-row-val" id="successUpload" style="color:#00C896;">Confirmed ✓</span>
+          </div>
+        </div>
+        <button class="next-task-btn" onclick="resetPod(); showScreen('s1');">→ Next Delivery</button>
+      </div>
+
+      <!-- Delivery Header -->
+      <div class="delivery-header">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="cursor:pointer;color:rgba(255,255,255,0.7);font-size:14px;" onclick="showScreen('s1')">← Back</div>
+          <div style="flex:1;"></div>
+          <div style="font-size:12px;color:#4CC9FF;font-weight:700;">Stop 3 of 7</div>
+        </div>
+        <div class="delivery-stop">📍 Active Delivery</div>
+        <div class="delivery-name">Civic Center Medical</div>
+        <div class="delivery-addr">350 Golden Gate Ave, Suite 401</div>
+        <div class="delivery-note">
+          <div class="delivery-note-lbl">Driver Note</div>
+          Ring buzzer "Medical Reception." Leave with security if no answer. 3 packages total — refrigerated bag labeled "COLD" first.
+        </div>
+      </div>
+
+      <!-- Step Progress -->
+      <div class="pod-steps">
+        <div class="steps-label">Proof of Delivery</div>
+        <div class="step-row">
+          <div class="step-bubble step-done" id="step1">✓</div>
+          <div class="step-label done-label">Barcode Scanned</div>
+        </div>
+        <div class="step-connector done-line"></div>
+        <div class="step-row">
+          <div class="step-bubble step-active" id="step2">📷</div>
+          <div class="step-label active-label-step">Take Delivery Photo</div>
+        </div>
+        <div class="step-connector" id="conn2"></div>
+        <div class="step-row">
+          <div class="step-bubble step-pending" id="step3">✍</div>
+          <div class="step-label" id="stepLabel3">Recipient Signature</div>
+        </div>
+        <div class="step-connector" id="conn3"></div>
+        <div class="step-row">
+          <div class="step-bubble step-pending" id="step4">✓</div>
+          <div class="step-label" id="stepLabel4">Mark Complete</div>
+        </div>
+      </div>
+
+      <!-- POD Content -->
+      <div class="pod-content" style="overflow-y:auto;">
+
+        <!-- Barcode (already scanned) -->
+        <div class="barcode-zone scanned">
+          <div class="barcode-icon scanned-icon">▦</div>
+          <div class="barcode-info">
+            <div class="barcode-label">Package Barcode</div>
+            <div class="barcode-val">PKG-2024-CCM-00341 (3/3)</div>
+          </div>
+          <div style="color:#00C896;font-weight:800;font-size:16px;">✓</div>
+        </div>
+
+        <!-- Photo Capture Zone -->
+        <div class="photo-zone" id="photoZone" onclick="capturePhoto()">
+          <div id="photoPromptContent">
+            <div class="photo-icon">📷</div>
+            <div class="photo-prompt">Tap to take delivery photo</div>
+            <div class="photo-sub">Place packages clearly in frame</div>
+          </div>
+          <div class="photo-preview" id="photoPreview">
+            <div class="photo-placeholder">
+              <span>📦</span>
+              <span>3 packages on doorstep</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload progress / error -->
+        <div id="uploadProgress" style="background:#F8FAFC;border-radius:12px;overflow:hidden;border:1px solid #E8ECF2;margin-bottom:12px;display:none;">
+          <div class="upload-progress">
+            <span>⇧</span>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+            </div>
+            <span class="upload-pct" id="uploadPct">0%</span>
+          </div>
+        </div>
+        <div class="upload-error" id="uploadError">
+          <span>⚠</span>
+          <div>
+            <div style="font-weight:700;">Upload failed — no connection</div>
+            <div style="font-size:11px;margin-top:2px;color:#AA5555;">Photo saved locally. Will retry when online.</div>
+          </div>
+          <button class="retry-btn" onclick="retryUpload()">Retry</button>
+        </div>
+
+        <!-- Signature Zone -->
+        <div class="sig-zone" id="sigZone">
+          <div class="sig-header">
+            <div class="sig-label">Recipient Signature</div>
+            <div class="sig-clear" onclick="clearSig()">Clear</div>
+          </div>
+          <canvas class="sig-canvas" id="sigCanvas" width="335" height="100"></canvas>
+        </div>
+
+        <!-- Complete Button -->
+        <div class="complete-btn-wrap">
+          <button class="complete-btn not-ready" id="completeBtn" onclick="completePod()">
+            Mark Delivered
+          </button>
+          <div class="offline-queue-note" id="offlineQueueNote">
+            ⚡ Offline — will sync when connected
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /screen 2 -->
+
+    <!-- ══════════════════════════════════════
+         SCREEN 3: AI ROUTE OPTIMIZATION
+    ══════════════════════════════════════ -->
+    <div class="app-screen route-screen" id="s3">
+
+      <!-- App Nav -->
+      <div class="app-nav" style="background:#1B2A4A;border-bottom:1px solid #1E3555;">
+        <div class="app-nav-row">
+          <div class="nav-icon-btn" onclick="showScreen('s1')" style="color:#4CC9FF;">← </div>
+          <div>
+            <div class="app-nav-title" style="color:white;">Route Update</div>
+            <div class="app-nav-sub" style="color:#5A7A99;">AI optimization available</div>
+          </div>
+          <div class="nav-icon-btn ghost">•</div>
+        </div>
+      </div>
+
+      <div style="flex:1;overflow-y:auto;">
+
+        <!-- AI Banner -->
+        <div class="ai-banner">
+          <div class="ai-badge"><div class="ai-dot"></div>AI Route Engine</div>
+          <div class="ai-headline">Your route has been optimized</div>
+          <div class="ai-sub">Onfleet detected a faster sequence for your remaining 4 stops — saves 14 min and 2.3 miles</div>
+        </div>
+
+        <div class="route-content">
+
+          <!-- Savings -->
+          <div class="savings-bar">
+            <div class="saving-item">
+              <div class="saving-val green">14 min</div>
+              <div class="saving-lbl">Time saved</div>
+            </div>
+            <div class="saving-item">
+              <div class="saving-val">2.3 mi</div>
+              <div class="saving-lbl">Miles saved</div>
+            </div>
+            <div class="saving-item">
+              <div class="saving-val green">4</div>
+              <div class="saving-lbl">On-time now</div>
+            </div>
+          </div>
+
+          <!-- Route Comparison -->
+          <div style="font-size:11px;font-weight:700;color:#7A96B5;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">
+            Stop Reorder — Remaining Stops
+          </div>
+
+          <div class="route-compare">
+            <div class="route-compare-hdr">
+              <div class="route-col route-col-bad">Old Order ✗</div>
+              <div class="route-col route-col-good">New Order ✓</div>
+            </div>
+            <div style="display:flex;">
+              <!-- Old order column -->
+              <div style="flex:1;border-right:1px solid #E8ECF2;">
+                <div class="stop-list">
+                  <div class="stop-row">
+                    <div class="stop-num old">4</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">The Grove Rest.</div>
+                      <div class="stop-eta">Van Ness · ETA 10:29</div>
+                    </div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num old">5</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">PH Dental</div>
+                      <div class="stop-eta">Clay St · ETA 11:05</div>
+                    </div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num old">6</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">Nopa Market</div>
+                      <div class="stop-eta">Divisadero · ETA 11:38</div>
+                    </div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num old">7</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">IS Flowers</div>
+                      <div class="stop-eta">9th Ave · 12:15 ⚠</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- New order column -->
+              <div style="flex:1;">
+                <div class="stop-list">
+                  <div class="stop-row">
+                    <div class="stop-num moved-up">4</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">Nopa Market</div>
+                      <div class="stop-eta">Divisadero · ETA 10:15</div>
+                    </div>
+                    <div class="stop-delta saved">−14m</div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num new-order">5</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">IS Flowers</div>
+                      <div class="stop-eta">9th Ave · ETA 10:50</div>
+                    </div>
+                    <div class="stop-delta saved">on time</div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num new-order">6</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">The Grove Rest.</div>
+                      <div class="stop-eta">Van Ness · ETA 11:20</div>
+                    </div>
+                    <div class="stop-delta no-change">+9m</div>
+                  </div>
+                  <div class="stop-row">
+                    <div class="stop-num new-order">7</div>
+                    <div class="stop-detail">
+                      <div class="stop-name">PH Dental</div>
+                      <div class="stop-eta">Clay St · ETA 11:45</div>
+                    </div>
+                    <div class="stop-delta no-change">within window</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route accepted confirmation -->
+          <div class="route-accepted" id="routeAccepted">
+            <div class="route-accepted-icon">✅</div>
+            <div class="route-accepted-title">Route Updated!</div>
+            <div class="route-accepted-sub">Navigation restarting to Nopa Market on Divisadero. 14 minutes saved.</div>
+          </div>
+
+          <!-- Context note -->
+          <div style="background:white;border-radius:14px;border:1px solid #E8ECF2;padding:14px;margin-bottom:12px;font-size:12px;color:#5A7A99;line-height:1.6;">
+            <div style="font-weight:700;color:#1A2A3A;margin-bottom:4px;">Why this route?</div>
+            Inner Sunset Flowers has a hard 11:30am window. Current order has you arriving at 12:15 — 45 minutes late. By going to Nopa and IS Flowers first, you arrive at IS Flowers at 10:50 with 40 minutes buffer, then loop back through Divisadero toward Van Ness.
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="route-actions" id="routeActions">
+            <button class="route-accept-btn" onclick="acceptRoute()">Accept New Route ✓</button>
+            <button class="route-dismiss-btn" onclick="dismissRoute()">Keep Mine</button>
+          </div>
+
+        </div>
+
+      </div><!-- /scroll area -->
+
+    </div><!-- /screen 3 -->
+
+  </div><!-- /phone-frame -->
+
+  <!-- ─── SIDE PANEL ─── -->
+  <div class="side-panel">
+
+    <!-- Screen 1 side panel -->
+    <div id="panel-s1">
+      <div class="panel-card">
+        <div class="panel-title">
+          <div class="panel-dot orange"></div>
+          Screen 1 · Offline Sync Architecture
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">1</div>
+            <div class="ws-title">Offline-first task persistence</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">SQLite/Realm local store with write-ahead log. Tasks survive app kill, device restart. No blank screen on connectivity loss.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">2</div>
+            <div class="ws-title">Queued upload with retry</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">PoD photos enqueue locally on capture. Background WorkManager (Android) / BGAppRefreshTask (iOS) uploads when connectivity restores. Resumable S3 multipart.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">3</div>
+            <div class="ws-title">Sync conflict resolution</div>
+            <div class="ws-tag new">New</div>
+          </div>
+          <div class="ws-desc">When dispatcher reassigns a task while driver is offline, server-wins CRDTs resolve cleanly. No duplicate completions, no lost tasks.</div>
+        </div>
+        <div class="eng-note">
+          <strong>The fix:</strong> Orange "Queued offline" badge cycles to blue "Syncing" → green ✓ as connectivity returns. Tap banner to force-sync. All queued completions survive app restart. 2 engineers, 4-week sprint.
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <div class="panel-dot blue"></div>
+          Company Intelligence
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">CTO tenure</span>
+          <span class="panel-stat-val highlight">24 months (Mar 2024)</span>
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">Daily drivers</span>
+          <span class="panel-stat-val">30,000+</span>
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">Total funding</span>
+          <span class="panel-stat-val">$40M (Series B Jun 2022)</span>
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">Employees</span>
+          <span class="panel-stat-val">~81</span>
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">Stack (est.)</span>
+          <span class="panel-stat-val highlight">Native iOS + Android</span>
+        </div>
+        <div class="panel-stat-row">
+          <span class="panel-stat-key">Kjell's prior co.</span>
+          <span class="panel-stat-val">Flowhub VP Eng · ClassPass</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2 side panel -->
+    <div id="panel-s2" style="display:none;">
+      <div class="panel-card">
+        <div class="panel-title">
+          <div class="panel-dot blue"></div>
+          Screen 2 · PoD Reliability Workstream
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">1</div>
+            <div class="ws-title">Resumable photo upload</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">S3 multipart upload with auto-retry. Photo captured locally immediately. Upload state persists across app restarts. Error banner with one-tap retry — no silent failures.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">2</div>
+            <div class="ws-title">Camera API abstraction</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">CameraX (Android) + AVFoundation (iOS) unified layer. Handles permission denial recovery, focus/exposure for package labels, OneUI Galaxy camera quirks.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">3</div>
+            <div class="ws-title">Offline-gated completion</div>
+            <div class="ws-tag new">New</div>
+          </div>
+          <div class="ws-desc">Task marked complete locally on device. PoD queued for background upload. Driver continues to next stop immediately — no waiting for upload to confirm.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">4</div>
+            <div class="ws-title">Geofence tolerance tuning</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">Dynamic geofence radius (urban: 50m, suburban: 100m). GPS drift handling with debounce. No "outside delivery zone" errors when driver is at the door.</div>
+        </div>
+        <div class="eng-note">
+          <strong>Try it:</strong> Tap the photo zone → simulate capture → watch upload progress. Tap "Force upload error" (hidden) to simulate retry flow. Signature canvas is live — draw with mouse or touch.
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3 side panel -->
+    <div id="panel-s3" style="display:none;">
+      <div class="panel-card">
+        <div class="panel-title">
+          <div class="panel-dot green"></div>
+          Screen 3 · AI Route UX Engineering
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">1</div>
+            <div class="ws-title">Real-time route push</div>
+            <div class="ws-tag new">New</div>
+          </div>
+          <div class="ws-desc">WebSocket or FCM data push delivers route change to driver app mid-shift. No polling, no app restart required. Update appears within 2 seconds of dispatcher change.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">2</div>
+            <div class="ws-title">Driver override with context</div>
+            <div class="ws-tag new">New</div>
+          </div>
+          <div class="ws-desc">Driver always sees WHY the route changed (time saved, at-risk delivery window). Accept or keep-mine with one tap. Override data feeds back to route optimizer for learning.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">3</div>
+            <div class="ws-title">Timing-aware notification</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">Route change prompt suppressed if driver is within 200m of current stop (already walking). Queued for post-completion. No interruption at worst moment.</div>
+        </div>
+        <div class="ws-item">
+          <div class="ws-header">
+            <div class="ws-num">4</div>
+            <div class="ws-title">Graceful AI degradation</div>
+            <div class="ws-tag fix">Fix</div>
+          </div>
+          <div class="ws-desc">If optimization service is down, driver app shows no error — just continues with last known route. AI failure is silent to driver; flagged in dispatcher dashboard only.</div>
+        </div>
+        <div class="eng-note">
+          <strong>Kjell's focus:</strong> As CTO with systems engineering background, he cares about what happens when AI fails. This screen shows graceful degradation + driver agency — not a mandatory override. That distinction matters to a reliability-focused CTO.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /side-panel -->
+
+</div><!-- /main-layout -->
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<div class="page-footer">
+  <div class="footer-built">Built by <span>Elinext Mobile Engineering</span> · Onfleet Driver UX Prototype</div>
+  <div style="color:#2E4A66;">3 screens · 3 workstreams · Feb 2026</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
+<script>
+/* ── Screen switching ── */
+function showScreen(id) {
+  document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.screen-btn').forEach((b, i) => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes(id));
+  });
+  document.getElementById('panel-s1').style.display = id === 's1' ? 'block' : 'none';
+  document.getElementById('panel-s2').style.display = id === 's2' ? 'block' : 'none';
+  document.getElementById('panel-s3').style.display = id === 's3' ? 'block' : 'none';
+}
+
+function highlightScreen(id) {
+  // subtle pulse to draw attention
+}
+
+/* ── Screen 1: Sync Banner ── */
+let syncState = 0; // 0=offline, 1=syncing, 2=online
+function cycleSync() {
+  syncState = (syncState + 1) % 3;
+  const banner = document.getElementById('syncBanner');
+  const icon = document.getElementById('syncIcon');
+  const text = document.getElementById('syncText');
+  const action = document.getElementById('syncAction');
+  if (syncState === 0) {
+    banner.className = 'offline-banner';
+    icon.textContent = '⚠';
+    text.textContent = 'Offline — 2 completions queued for upload';
+    action.textContent = 'Tap to retry';
+  } else if (syncState === 1) {
+    banner.className = 'offline-banner syncing-mode';
+    icon.textContent = '⟳';
+    text.textContent = 'Syncing — uploading 2 queued completions…';
+    action.textContent = '';
+    setTimeout(() => {
+      if (syncState === 1) {
+        syncState = 2;
+        banner.className = 'offline-banner online-mode';
+        icon.textContent = '✓';
+        text.textContent = 'Online — all completions synced';
+        action.textContent = '';
+        document.getElementById('statDone').textContent = '3';
+      }
+    }, 2000);
+  } else {
+    banner.className = 'offline-banner online-mode';
+    icon.textContent = '✓';
+    text.textContent = 'Online — all completions synced';
+    action.textContent = '';
+  }
+}
+
+/* ── Screen 2: Proof of Delivery ── */
+let photoTaken = false;
+let uploadDone = false;
+let sigDrawn = false;
+let uploadFailed = false;
+
+function capturePhoto() {
+  if (photoTaken) return;
+  photoTaken = true;
+  const zone = document.getElementById('photoZone');
+  const prompt = document.getElementById('photoPromptContent');
+  const preview = document.getElementById('photoPreview');
+  zone.classList.add('has-photo');
+  prompt.style.display = 'none';
+  preview.classList.add('visible');
+
+  // Show upload progress
+  const progressEl = document.getElementById('uploadProgress');
+  progressEl.style.display = 'block';
+  const fill = document.getElementById('progressFill');
+  const pct = document.getElementById('uploadPct');
+
+  // Simulate upload (may fail at 60%)
+  let progress = 0;
+  const useError = Math.random() > 0.5; // 50% chance of simulated failure
+  uploadFailed = useError;
+  const timer = setInterval(() => {
+    progress += Math.random() * 15 + 5;
+    if (useError && progress >= 60) {
+      clearInterval(timer);
+      fill.style.width = '60%';
+      pct.textContent = '60%';
+      progressEl.style.display = 'none';
+      document.getElementById('uploadError').classList.add('show');
+      // Even on failure — advance step (photo captured locally)
+      advanceStep(2, 3);
+      return;
+    }
+    if (progress >= 100) {
+      clearInterval(timer);
+      fill.style.width = '100%';
+      pct.textContent = '100%';
+      pct.style.color = '#00C896';
+      uploadDone = true;
+      setTimeout(() => {
+        progressEl.style.display = 'none';
+        document.getElementById('uploadError').classList.remove('show');
+      }, 800);
+      advanceStep(2, 3);
+      checkComplete();
+    } else {
+      fill.style.width = progress + '%';
+      pct.textContent = Math.round(progress) + '%';
+    }
+  }, 200);
+}
+
+function retryUpload() {
+  document.getElementById('uploadError').classList.remove('show');
+  const progressEl = document.getElementById('uploadProgress');
+  progressEl.style.display = 'block';
+  const fill = document.getElementById('progressFill');
+  const pct = document.getElementById('uploadPct');
+  fill.style.width = '60%';
+  pct.textContent = '60%';
+  pct.style.color = '#3B7DD8';
+  uploadFailed = false;
+
+  let progress = 60;
+  const timer = setInterval(() => {
+    progress += Math.random() * 12 + 5;
+    if (progress >= 100) {
+      clearInterval(timer);
+      fill.style.width = '100%';
+      pct.textContent = '100%';
+      pct.style.color = '#00C896';
+      uploadDone = true;
+      setTimeout(() => { progressEl.style.display = 'none'; }, 800);
+      checkComplete();
+    } else {
+      fill.style.width = progress + '%';
+      pct.textContent = Math.round(progress) + '%';
+    }
+  }, 150);
+}
+
+function advanceStep(from, to) {
+  const fromEl = document.getElementById('step' + from);
+  fromEl.className = 'step-bubble step-done';
+  fromEl.textContent = '✓';
+  document.getElementById('conn' + from).classList.add('done-line');
+
+  const toEl = document.getElementById('step' + to);
+  toEl.className = 'step-bubble step-active';
+  const toLabel = document.getElementById('stepLabel' + to);
+  if (toLabel) toLabel.classList.add('active-label-step');
+  document.getElementById('stepLabel' + (from > 1 ? from : '')).classList.add('done-label');
+}
+
+// Signature canvas
+const canvas = document.getElementById('sigCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let lastX = 0, lastY = 0;
+
+function getPos(e, c) {
+  const rect = c.getBoundingClientRect();
+  const scaleX = c.width / rect.width;
+  const scaleY = c.height / rect.height;
+  const src = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left) * scaleX,
+    y: (src.clientY - rect.top) * scaleY
+  };
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e, canvas); lastX = p.x; lastY = p.y; });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e, canvas); lastX = p.x; lastY = p.y; }, {passive:false});
+canvas.addEventListener('mousemove', e => { if (!drawing) return; drawSig(e); });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; drawSig(e); }, {passive:false});
+canvas.addEventListener('mouseup', () => { drawing = false; checkSigDrawn(); });
+canvas.addEventListener('touchend', () => { drawing = false; checkSigDrawn(); });
+
+function drawSig(e) {
+  const p = getPos(e, canvas);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(p.x, p.y);
+  ctx.strokeStyle = '#1A2A3A';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  lastX = p.x; lastY = p.y;
+}
+
+function checkSigDrawn() {
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  let hasContent = false;
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] > 0) { hasContent = true; break; }
+  }
+  if (hasContent && !sigDrawn) {
+    sigDrawn = true;
+    advanceStep(3, 4);
+    checkComplete();
+  }
+}
+
+function clearSig() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  sigDrawn = false;
+  const step3 = document.getElementById('step3');
+  step3.className = 'step-bubble step-active';
+  step3.textContent = '✍';
+  const step4 = document.getElementById('step4');
+  step4.className = 'step-bubble step-pending';
+  document.getElementById('stepLabel3').className = 'step-label active-label-step';
+  document.getElementById('stepLabel4').className = 'step-label';
+  document.getElementById('completeBtn').className = 'complete-btn not-ready';
+}
+
+function checkComplete() {
+  const photoReady = photoTaken;
+  const sigReady = sigDrawn;
+  if (photoReady && sigReady) {
+    document.getElementById('completeBtn').className = 'complete-btn ready';
+    // Show offline note if simulated offline
+    if (uploadFailed) {
+      document.getElementById('offlineQueueNote').classList.add('show');
+    }
+  }
+}
+
+function completePod() {
+  const btn = document.getElementById('completeBtn');
+  if (btn.classList.contains('not-ready')) return;
+
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+  document.getElementById('successTime').textContent = timeStr;
+  if (uploadFailed) {
+    document.getElementById('successUpload').textContent = 'Queued — syncing ⟳';
+    document.getElementById('successUpload').style.color = '#FF8C42';
+    document.getElementById('successSubText').textContent = 'Photo queued offline — will upload automatically';
+  } else {
+    document.getElementById('successUpload').textContent = 'Confirmed ✓';
+    document.getElementById('successUpload').style.color = '#00C896';
+    document.getElementById('successSubText').textContent = 'All proof uploaded successfully';
+  }
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+function resetPod() {
+  photoTaken = false; uploadDone = false; sigDrawn = false; uploadFailed = false;
+  document.getElementById('photoZone').classList.remove('has-photo');
+  document.getElementById('photoPromptContent').style.display = '';
+  document.getElementById('photoPreview').classList.remove('visible');
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('uploadError').classList.remove('show');
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('uploadPct').textContent = '0%';
+  document.getElementById('uploadPct').style.color = '#3B7DD8';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('step2').className = 'step-bubble step-active';
+  document.getElementById('step2').textContent = '📷';
+  document.getElementById('step3').className = 'step-bubble step-pending';
+  document.getElementById('step3').textContent = '✍';
+  document.getElementById('step4').className = 'step-bubble step-pending';
+  document.getElementById('step4').textContent = '✓';
+  document.getElementById('conn2').classList.remove('done-line');
+  document.getElementById('conn3').classList.remove('done-line');
+  document.getElementById('stepLabel3').className = 'step-label';
+  document.getElementById('stepLabel4').className = 'step-label';
+  document.getElementById('completeBtn').className = 'complete-btn not-ready';
+  document.getElementById('offlineQueueNote').classList.remove('show');
+  document.getElementById('successOverlay').classList.remove('show');
+}
+
+/* ── Screen 3: Route Actions ── */
+function acceptRoute() {
+  document.getElementById('routeActions').style.display = 'none';
+  document.getElementById('routeAccepted').classList.add('show');
+}
+
+function dismissRoute() {
+  document.getElementById('routeActions').innerHTML = '<div style="text-align:center;font-size:13px;color:#7A96B5;padding:12px 0;">Route unchanged. Original order kept.</div>';
+}
+</script>
+</body>
+</html>

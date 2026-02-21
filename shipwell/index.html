@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipwell Android: The Carrier Engagement Gap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0f1e; color: #e2e8f0; line-height: 1.6; }
+
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #0f2340 100%); padding: 60px 24px; text-align: center; border-bottom: 1px solid #1e3a5f; }
+  .header .badge { display: inline-block; background: #2563eb; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; }
+  .header h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 800; line-height: 1.15; margin-bottom: 16px; color: #f0f6ff; }
+  .header h1 span { color: #60a5fa; }
+  .header p { font-size: 18px; color: #94a3b8; max-width: 680px; margin: 0 auto; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* Hero metric */
+  .hero-metric { display: flex; gap: 20px; justify-content: center; padding: 48px 24px; flex-wrap: wrap; }
+  .metric-card { background: #0f1b2d; border: 1px solid #1e3a5f; border-radius: 16px; padding: 28px 36px; text-align: center; min-width: 200px; }
+  .metric-card .platform { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .metric-card .stars { font-size: 40px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .metric-card .count { font-size: 14px; color: #64748b; }
+  .metric-card.ios { border-color: #10b981; }
+  .metric-card.ios .platform { color: #10b981; }
+  .metric-card.ios .stars { color: #10b981; }
+  .metric-card.android { border-color: #ef4444; }
+  .metric-card.android .platform { color: #ef4444; }
+  .metric-card.android .stars { color: #ef4444; }
+  .metric-card.uber { border-color: #94a3b8; }
+  .metric-card.uber .platform { color: #94a3b8; }
+  .metric-card.uber .stars { color: #94a3b8; }
+  .metric-card.divider { background: none; border: none; display: flex; align-items: center; padding: 0 8px; }
+  .metric-card.divider span { font-size: 36px; color: #475569; }
+
+  .ratio-callout { text-align: center; padding: 0 24px 48px; }
+  .ratio-callout .ratio-box { display: inline-block; background: linear-gradient(135deg, #1e1035 0%, #0f0b1e 100%); border: 1px solid #7c3aed; border-radius: 16px; padding: 28px 40px; max-width: 560px; }
+  .ratio-callout .ratio-number { font-size: 72px; font-weight: 900; color: #a78bfa; line-height: 1; }
+  .ratio-callout .ratio-label { font-size: 16px; color: #c4b5fd; margin-top: 8px; font-weight: 600; }
+  .ratio-callout .ratio-sub { font-size: 14px; color: #6d28d9; margin-top: 6px; }
+
+  /* Section headers */
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #475569; text-align: center; margin: 16px 0 8px; }
+  .section-header { font-size: clamp(22px, 4vw, 32px); font-weight: 800; text-align: center; margin-bottom: 12px; color: #f0f6ff; }
+  .section-sub { font-size: 16px; color: #64748b; text-align: center; max-width: 600px; margin: 0 auto 40px; }
+
+  /* Before/After panels */
+  .ba-container { padding: 48px 24px; }
+  .ba-card { background: #0f1b2d; border: 1px solid #1e3a5f; border-radius: 20px; margin-bottom: 32px; overflow: hidden; }
+  .ba-card-header { padding: 24px 28px; border-bottom: 1px solid #1e3a5f; display: flex; align-items: center; gap: 16px; }
+  .ba-card-header .problem-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+  .problem-num.p0 { background: #7f1d1d; color: #fca5a5; }
+  .problem-num.p1 { background: #78350f; color: #fcd34d; }
+  .ba-card-header h3 { font-size: 19px; font-weight: 700; color: #f0f6ff; }
+  .ba-card-header .priority-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 6px; background: #7f1d1d; color: #fca5a5; margin-left: auto; flex-shrink: 0; }
+  .ba-card-header .priority-tag.secondary { background: #78350f; color: #fcd34d; }
+
+  .ba-panels { display: grid; grid-template-columns: 1fr 1fr; }
+  @media(max-width: 640px) { .ba-panels { grid-template-columns: 1fr; } }
+
+  .ba-panel { padding: 28px; }
+  .ba-panel:first-child { border-right: 1px solid #1e3a5f; }
+  @media(max-width: 640px) { .ba-panel:first-child { border-right: none; border-bottom: 1px solid #1e3a5f; } }
+
+  .panel-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .panel-label.before { color: #ef4444; }
+  .panel-label.after { color: #10b981; }
+  .panel-label::before { content: ''; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .panel-label.before::before { background: #ef4444; }
+  .panel-label.after::before { background: #10b981; }
+
+  /* Phone mockup */
+  .phone-mockup { background: #020617; border: 2px solid #334155; border-radius: 24px; padding: 12px; margin: 12px 0; max-width: 220px; }
+  .phone-screen { background: #1e293b; border-radius: 16px; overflow: hidden; }
+  .phone-status { background: #0f172a; padding: 6px 12px; font-size: 9px; color: #475569; display: flex; justify-content: space-between; }
+  .app-bar { background: #1e40af; padding: 10px 12px; font-size: 11px; font-weight: 700; color: white; }
+  .screen-content { padding: 10px 12px; }
+  .crash-screen { background: #1a0a0a; padding: 20px 12px; text-align: center; }
+  .crash-icon { font-size: 32px; margin-bottom: 8px; }
+  .crash-text { font-size: 10px; color: #ef4444; line-height: 1.5; }
+  .crash-button { background: #374151; color: #9ca3af; font-size: 9px; padding: 5px 12px; border-radius: 6px; margin-top: 10px; display: inline-block; }
+
+  .fixed-screen { background: #0f172a; }
+  .load-item { padding: 8px 12px; border-bottom: 1px solid #1e293b; }
+  .load-id { font-size: 10px; font-weight: 700; color: #60a5fa; }
+  .load-route { font-size: 9px; color: #94a3b8; margin-top: 2px; }
+  .load-status { font-size: 9px; color: #10b981; margin-top: 2px; }
+
+  .notif-list { padding: 8px 0; }
+  .notif-item { padding: 6px 12px; margin: 4px 8px; border-radius: 10px; font-size: 9px; }
+  .notif-item.unwanted { background: #450a0a; border: 1px solid #7f1d1d; color: #fca5a5; }
+  .notif-item.normal { background: #0c1445; border: 1px solid #1e3a5f; color: #93c5fd; }
+  .notif-title { font-weight: 700; font-size: 9px; }
+  .notif-time { color: #64748b; font-size: 8px; }
+
+  .loc-screen { padding: 10px 12px; }
+  .dialog-box { background: #1a1a2e; border: 1px solid #334155; border-radius: 12px; padding: 12px; margin: 8px 0; }
+  .dialog-title { font-size: 10px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
+  .dialog-body { font-size: 9px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4; }
+  .dialog-btn { font-size: 9px; padding: 5px 8px; border-radius: 6px; text-align: center; margin: 3px 0; }
+  .dialog-btn.danger { background: #7f1d1d; color: #fca5a5; }
+  .dialog-btn.safe { background: #1e3a5f; color: #93c5fd; }
+  .dialog-btn.primary-btn { background: #1d4ed8; color: white; }
+
+  .review-quote { background: #1a0a0a; border-left: 3px solid #ef4444; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #fca5a5; font-style: italic; line-height: 1.5; margin: 12px 0; }
+  .review-quote .review-stars { color: #ef4444; font-size: 12px; margin-bottom: 4px; font-style: normal; }
+  .review-source { font-size: 11px; color: #6b7280; margin-top: 4px; font-style: normal; }
+
+  .fix-badge { display: inline-block; background: #064e3b; color: #6ee7b7; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-top: 4px; }
+  .fix-list { list-style: none; }
+  .fix-list li { font-size: 13px; color: #94a3b8; padding: 5px 0; display: flex; align-items: flex-start; gap: 8px; }
+  .fix-list li::before { content: '→'; color: #10b981; flex-shrink: 0; font-weight: 700; }
+
+  /* Competitor table */
+  .comp-table { padding: 48px 24px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #0f1b2d; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; text-align: left; border-bottom: 1px solid #1e3a5f; }
+  td { padding: 14px 16px; border-bottom: 1px solid #1e2a3a; }
+  tr:last-child td { border-bottom: none; }
+  tr.highlight-row td { background: #0d1a30; }
+  .rating-good { color: #10b981; font-weight: 700; }
+  .rating-bad { color: #ef4444; font-weight: 700; }
+  .rating-ok { color: #f59e0b; font-weight: 700; }
+  .volume-big { color: #10b981; }
+  .volume-small { color: #ef4444; }
+  .app-name { font-weight: 700; color: #f0f6ff; }
+  .app-name.shipwell-name { color: #60a5fa; }
+  td small { display: block; font-size: 11px; color: #475569; margin-top: 2px; }
+
+  /* Sprint CTA */
+  .sprint-section { padding: 48px 24px; text-align: center; }
+  .sprint-box { background: linear-gradient(135deg, #0d1a2d 0%, #091120 100%); border: 1px solid #1e3a5f; border-radius: 20px; padding: 48px 36px; max-width: 680px; margin: 0 auto; }
+  .sprint-box h2 { font-size: 30px; font-weight: 800; color: #f0f6ff; margin-bottom: 12px; }
+  .sprint-box p { color: #64748b; font-size: 16px; margin-bottom: 32px; }
+  .sprint-details { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .sprint-detail { text-align: center; }
+  .sprint-detail .detail-num { font-size: 32px; font-weight: 800; color: #60a5fa; }
+  .sprint-detail .detail-label { font-size: 12px; color: #475569; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .sprint-timeline { display: flex; gap: 0; margin-bottom: 32px; overflow-x: auto; }
+  .sprint-week { flex: 1; min-width: 100px; text-align: center; padding: 14px 8px; background: #0f1b2d; border: 1px solid #1e3a5f; }
+  .sprint-week:first-child { border-radius: 10px 0 0 10px; }
+  .sprint-week:last-child { border-radius: 0 10px 10px 0; }
+  .sprint-week .week-num { font-size: 10px; color: #475569; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+  .sprint-week .week-task { font-size: 11px; color: #94a3b8; line-height: 1.3; }
+  .cta-block { background: #0a1628; border: 1px solid #2563eb; border-radius: 12px; padding: 24px; margin-top: 16px; }
+  .cta-block .cta-name { font-size: 18px; font-weight: 700; color: #f0f6ff; }
+  .cta-block .cta-title { font-size: 14px; color: #64748b; margin-bottom: 12px; }
+  .cta-block .cta-email { color: #60a5fa; font-size: 15px; font-weight: 600; }
+  .cta-block .cta-company { font-size: 14px; color: #475569; margin-top: 4px; }
+
+  .evidence-note { font-size: 11px; color: #334155; margin-top: 8px; text-align: center; }
+  .evidence-note a { color: #475569; text-decoration: none; }
+
+  /* Animations */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">Diagnostic Report — Shipwell Android</div>
+  <h1>iOS: 4.5★ &nbsp;/&nbsp; Android: <span>3.2★</span><br>The 60:1 Carrier Engagement Gap</h1>
+  <p>Shipwell's iOS app is healthy. The Android side of the same platform has an adoption problem that undermines real-time visibility for your carrier network.</p>
+</div>
+
+<!-- Hero metrics -->
+<div class="hero-metric">
+  <div class="metric-card ios">
+    <div class="platform">iOS App Store</div>
+    <div class="stars">4.5★</div>
+    <div class="count">4,319 ratings</div>
+  </div>
+  <div class="metric-card divider"><span>vs</span></div>
+  <div class="metric-card android">
+    <div class="platform">Google Play</div>
+    <div class="stars">3.2★</div>
+    <div class="count">71 reviews</div>
+  </div>
+  <div class="metric-card divider"><span>vs</span></div>
+  <div class="metric-card uber">
+    <div class="platform">Uber Freight Android</div>
+    <div class="stars">4.3★</div>
+    <div class="count">4,420 reviews</div>
+  </div>
+</div>
+
+<div class="ratio-callout">
+  <div class="ratio-box">
+    <div class="ratio-number">60×</div>
+    <div class="ratio-label">More iOS reviews than Android</div>
+    <div class="ratio-sub">Independent carriers and owner-operators predominantly use Android. A 60:1 ratio is not a sampling artifact — it's an adoption signal.</div>
+  </div>
+</div>
+
+<!-- What it means -->
+<div class="container" style="padding-bottom: 48px;">
+  <div class="section-title">Why This Matters</div>
+  <div class="section-header">Android carriers = invisible carriers</div>
+  <div class="section-sub">Shipwell's value proposition — real-time visibility, automated tracking, paperless freight — requires carriers to actively use the mobile app. If Android users aren't engaging, your shipper network is getting manual phone calls instead of GPS breadcrumbs.</div>
+</div>
+
+<!-- Before/After: Pain Point 1 — Login Crash -->
+<div class="ba-container container">
+  <div class="section-title">Three Root Causes</div>
+  <div class="section-header">What's driving the Android gap</div>
+  <div class="section-sub">Each issue is specific, reproducible, and fixable. Evidence from public App Store reviews and Shipwell's own changelog.</div>
+
+  <!-- PA 1: Login Crash -->
+  <div class="ba-card fade-in">
+    <div class="ba-card-header">
+      <div class="problem-num p0">1</div>
+      <div>
+        <h3>Login crash on Android shipments screen</h3>
+        <div style="font-size:12px; color:#64748b; margin-top:3px;">Confirmed in Shipwell changelog · Version 5.3.6 (May 2025)</div>
+      </div>
+      <div class="priority-tag">P0 — Critical</div>
+    </div>
+    <div class="ba-panels">
+      <div class="ba-panel">
+        <div class="panel-label before">Before: What drivers experienced</div>
+        <div class="review-quote">
+          <div class="review-stars">★☆☆☆☆</div>
+          "This app is terrible and does not work. Recurring glitches. I use the app every day, it always has issues with something."
+          <div class="review-source">— Google Play review</div>
+        </div>
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-status"><span>9:41 AM</span><span>●●●</span></div>
+            <div class="app-bar">Shipwell — My Loads</div>
+            <div class="crash-screen">
+              <div class="crash-icon">💥</div>
+              <div class="crash-text">Unfortunately, Shipwell has stopped.</div>
+              <div class="crash-button">Close app</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin-top:8px;">Driver opens app → taps "My Shipments" → app crashes. First action, first impression, immediate failure.</p>
+      </div>
+      <div class="ba-panel">
+        <div class="panel-label after">After: What the fix delivers</div>
+        <div class="fix-badge">Changelog confirmed: Fixed in v5.3.6 — but this reveals a broader loading-state gap</div>
+        <div class="phone-mockup" style="margin-top:16px;">
+          <div class="phone-screen">
+            <div class="phone-status"><span>9:41 AM</span><span>●●●</span></div>
+            <div class="app-bar">Shipwell — My Loads</div>
+            <div class="fixed-screen">
+              <div class="load-item"><div class="load-id">SHP-2847</div><div class="load-route">Austin TX → Dallas TX</div><div class="load-status">● En Route — Pickup in 2h</div></div>
+              <div class="load-item"><div class="load-id">SHP-2851</div><div class="load-route">Dallas TX → Memphis TN</div><div class="load-status">○ Upcoming — Tomorrow 8 AM</div></div>
+            </div>
+          </div>
+        </div>
+        <ul class="fix-list" style="margin-top:16px;">
+          <li>Proper loading state before Fragment renders list</li>
+          <li>Empty state screen on no loads (not crash)</li>
+          <li>Retry handler on API timeout</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PA 2: Phantom notifications -->
+  <div class="ba-card fade-in">
+    <div class="ba-card-header">
+      <div class="problem-num p0">2</div>
+      <div>
+        <h3>Phantom notifications after logout</h3>
+        <div style="font-size:12px; color:#64748b; margin-top:3px;">Confirmed by multiple App Store reviewers · iOS + Android</div>
+      </div>
+      <div class="priority-tag">P0 — Critical</div>
+    </div>
+    <div class="ba-panels">
+      <div class="ba-panel">
+        <div class="panel-label before">Before: What drivers experience</div>
+        <div class="review-quote">
+          <div class="review-stars">★☆☆☆☆</div>
+          "Keeps giving me notifications saying I need to open the app for tracking even though I have no active loads."
+          <div class="review-source">— App Store review</div>
+        </div>
+        <div class="review-quote">
+          <div class="review-stars">★☆☆☆☆</div>
+          "After I log out, it still sends me notifications like update shipment information."
+          <div class="review-source">— App Store review</div>
+        </div>
+        <div class="phone-mockup" style="margin-top:12px;">
+          <div class="phone-screen">
+            <div class="phone-status"><span>2:14 AM</span><span>●●●</span></div>
+            <div class="app-bar" style="background:#1e293b; font-size:10px; color:#94a3b8;">Notifications</div>
+            <div class="notif-list">
+              <div class="notif-item unwanted">
+                <div class="notif-title">Shipwell 🚛 Update required</div>
+                <div>Open app to update shipment status</div>
+                <div class="notif-time">2:14 AM · No active loads</div>
+              </div>
+              <div class="notif-item unwanted">
+                <div class="notif-title">Shipwell 🚛 Tracking needed</div>
+                <div>Please enable tracking for load SHP-2791</div>
+                <div class="notif-time">1:47 AM · Load delivered yesterday</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin-top:8px;">FCM token not deregistered on logout. Backend continues sending push to device even after session ends.</p>
+      </div>
+      <div class="ba-panel">
+        <div class="panel-label after">After: Clean notification lifecycle</div>
+        <div class="phone-mockup" style="margin-top:16px;">
+          <div class="phone-screen">
+            <div class="phone-status"><span>2:14 AM</span><span>●●●</span></div>
+            <div class="app-bar" style="background:#1e293b; font-size:10px; color:#94a3b8;">Notifications</div>
+            <div class="notif-list">
+              <div class="notif-item normal">
+                <div class="notif-title">Shipwell 🚛 Load assigned</div>
+                <div>SHP-2912 — Austin TX → Houston TX. Pickup 8 AM tomorrow.</div>
+                <div class="notif-time">Just now · You are logged in</div>
+              </div>
+            </div>
+            <div style="padding:16px 12px; text-align:center; font-size:9px; color:#334155;">No notifications when logged out</div>
+          </div>
+        </div>
+        <ul class="fix-list" style="margin-top:16px;">
+          <li>Deregister FCM token on explicit logout</li>
+          <li>Server-side: invalidate notification subscription on session end</li>
+          <li>No phantom push when user has no active loads</li>
+          <li>Notification preference: "only when active load assigned"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PA 3: Location UX -->
+  <div class="ba-card fade-in">
+    <div class="ba-card-header">
+      <div class="problem-num p0">3</div>
+      <div>
+        <h3>Always-on precise location UX friction</h3>
+        <div style="font-size:12px; color:#64748b; margin-top:3px;">Multiple Google Play reviewers · Drives uninstalls among privacy-conscious carriers</div>
+      </div>
+      <div class="priority-tag secondary">P0 — High</div>
+    </div>
+    <div class="ba-panels">
+      <div class="ba-panel">
+        <div class="panel-label before">Before: What carriers see</div>
+        <div class="review-quote">
+          <div class="review-stars">★☆☆☆☆</div>
+          "Forces you to accept exact location tracking at all times rather than approximate location or only-while-in-use options."
+          <div class="review-source">— Google Play review</div>
+        </div>
+        <div class="phone-mockup" style="margin-top:12px;">
+          <div class="phone-screen">
+            <div class="phone-status"><span>9:41 AM</span><span>●●●</span></div>
+            <div class="loc-screen">
+              <div class="dialog-box">
+                <div class="dialog-title">Allow Shipwell to access your location?</div>
+                <div class="dialog-body">No explanation of why this is needed.</div>
+                <div class="dialog-btn danger">Allow all the time ← REQUIRED</div>
+                <div class="dialog-btn safe" style="opacity:.4;">Allow only while using</div>
+                <div class="dialog-btn safe" style="opacity:.4;">Deny</div>
+              </div>
+              <p style="font-size:9px; color:#7f1d1d; margin-top:8px; text-align:center;">If denied: cannot start a load</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ba-panel">
+        <div class="panel-label after">After: Contextual permission + graceful fallback</div>
+        <div class="phone-mockup" style="margin-top:16px;">
+          <div class="phone-screen">
+            <div class="phone-status"><span>9:41 AM</span><span>●●●</span></div>
+            <div class="loc-screen">
+              <div class="dialog-box">
+                <div class="dialog-title">Location for shipment tracking</div>
+                <div class="dialog-body">We use your location to auto-update shipment status and confirm delivery. Your broker can see location only during active loads. You can turn this off anytime.</div>
+                <div class="dialog-btn primary-btn">Allow while active load is assigned</div>
+                <div class="dialog-btn safe">Allow once (manual updates)</div>
+              </div>
+              <p style="font-size:9px; color:#064e3b; margin-top:8px; text-align:center;">Graceful fallback: manual update if denied</p>
+            </div>
+          </div>
+        </div>
+        <ul class="fix-list" style="margin-top:16px;">
+          <li>Contextual rationale before permission prompt</li>
+          <li>Precise location only when load is active (not always)</li>
+          <li>Graceful degradation: manual status if denied</li>
+          <li>Settings shortcut to review permissions anytime</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Competitor table -->
+<div class="comp-table container">
+  <div class="section-title">Competitive Context</div>
+  <div class="section-header">How Shipwell Android compares</div>
+  <div class="section-sub">Android app quality for carrier-facing freight and logistics platforms.</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>App</th>
+          <th>iOS Rating</th>
+          <th>Android Rating</th>
+          <th>Android Reviews</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td><span class="app-name shipwell-name">Shipwell</span></td>
+          <td class="rating-good">4.5★</td>
+          <td class="rating-bad">3.2★</td>
+          <td class="volume-small">71</td>
+          <td><small>iOS healthy. Android adoption problem.</small></td>
+        </tr>
+        <tr>
+          <td><span class="app-name">Uber Freight</span></td>
+          <td class="rating-good">4.5★</td>
+          <td class="rating-good">4.3★</td>
+          <td class="volume-big">4,420</td>
+          <td><small>Direct carrier-facing competitor</small></td>
+        </tr>
+        <tr>
+          <td><span class="app-name">Motive (KeepTruckin)</span></td>
+          <td class="rating-good">4.8★</td>
+          <td class="rating-good">4.8★</td>
+          <td class="volume-big">50,000+</td>
+          <td><small>ELD/fleet (different segment; drivers compare)</small></td>
+        </tr>
+        <tr>
+          <td><span class="app-name">DAT Trucker</span></td>
+          <td class="rating-good">4.7★</td>
+          <td class="rating-good">4.5★</td>
+          <td class="volume-big">10,000+</td>
+          <td><small>Load board; competes for driver mobile attention</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="evidence-note" style="margin-top:16px;">
+    Sources: <a href="https://apps.apple.com/us/app/shipwell/id1236974263">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.shipwell">Google Play</a> · <a href="https://play.google.com/store/apps/details?id=com.ubercab.freight">Uber Freight Play</a>
+  </div>
+</div>
+
+<!-- Sprint CTA -->
+<div class="sprint-section">
+  <div class="sprint-box">
+    <h2>6-Week Android Quality Sprint</h2>
+    <p>Two dedicated Android engineers. Three specific problems. Measurable outcome: 3.2★ → 4.0+ over 90 days.</p>
+
+    <div class="sprint-details">
+      <div class="sprint-detail"><div class="detail-num">2</div><div class="detail-label">Android Engineers</div></div>
+      <div class="sprint-detail"><div class="detail-num">6</div><div class="detail-label">Weeks Fixed</div></div>
+      <div class="sprint-detail"><div class="detail-num">Fixed Scope</div><div class="detail-label">Engagement</div></div>
+      <div class="sprint-detail"><div class="detail-num">90 days</div><div class="detail-label">To 4.0★ Target</div></div>
+    </div>
+
+    <div class="sprint-timeline">
+      <div class="sprint-week">
+        <div class="week-num">Wk 1–2</div>
+        <div class="week-task">Login crash fix<br>Loading states<br>FCM deregistration</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">Wk 2–3</div>
+        <div class="week-task">Notification lifecycle<br>Logout cleanup<br>Background service</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">Wk 3–4</div>
+        <div class="week-task">Location permission UX<br>Contextual rationale<br>Graceful fallback</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">Wk 4–5</div>
+        <div class="week-task">Battery drain audit<br>GPS polling optimization<br>Background service trim</div>
+      </div>
+      <div class="sprint-week">
+        <div class="week-num">Wk 5–6</div>
+        <div class="week-task">QA + device matrix<br>Play Store review response<br>Handoff to Shipwell team</div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <div class="cta-name">Elinext Mobile Engineering</div>
+      <div class="cta-title">Mobile Development — Elinext</div>
+      <div class="cta-email">elinext.com/contacts/</div>
+      <div class="cta-company">Elinext Mobile Engineering</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Intersection observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

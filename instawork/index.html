@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instawork — Reliability Engineering Prototype</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0D1117;
+      --surface: #161B22;
+      --surface2: #21262D;
+      --surface3: #30363D;
+      --border: #30363D;
+      --iw-green: #22C55E;
+      --iw-green-dim: rgba(34,197,94,0.12);
+      --iw-blue: #3B82F6;
+      --iw-blue-dim: rgba(59,130,246,0.12);
+      --iw-yellow: #EAB308;
+      --iw-yellow-dim: rgba(234,179,8,0.12);
+      --iw-red: #EF4444;
+      --iw-red-dim: rgba(239,68,68,0.12);
+      --iw-orange: #F97316;
+      --iw-orange-dim: rgba(249,115,22,0.12);
+      --iw-purple: #A855F7;
+      --iw-purple-dim: rgba(168,85,247,0.12);
+      --text: #E6EDF3;
+      --text-muted: #8B949E;
+      --text-dim: #6E7681;
+      --phone-w: 375px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      width: 100%;
+      max-width: 1200px;
+      padding: 28px 32px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--iw-green), #16a34a);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px; color: #fff;
+    }
+    .page-header h1 {
+      font-size: 16px; font-weight: 700; color: var(--text);
+    }
+    .page-header p {
+      font-size: 13px; color: var(--text-muted); margin-top: 1px;
+    }
+    .badge {
+      margin-left: auto;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+      background: var(--iw-green-dim);
+      color: var(--iw-green);
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+
+    /* ── Layout ── */
+    .layout {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 280px var(--phone-w) 1fr;
+      gap: 32px;
+      padding: 28px 32px 48px;
+    }
+
+    /* ── Nav Panel ── */
+    .nav-panel h2 {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-dim); letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .nav-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border-radius: 10px; cursor: pointer;
+      transition: background 0.15s;
+      border: 1px solid transparent;
+      margin-bottom: 4px;
+    }
+    .nav-item:hover { background: var(--surface); }
+    .nav-item.active {
+      background: var(--surface2);
+      border-color: var(--border);
+    }
+    .nav-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0; margin-top: 1px;
+    }
+    .nav-icon.green { background: var(--iw-green-dim); }
+    .nav-icon.blue  { background: var(--iw-blue-dim); }
+    .nav-icon.purple{ background: var(--iw-purple-dim); }
+    .nav-item-text strong {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text);
+    }
+    .nav-item-text span {
+      font-size: 11px; color: var(--text-muted); line-height: 1.4;
+    }
+
+    /* ── Phone Frame ── */
+    .phone-frame {
+      width: var(--phone-w);
+      background: var(--surface);
+      border-radius: 44px;
+      border: 8px solid #2D333B;
+      box-shadow:
+        0 0 0 1px #1C2128,
+        0 32px 64px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      overflow: hidden;
+      position: relative;
+      min-height: 780px;
+    }
+    .phone-notch {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 30px;
+      background: #2D333B; border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+
+    .screen { display: none; flex-direction: column; height: 100%; }
+    .screen.active { display: flex; }
+
+    /* ── Status Bar ── */
+    .status-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 36px 20px 8px;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted);
+    }
+    .status-icons { display: flex; gap: 6px; align-items: center; }
+
+    /* ── Screen 1: Shift Discovery ── */
+    .top-banner {
+      margin: 0 16px 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 600;
+      transition: all 0.4s;
+    }
+    .top-banner.online {
+      background: var(--iw-green-dim);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--iw-green);
+    }
+    .top-banner.offline {
+      background: var(--iw-red-dim);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--iw-red);
+    }
+    .top-banner.syncing {
+      background: var(--iw-yellow-dim);
+      border: 1px solid rgba(234,179,8,0.3);
+      color: var(--iw-yellow);
+    }
+    .banner-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .online .banner-dot  { background: var(--iw-green); box-shadow: 0 0 6px var(--iw-green); }
+    .offline .banner-dot { background: var(--iw-red); }
+    .syncing .banner-dot { background: var(--iw-yellow); animation: pulse 0.8s infinite; }
+    @keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:0.3 } }
+
+    .section-title {
+      padding: 8px 20px 6px;
+      font-size: 11px; font-weight: 600; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+
+    .shift-card {
+      margin: 0 16px 10px;
+      padding: 14px 16px;
+      background: var(--surface2);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .shift-card:active { transform: scale(0.98); }
+    .shift-card:hover { border-color: var(--iw-green); }
+    .shift-card.featured {
+      border-color: var(--iw-green);
+      background: linear-gradient(135deg, #0D2818 0%, var(--surface2) 100%);
+    }
+    .shift-card-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .shift-biz { font-size: 14px; font-weight: 700; color: var(--text); }
+    .shift-role { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .shift-pay {
+      font-size: 18px; font-weight: 800;
+      color: var(--iw-green);
+    }
+    .shift-pay small { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+    .shift-meta {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;
+    }
+    .meta-tag {
+      padding: 3px 9px; border-radius: 8px;
+      font-size: 11px; font-weight: 500;
+      background: var(--surface3); color: var(--text-muted);
+    }
+    .shift-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .match-bar-wrap {
+      display: flex; align-items: center; gap: 8px; flex: 1;
+    }
+    .match-label { font-size: 11px; color: var(--text-muted); }
+    .match-bar {
+      flex: 1; height: 4px; border-radius: 2px;
+      background: var(--surface3);
+      overflow: hidden;
+    }
+    .match-fill {
+      height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, var(--iw-green), #86efac);
+    }
+    .match-pct { font-size: 11px; font-weight: 700; color: var(--iw-green); }
+    .urgency-badge {
+      padding: 3px 9px; border-radius: 8px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    }
+    .urgency-high {
+      background: var(--iw-red-dim); color: var(--iw-red);
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .urgency-med {
+      background: var(--iw-yellow-dim); color: var(--iw-yellow);
+    }
+
+    /* ── Screen 2: Active Shift + Persistent State ── */
+    .shift-active-header {
+      margin: 0 16px 12px;
+      padding: 16px;
+      background: linear-gradient(135deg, #0D2818, #111B14);
+      border-radius: 16px;
+      border: 1px solid rgba(34,197,94,0.35);
+    }
+    .active-biz { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+    .active-role { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+    .active-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .active-chip {
+      padding: 4px 10px; border-radius: 8px;
+      font-size: 11px; font-weight: 600;
+      background: var(--surface3); color: var(--text-muted);
+    }
+    .active-chip.green {
+      background: var(--iw-green-dim); color: var(--iw-green);
+    }
+
+    .state-persist-box {
+      margin: 0 16px 10px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(59,130,246,0.4);
+      background: var(--iw-blue-dim);
+    }
+    .persist-title {
+      font-size: 11px; font-weight: 700; color: var(--iw-blue);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .persist-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .persist-row strong { color: var(--text); }
+    .persist-note {
+      margin-top: 8px;
+      font-size: 11px; color: var(--iw-blue);
+      background: rgba(59,130,246,0.08);
+      padding: 6px 10px; border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .clock-timer-box {
+      margin: 0 16px 10px;
+      padding: 18px 16px;
+      border-radius: 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .timer-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .timer-display {
+      font-size: 44px; font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--iw-green);
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .earnings-live {
+      margin-top: 8px;
+      font-size: 24px; font-weight: 800; color: var(--text);
+    }
+    .earnings-live small { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+    .connectivity-strip {
+      margin: 0 16px 10px;
+      padding: 10px 14px; border-radius: 12px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .connectivity-strip:hover { opacity: 0.8; }
+    .connectivity-strip.ok {
+      background: var(--iw-green-dim);
+      border: 1px solid rgba(34,197,94,0.3);
+      color: var(--iw-green);
+    }
+    .connectivity-strip.lost {
+      background: var(--iw-red-dim);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--iw-red);
+    }
+    .connectivity-strip.recovering {
+      background: var(--iw-yellow-dim);
+      border: 1px solid rgba(234,179,8,0.3);
+      color: var(--iw-yellow);
+    }
+    .conn-icon { font-size: 16px; }
+    .conn-text { flex: 1; }
+    .conn-sub { font-size: 10px; opacity: 0.75; font-weight: 500; }
+
+    .clockout-btn {
+      margin: 0 16px;
+      width: calc(100% - 32px);
+      padding: 16px;
+      border-radius: 14px;
+      border: none; cursor: pointer;
+      font-size: 16px; font-weight: 800;
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+    }
+    .clockout-btn.ready {
+      background: var(--iw-green);
+      color: #000;
+      box-shadow: 0 0 20px rgba(34,197,94,0.35);
+    }
+    .clockout-btn.ready:hover {
+      background: #16a34a;
+      box-shadow: 0 0 28px rgba(34,197,94,0.5);
+    }
+    .clockout-btn.disabled {
+      background: var(--surface3); color: var(--text-dim); cursor: not-allowed;
+    }
+    .clockout-btn.confirmed {
+      background: var(--surface3); color: var(--iw-green);
+      border: 1px solid rgba(34,197,94,0.4);
+    }
+
+    .clockout-note {
+      margin: 8px 16px 0;
+      font-size: 11px; color: var(--text-dim); text-align: center;
+    }
+
+    /* ── Screen 3: Earnings ── */
+    .earnings-header {
+      margin: 0 16px 12px;
+      padding: 18px 16px;
+      background: var(--surface2);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+    .earnings-total-label {
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+    }
+    .earnings-total {
+      font-size: 36px; font-weight: 900;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .earnings-total small { font-size: 16px; color: var(--text-muted); font-weight: 400; }
+    .earnings-sub { font-size: 12px; color: var(--text-muted); }
+    .earnings-pills {
+      display: flex; gap: 8px; margin-top: 12px;
+    }
+    .e-pill {
+      flex: 1; padding: 8px; border-radius: 10px;
+      background: var(--surface3);
+      text-align: center;
+    }
+    .e-pill-val { font-size: 16px; font-weight: 800; }
+    .e-pill-label { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+    .e-pill.green .e-pill-val { color: var(--iw-green); }
+    .e-pill.yellow .e-pill-val { color: var(--iw-yellow); }
+    .e-pill.blue .e-pill-val { color: var(--iw-blue); }
+
+    .payment-item {
+      margin: 0 16px 8px;
+      padding: 14px 16px;
+      background: var(--surface2);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .payment-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .payment-icon.green { background: var(--iw-green-dim); }
+    .payment-icon.yellow{ background: var(--iw-yellow-dim); }
+    .payment-icon.blue  { background: var(--iw-blue-dim); }
+    .payment-info { flex: 1; }
+    .payment-biz { font-size: 13px; font-weight: 700; }
+    .payment-date { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .payment-status {
+      text-align: right;
+    }
+    .payment-amount { font-size: 16px; font-weight: 800; }
+    .payment-tag {
+      font-size: 10px; font-weight: 600; padding: 2px 7px;
+      border-radius: 6px; margin-top: 3px; display: inline-block;
+    }
+    .payment-tag.paid {
+      background: var(--iw-green-dim); color: var(--iw-green);
+    }
+    .payment-tag.pending {
+      background: var(--iw-yellow-dim); color: var(--iw-yellow);
+    }
+    .payment-tag.processing {
+      background: var(--iw-blue-dim); color: var(--iw-blue);
+    }
+    .dispute-banner {
+      margin: 0 16px 8px;
+      padding: 12px 14px;
+      background: var(--iw-red-dim);
+      border: 1px solid rgba(239,68,68,0.35);
+      border-radius: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .dispute-text {
+      flex: 1; font-size: 12px; color: var(--text-muted);
+    }
+    .dispute-text strong { color: var(--iw-red); font-size: 13px; display: block; margin-bottom: 2px; }
+    .dispute-btn {
+      padding: 7px 12px; border-radius: 9px;
+      background: var(--iw-red); color: #fff;
+      border: none; cursor: pointer;
+      font-size: 11px; font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      margin-top: auto;
+      padding: 12px 0 24px;
+      display: flex;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      padding: 6px; cursor: pointer;
+      opacity: 0.45; transition: opacity 0.15s;
+    }
+    .nav-btn.active { opacity: 1; }
+    .nav-btn-icon { font-size: 20px; }
+    .nav-btn-label { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+    .nav-btn.active .nav-btn-label { color: var(--iw-green); }
+
+    /* ── Info Panel ── */
+    .info-panel {}
+    .info-card {
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+    .info-card h3 {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .info-tag {
+      font-size: 10px; font-weight: 600; padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .info-tag.green { background: var(--iw-green-dim); color: var(--iw-green); }
+    .info-tag.blue  { background: var(--iw-blue-dim);  color: var(--iw-blue); }
+    .info-tag.purple{ background: var(--iw-purple-dim);color: var(--iw-purple); }
+    .info-card p {
+      font-size: 12px; color: var(--text-muted); line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .tech-block {
+      background: #0D1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      color: #7EE7C5;
+      line-height: 1.7;
+    }
+    .tech-block .comment { color: var(--text-dim); }
+    .info-bullet {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-bottom: 6px; font-size: 12px; color: var(--text-muted);
+    }
+    .info-bullet-icon { flex-shrink: 0; margin-top: 1px; }
+
+    .workstream-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 9px;
+      font-size: 11px; font-weight: 700;
+      border: 1px solid rgba(34,197,94,0.3);
+      background: var(--iw-green-dim); color: var(--iw-green);
+      margin-top: 8px;
+    }
+
+    .screen-toggle-tabs {
+      display: flex; gap: 0;
+      margin: 0 16px 0;
+      background: var(--surface3); border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 10px;
+    }
+    .screen-tab {
+      flex: 1; padding: 8px 4px;
+      border-radius: 8px; border: none; background: transparent;
+      color: var(--text-muted); font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .screen-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .screen-content { flex: 1; overflow-y: auto; padding-bottom: 8px; }
+    .screen-content::-webkit-scrollbar { display: none; }
+
+    /* ── Scrollable area ── */
+    .scroll-area { overflow-y: auto; flex: 1; }
+    .scroll-area::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="logo-mark">IW</div>
+  <div>
+    <h1>Instawork — Reliability Engineering</h1>
+    <p>Elinext embedded squad · React Native + Hyperview · 3 workstreams</p>
+  </div>
+  <div class="badge">PROTOTYPE</div>
+</div>
+
+<div class="layout">
+
+  <!-- Left Nav -->
+  <div class="nav-panel">
+    <h2>Workstreams</h2>
+    <div class="nav-item active" onclick="showScreen(0, this)">
+      <div class="nav-icon green">🔍</div>
+      <div class="nav-item-text">
+        <strong>Smart Shift Discovery</strong>
+        <span>AI match scoring, urgent fill alerts, budget-device optimization</span>
+      </div>
+    </div>
+    <div class="nav-item" onclick="showScreen(1, this)">
+      <div class="nav-icon blue">🔒</div>
+      <div class="nav-item-text">
+        <strong>Persistent Clock-In State</strong>
+        <span>Offline-first shift state — survives HXML re-fetch, no false no-shows</span>
+      </div>
+    </div>
+    <div class="nav-item" onclick="showScreen(2, this)">
+      <div class="nav-icon purple">💰</div>
+      <div class="nav-item-text">
+        <strong>Earnings Transparency</strong>
+        <span>Real-time pay, dispute recovery, payment status clarity</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+
+    <!-- SCREEN 1: Shift Discovery -->
+    <div class="screen active" id="screen-0">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <span>●●●</span><span>WiFi</span><span>🔋</span>
+        </div>
+      </div>
+
+      <!-- Connectivity Banner -->
+      <div class="top-banner online" id="s1-banner">
+        <div class="banner-dot"></div>
+        <span id="s1-banner-text">Synced · 14 shifts near you</span>
+        <span style="margin-left:auto;font-size:10px;opacity:0.6;cursor:pointer" onclick="cycleBanner()">tap ↻</span>
+      </div>
+
+      <div class="screen-toggle-tabs">
+        <button class="screen-tab active">Open Shifts</button>
+        <button class="screen-tab">My Schedule</button>
+        <button class="screen-tab">Hiring</button>
+      </div>
+
+      <div class="scroll-area">
+        <div class="section-title">⚡ Urgent Fill — Today</div>
+
+        <!-- Featured shift -->
+        <div class="shift-card featured">
+          <div class="shift-card-top">
+            <div>
+              <div class="shift-biz">Marriott Downtown</div>
+              <div class="shift-role">Banquet Server</div>
+            </div>
+            <div style="text-align:right">
+              <div class="shift-pay">$22<small>/hr</small></div>
+            </div>
+          </div>
+          <div class="shift-meta">
+            <span class="meta-tag">📍 0.8 mi</span>
+            <span class="meta-tag">🕐 3:00–11:00 PM</span>
+            <span class="meta-tag">8h shift</span>
+            <span class="meta-tag">$176 est.</span>
+          </div>
+          <div class="shift-footer">
+            <div class="match-bar-wrap">
+              <span class="match-label">Match</span>
+              <div class="match-bar"><div class="match-fill" style="width:94%"></div></div>
+              <span class="match-pct">94%</span>
+            </div>
+            <span class="urgency-badge urgency-high" style="margin-left:10px">3 spots left</span>
+          </div>
+        </div>
+
+        <div class="shift-card">
+          <div class="shift-card-top">
+            <div>
+              <div class="shift-biz">Amazon Fulfillment SFO</div>
+              <div class="shift-role">Warehouse Associate</div>
+            </div>
+            <div style="text-align:right">
+              <div class="shift-pay">$18<small>/hr</small></div>
+            </div>
+          </div>
+          <div class="shift-meta">
+            <span class="meta-tag">📍 2.1 mi</span>
+            <span class="meta-tag">🕐 6:00 AM–2:00 PM</span>
+            <span class="meta-tag">Tomorrow</span>
+          </div>
+          <div class="shift-footer">
+            <div class="match-bar-wrap">
+              <span class="match-label">Match</span>
+              <div class="match-bar"><div class="match-fill" style="width:81%"></div></div>
+              <span class="match-pct">81%</span>
+            </div>
+            <span class="urgency-badge urgency-med" style="margin-left:10px">12 spots</span>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:4px">📅 This Week</div>
+
+        <div class="shift-card">
+          <div class="shift-card-top">
+            <div>
+              <div class="shift-biz">Whole Foods Market</div>
+              <div class="shift-role">Grocery Associate</div>
+            </div>
+            <div style="text-align:right">
+              <div class="shift-pay">$17<small>/hr</small></div>
+            </div>
+          </div>
+          <div class="shift-meta">
+            <span class="meta-tag">📍 1.3 mi</span>
+            <span class="meta-tag">🕐 Sat 10 AM–6 PM</span>
+            <span class="meta-tag">$136 est.</span>
+          </div>
+          <div class="shift-footer">
+            <div class="match-bar-wrap">
+              <span class="match-label">Match</span>
+              <div class="match-bar"><div class="match-fill" style="width:76%"></div></div>
+              <span class="match-pct">76%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="shift-card">
+          <div class="shift-card-top">
+            <div>
+              <div class="shift-biz">Hilton Garden Inn</div>
+              <div class="shift-role">Front Desk Support</div>
+            </div>
+            <div style="text-align:right">
+              <div class="shift-pay">$19<small>/hr</small></div>
+            </div>
+          </div>
+          <div class="shift-meta">
+            <span class="meta-tag">📍 3.0 mi</span>
+            <span class="meta-tag">🕐 Sun 7 AM–3 PM</span>
+          </div>
+          <div class="shift-footer">
+            <div class="match-bar-wrap">
+              <span class="match-label">Match</span>
+              <div class="match-bar"><div class="match-fill" style="width:68%"></div></div>
+              <span class="match-pct">68%</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:8px"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-btn active">
+          <div class="nav-btn-icon">🔍</div>
+          <div class="nav-btn-label">Find Shifts</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">📅</div>
+          <div class="nav-btn-label">Schedule</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">💰</div>
+          <div class="nav-btn-label">Earnings</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">👤</div>
+          <div class="nav-btn-label">Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: Active Shift + Persistent State -->
+    <div class="screen" id="screen-1">
+      <div class="status-bar">
+        <span>3:47 PM</span>
+        <div class="status-icons">
+          <span>●●○</span><span>LTE</span><span>🔋</span>
+        </div>
+      </div>
+
+      <div class="scroll-area">
+        <div class="shift-active-header">
+          <div class="active-biz">Marriott Downtown</div>
+          <div class="active-role">Banquet Server · Floor 3</div>
+          <div class="active-chips">
+            <div class="active-chip green">● ACTIVE SHIFT</div>
+            <div class="active-chip">Today 3:00–11:00 PM</div>
+          </div>
+        </div>
+
+        <!-- Persistent State Box — THE KEY INNOVATION -->
+        <div class="state-persist-box">
+          <div class="persist-title">
+            🔒 <span>Persistent Shift Lock</span>
+          </div>
+          <div class="persist-row">
+            <span>Shift ID</span>
+            <strong>#SHF-20260219-4481</strong>
+          </div>
+          <div class="persist-row">
+            <span>Clocked in</span>
+            <strong>3:02 PM · GPS confirmed</strong>
+          </div>
+          <div class="persist-row">
+            <span>Local state</span>
+            <strong style="color:var(--iw-green)">✓ Saved on device</strong>
+          </div>
+          <div class="persist-note">
+            🛡️ Your clock-in is stored locally. If the server loses your shift state, <strong>this device retains it</strong> — you will always see the clock-out button.
+          </div>
+        </div>
+
+        <!-- Timer -->
+        <div class="clock-timer-box">
+          <div class="timer-label">Time on shift</div>
+          <div class="timer-display" id="timer">00:47:22</div>
+          <div class="timer-sub">Clocked in 3:02 PM</div>
+          <div class="earnings-live" id="live-earnings">
+            $<span id="earn-val">17.33</span>
+            <small>earned so far</small>
+          </div>
+        </div>
+
+        <!-- Connectivity Toggle -->
+        <div class="connectivity-strip ok" id="conn-strip" onclick="cycleConnectivity()">
+          <span class="conn-icon">📶</span>
+          <div class="conn-text">
+            <div id="conn-main">Connected · Server sync OK</div>
+            <div class="conn-sub" id="conn-sub">Tap to simulate connectivity loss →</div>
+          </div>
+        </div>
+
+        <!-- Clock Out Button -->
+        <button class="clockout-btn ready" id="clockout-btn" onclick="clockOut()">
+          Clock Out
+        </button>
+        <div class="clockout-note" id="clockout-note">
+          Clock-out button persists even if server loses your shift
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-btn">
+          <div class="nav-btn-icon">🔍</div>
+          <div class="nav-btn-label">Find Shifts</div>
+        </div>
+        <div class="nav-btn active">
+          <div class="nav-btn-icon">📅</div>
+          <div class="nav-btn-label">Schedule</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">💰</div>
+          <div class="nav-btn-label">Earnings</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">👤</div>
+          <div class="nav-btn-label">Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: Earnings Transparency -->
+    <div class="screen" id="screen-2">
+      <div class="status-bar">
+        <span>9:41</span>
+        <div class="status-icons">
+          <span>●●●</span><span>WiFi</span><span>🔋</span>
+        </div>
+      </div>
+
+      <div class="scroll-area">
+        <!-- Summary Header -->
+        <div class="earnings-header">
+          <div class="earnings-total-label">This Week</div>
+          <div class="earnings-total">$<span>412</span><small>.50</small></div>
+          <div class="earnings-sub">3 shifts · 23.5 hours worked</div>
+          <div class="earnings-pills">
+            <div class="e-pill green">
+              <div class="e-pill-val">$396</div>
+              <div class="e-pill-label">Paid</div>
+            </div>
+            <div class="e-pill yellow">
+              <div class="e-pill-val">$16.50</div>
+              <div class="e-pill-label">Pending</div>
+            </div>
+            <div class="e-pill blue">
+              <div class="e-pill-val">Fri</div>
+              <div class="e-pill-label">Next Pay</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dispute Banner -->
+        <div class="dispute-banner">
+          <div style="font-size:20px">⚠️</div>
+          <div class="dispute-text">
+            <strong>Shift discrepancy · Feb 15</strong>
+            Hilton reported 6.5h · App recorded 8.0h. Dispute filed — decision by Feb 21.
+          </div>
+          <button class="dispute-btn">Track</button>
+        </div>
+
+        <div class="section-title">Payment History</div>
+
+        <div class="payment-item">
+          <div class="payment-icon green">💳</div>
+          <div class="payment-info">
+            <div class="payment-biz">Marriott Downtown</div>
+            <div class="payment-date">Feb 19 · 8.0 hrs · Banquet Server</div>
+          </div>
+          <div class="payment-status">
+            <div class="payment-amount">$176</div>
+            <span class="payment-tag paid">PAID</span>
+          </div>
+        </div>
+
+        <div class="payment-item">
+          <div class="payment-icon blue">⏳</div>
+          <div class="payment-info">
+            <div class="payment-biz">Amazon Fulfillment SFO</div>
+            <div class="payment-date">Feb 17 · 8.0 hrs · Warehouse</div>
+          </div>
+          <div class="payment-status">
+            <div class="payment-amount">$144</div>
+            <span class="payment-tag processing">PROCESSING</span>
+          </div>
+        </div>
+
+        <div class="payment-item">
+          <div class="payment-icon green">💳</div>
+          <div class="payment-info">
+            <div class="payment-biz">Whole Foods Market</div>
+            <div class="payment-date">Feb 14 · 7.5 hrs · Grocery</div>
+          </div>
+          <div class="payment-status">
+            <div class="payment-amount">$127.50</div>
+            <span class="payment-tag paid">PAID</span>
+          </div>
+        </div>
+
+        <div class="payment-item">
+          <div class="payment-icon yellow">⚠️</div>
+          <div class="payment-info">
+            <div class="payment-biz">Hilton Garden Inn</div>
+            <div class="payment-date">Feb 15 · Hours disputed</div>
+          </div>
+          <div class="payment-status">
+            <div class="payment-amount" style="color:var(--iw-yellow)">$16.50</div>
+            <span class="payment-tag pending">DISPUTED</span>
+          </div>
+        </div>
+
+        <div style="height:8px"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-btn">
+          <div class="nav-btn-icon">🔍</div>
+          <div class="nav-btn-label">Find Shifts</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">📅</div>
+          <div class="nav-btn-label">Schedule</div>
+        </div>
+        <div class="nav-btn active">
+          <div class="nav-btn-icon">💰</div>
+          <div class="nav-btn-label">Earnings</div>
+        </div>
+        <div class="nav-btn">
+          <div class="nav-btn-icon">👤</div>
+          <div class="nav-btn-label">Profile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Info Panel -->
+  <div class="info-panel" id="info-panel-0">
+
+    <!-- Panel 0: Shift Discovery -->
+    <div class="info-card" id="info-0">
+      <h3>🔍 Smart Shift Discovery <span class="info-tag green">WORKSTREAM 1</span></h3>
+      <p>AI match scoring surfaces the right shifts for each worker. 94% match for Marriott = verified banquet experience + location + rating. Urgency indicators drive faster fill rates for businesses.</p>
+      <div class="tech-block">
+<span class="comment">// Server returns HXML with match scores</span>
+&lt;shift-card
+  match-score="0.94"
+  urgency="critical"
+  cached-offline="true"
+&gt;
+  &lt;action trigger="open-shift"
+    href="/api/shifts/4481"
+  /&gt;
+&lt;/shift-card&gt;</div>
+      <div class="info-bullet" style="margin-top:10px">
+        <span class="info-bullet-icon">✅</span>
+        <span>Shifts cached locally for offline browsing (Android low-connectivity workers)</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Match score rendered by Hyperview custom component — server controls scoring logic</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Urgent fill alerts use Hyperview's push-action to update card state in real-time</span>
+      </div>
+      <div class="workstream-tag">3-week Hyperview extension sprint</div>
+    </div>
+
+    <div class="info-card" id="info-1" style="display:none">
+      <h3>🔒 Persistent Clock-In State <span class="info-tag blue">WORKSTREAM 2 — CRITICAL</span></h3>
+      <p>The documented clock-out bug: Hyperview client re-fetches the shift screen after the scheduled end time, server returns an updated state, client renders no active shift. Worker cannot clock out. System marks no-show.</p>
+      <p><strong style="color:var(--text)">The fix:</strong> A local-first shift state layer that persists clock-in events to AsyncStorage (React Native) independent of HXML server responses. The clock-out button is rendered from local state, not HXML — it only disappears after a confirmed server clock-out acknowledgment.</p>
+      <div class="tech-block">
+<span class="comment">// Local shift state — survives HXML re-fetch</span>
+const shiftState = await AsyncStorage
+  .getItem('active_shift');
+<span class="comment">
+// If server returns empty HXML but local
+// state shows clocked-in → render clock-out
+</span>
+if (shiftState?.status === 'clocked_in') {
+  renderClockOutButton(shiftState);
+}</div>
+      <div class="info-bullet" style="margin-top:10px">
+        <span class="info-bullet-icon">✅</span>
+        <span>Clock-in persisted to AsyncStorage on device — survives app restarts and HXML re-fetches</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Server sync conflict resolution: local wins until server acknowledges clock-out</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Connectivity status visible to worker — "Saved on device" builds trust during offline periods</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">📍</span>
+        <span><strong>Tap the connectivity strip</strong> in the phone to simulate losing connection — clock-out button stays available</span>
+      </div>
+      <div class="workstream-tag">Shift State Reliability Sprint · 4 weeks</div>
+    </div>
+
+    <div class="info-card" id="info-2" style="display:none">
+      <h3>💰 Earnings Transparency <span class="info-tag purple">WORKSTREAM 3</span></h3>
+      <p>Worker trust is built or destroyed at the earnings screen. Trustpilot 3.4/5 and PissedConsumer 2.7/5 are driven by payment confusion, not shift quality. Clear paid/processing/disputed states reduce dispute support tickets and increase worker retention.</p>
+      <div class="tech-block">
+<span class="comment">// Earnings HXML from server
+// Dispute status updated server-side</span>
+&lt;payment-item
+  status="disputed"
+  hours-worker="8.0"
+  hours-business="6.5"
+  dispute-deadline="2026-02-21"
+&gt;
+  &lt;action trigger="track-dispute"
+    href="/api/disputes/7712"
+  /&gt;
+&lt;/payment-item&gt;</div>
+      <div class="info-bullet" style="margin-top:10px">
+        <span class="info-bullet-icon">✅</span>
+        <span>Hours discrepancy shown explicitly — worker's recorded hours vs. business's reported hours</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Dispute tracking with deadline — reduces "waiting for response" anxiety that drives negative reviews</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">✅</span>
+        <span>Real-time earnings counter during shift — worker sees money accumulating, increases shift completion</span>
+      </div>
+      <div class="workstream-tag">Earnings UX sprint · 3 weeks</div>
+    </div>
+
+    <!-- Elinext Value Card (always visible) -->
+    <div class="info-card">
+      <h3>⚡ Elinext Squad Model</h3>
+      <p>Two engineers, one squad lead. Hyperview-competent. Each workstream is owned end-to-end — scoped, delivered, and handed off with documentation. No feature-factory task lists.</p>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">🔧</span>
+        <span>Entry: Shift State Reliability Sprint (4 weeks, fixed price) — solo workstream, no handoff required</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">📈</span>
+        <span>Embedded engineering squad, initial engagement</span>
+      </div>
+      <div class="info-bullet">
+        <span class="info-bullet-icon">🌏</span>
+        <span>Async-first with daily summary handoffs to your engineering team</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentScreen = 0;
+  let timerInterval, earningsInterval;
+  let seconds = 47 * 60 + 22;
+  let earnings = 17.33;
+  const HOURLY = 22;
+  let connState = 0; // 0=ok, 1=lost, 2=recovering
+  let clockedOut = false;
+  let s1BannerState = 0;
+  let bannerInterval;
+
+  const connConfigs = [
+    { cls: 'ok',         icon: '📶', main: 'Connected · Server sync OK',              sub: 'Tap to simulate connectivity loss →' },
+    { cls: 'lost',       icon: '📵', main: 'Connection lost · Local state active',     sub: 'Clock-out button preserved ↓ (tap to recover)' },
+    { cls: 'recovering', icon: '🔄', main: 'Reconnecting · Shift data syncing...',     sub: 'Server will receive your clock-out when connected (tap to complete)' },
+  ];
+
+  const bannerConfigs = [
+    { cls: 'online',  dot: true,  text: 'Synced · 14 shifts near you' },
+    { cls: 'offline', dot: false, text: 'Offline · 14 shifts cached · Updates paused' },
+    { cls: 'syncing', dot: false, text: 'Syncing · Checking for new shifts…' },
+  ];
+
+  function showScreen(n, navEl) {
+    // hide all screens + info panels
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('[id^="info-"]').forEach(i => i.style.display = 'none');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+    document.getElementById('screen-' + n).classList.add('active');
+    document.getElementById('info-' + n).style.display = 'block';
+    navEl.classList.add('active');
+    currentScreen = n;
+
+    if (n === 1) startTimer();
+    else stopTimer();
+
+    if (n === 0) startBannerCycle();
+    else stopBannerCycle();
+  }
+
+  function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+      if (clockedOut) return;
+      seconds++;
+      const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+      earnings = parseFloat((seconds / 3600 * HOURLY).toFixed(2));
+      document.getElementById('earn-val').textContent = earnings.toFixed(2);
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function startBannerCycle() {
+    if (bannerInterval) return;
+    bannerInterval = setInterval(() => {
+      s1BannerState = (s1BannerState + 1) % 3;
+      applyBanner(s1BannerState);
+    }, 3000);
+  }
+
+  function stopBannerCycle() {
+    clearInterval(bannerInterval);
+    bannerInterval = null;
+  }
+
+  function cycleBanner() {
+    s1BannerState = (s1BannerState + 1) % 3;
+    applyBanner(s1BannerState);
+  }
+
+  function applyBanner(state) {
+    const b = document.getElementById('s1-banner');
+    const cfg = bannerConfigs[state];
+    b.className = 'top-banner ' + cfg.cls;
+    document.getElementById('s1-banner-text').textContent = cfg.text;
+  }
+
+  function cycleConnectivity() {
+    connState = (connState + 1) % 3;
+    const cfg = connConfigs[connState];
+    const strip = document.getElementById('conn-strip');
+    strip.className = 'connectivity-strip ' + cfg.cls;
+    document.getElementById('conn-icon') && null;
+    strip.querySelector('.conn-icon').textContent = cfg.icon;
+    document.getElementById('conn-main').textContent = cfg.main;
+    document.getElementById('conn-sub').textContent = cfg.sub;
+
+    const btn = document.getElementById('clockout-btn');
+    const note = document.getElementById('clockout-note');
+
+    if (connState === 1) {
+      // lost connection — button stays available (this is the fix!)
+      btn.className = 'clockout-btn ready';
+      btn.textContent = 'Clock Out (Offline)';
+      note.textContent = '⚡ Stored locally · Will sync when reconnected';
+      note.style.color = 'var(--iw-yellow)';
+    } else if (connState === 2) {
+      btn.textContent = 'Clock Out (Syncing…)';
+      note.textContent = '🔄 Sending to server…';
+      note.style.color = 'var(--iw-blue)';
+    } else {
+      btn.textContent = 'Clock Out';
+      note.textContent = 'Clock-out button persists even if server loses your shift';
+      note.style.color = 'var(--text-dim)';
+    }
+  }
+
+  function clockOut() {
+    if (clockedOut) return;
+    const btn = document.getElementById('clockout-btn');
+
+    if (connState === 1) {
+      // offline clock-out — confirm locally
+      btn.className = 'clockout-btn confirmed';
+      btn.textContent = '✓ Clocked Out · Syncing…';
+      document.getElementById('clockout-note').textContent =
+        '✓ Recorded locally at ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · Will sync when reconnected';
+      document.getElementById('clockout-note').style.color = 'var(--iw-green)';
+      clockedOut = true;
+    } else {
+      btn.className = 'clockout-btn confirmed';
+      btn.textContent = '✓ Clocked Out Successfully';
+      const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      document.getElementById('clockout-note').textContent =
+        '✓ Confirmed at ' + now + ' · Shift saved to earnings · Sync complete';
+      document.getElementById('clockout-note').style.color = 'var(--iw-green)';
+      clockedOut = true;
+    }
+  }
+
+  // Auto-start banner on load
+  startBannerCycle();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curri Driver App — Android Reliability Audit | Elinext</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: #1a1d2e;
+      border-bottom: 1px solid #2d3561;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; color: #f97316; }
+    .logo-sub { font-size: 12px; color: #64748b; }
+    .header-badge {
+      background: #1e3a5f;
+      border: 1px solid #2563eb;
+      color: #60a5fa;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 60px 40px 40px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(249,115,22,0.1);
+      border: 1px solid rgba(249,115,22,0.3);
+      color: #f97316;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero h1 span { color: #f97316; -webkit-text-fill-color: #f97316; }
+    .hero-sub {
+      font-size: 18px;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #1a1d2e;
+      border: 1px solid #2d3561;
+      border-radius: 12px;
+      padding: 20px 28px;
+      text-align: center;
+      min-width: 140px;
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .stat-red .stat-number { color: #ef4444; }
+    .stat-green .stat-number { color: #22c55e; }
+    .stat-orange .stat-number { color: #f97316; }
+    .stat-blue .stat-number { color: #60a5fa; }
+
+    /* Main content */
+    .main { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* Section headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    /* Bug cards */
+    .bug-card {
+      background: #1a1d2e;
+      border: 1px solid #2d3561;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .bug-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid #2d3561;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bug-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .bug-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .bug-critical .bug-number { background: rgba(239,68,68,0.2); color: #ef4444; }
+    .bug-high .bug-number { background: rgba(249,115,22,0.2); color: #f97316; }
+    .bug-medium .bug-number { background: rgba(234,179,8,0.2); color: #eab308; }
+    .bug-title { font-size: 18px; font-weight: 700; }
+    .bug-severity {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .bug-critical .bug-severity { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    .bug-high .bug-severity { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+    .bug-medium .bug-severity { background: rgba(234,179,8,0.1); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+
+    /* Before/After panels */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 700px) {
+      .panels { grid-template-columns: 1fr; }
+    }
+    .panel { padding: 28px; }
+    .panel-before { border-right: 1px solid #2d3561; }
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-before .panel-label { color: #ef4444; }
+    .panel-after .panel-label { color: #22c55e; }
+    .panel-label::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .panel-before .panel-label::before { background: #ef4444; }
+    .panel-after .panel-label::before { background: #22c55e; }
+
+    /* Phone mockup */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .phone {
+      width: 180px;
+      background: #0f1117;
+      border: 2px solid #374151;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .phone-notch {
+      background: #0f1117;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 4px;
+    }
+    .phone-pill {
+      width: 60px;
+      height: 4px;
+      background: #374151;
+      border-radius: 4px;
+    }
+    .phone-screen {
+      background: #f8fafc;
+      min-height: 280px;
+      position: relative;
+    }
+
+    /* Mock delivery accept UI */
+    .mock-header {
+      background: #f97316;
+      color: white;
+      padding: 12px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+    .mock-map {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .mock-map-dot {
+      width: 10px;
+      height: 10px;
+      background: #f97316;
+      border-radius: 50%;
+      position: absolute;
+    }
+    .mock-map-route {
+      position: absolute;
+      width: 80%;
+      height: 2px;
+      background: rgba(249,115,22,0.5);
+      border-radius: 2px;
+    }
+    .mock-card {
+      background: white;
+      margin: 8px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .mock-company {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .mock-route {
+      font-size: 8px;
+      color: #64748b;
+    }
+    .mock-pay {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .mock-amount {
+      font-size: 14px;
+      font-weight: 800;
+      color: #16a34a;
+    }
+    .mock-miles {
+      font-size: 8px;
+      color: #64748b;
+    }
+    .mock-btn {
+      margin: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .mock-btn-accept { background: #16a34a; color: white; }
+    .mock-btn-disabled { background: #e2e8f0; color: #94a3b8; }
+    .mock-countdown {
+      text-align: center;
+      font-size: 9px;
+      color: #ef4444;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    /* Freeze overlay */
+    .freeze-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,17,23,0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .freeze-text {
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    /* GPS mockup */
+    .gps-bar {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      margin: 8px;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .gps-warn {
+      font-size: 9px;
+      color: #dc2626;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .gps-sub {
+      font-size: 8px;
+      color: #ef4444;
+      margin-top: 2px;
+    }
+    .gps-ok {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .gps-ok-text {
+      font-size: 9px;
+      color: #16a34a;
+      font-weight: 700;
+    }
+
+    /* Payout mockup */
+    .payout-area {
+      padding: 8px 12px;
+    }
+    .payout-balance {
+      font-size: 10px;
+      color: #64748b;
+      margin-bottom: 2px;
+    }
+    .payout-amount {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .payout-btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .payout-btn-active { background: #16a34a; color: white; }
+    .payout-btn-missing { background: #f1f5f9; color: #94a3b8; font-style: italic; }
+    .payout-note {
+      font-size: 8px;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    /* Evidence box */
+    .evidence-box {
+      margin-top: 16px;
+      background: rgba(239,68,68,0.05);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .evidence-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ef4444;
+      margin-bottom: 8px;
+    }
+    .review-quote {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 6px;
+      padding-left: 8px;
+      border-left: 2px solid rgba(239,68,68,0.4);
+    }
+    .review-source {
+      font-size: 10px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .fix-box {
+      margin-top: 16px;
+      background: rgba(34,197,94,0.05);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .fix-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #22c55e;
+      margin-bottom: 8px;
+    }
+    .fix-item {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .fix-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    /* Impact section */
+    .impact-section {
+      margin-top: 60px;
+      background: #1a1d2e;
+      border: 1px solid #2d3561;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+    .impact-section h2 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .impact-sub {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 600px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-item {
+      background: rgba(249,115,22,0.05);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .impact-icon { font-size: 28px; margin-bottom: 8px; }
+    .impact-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #f97316;
+      margin-bottom: 4px;
+    }
+    .impact-desc { font-size: 13px; color: #64748b; }
+
+    /* Sprint box */
+    .sprint-box {
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(234,88,12,0.05));
+      border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: left;
+    }
+    .sprint-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f97316;
+      margin-bottom: 12px;
+    }
+    .sprint-item {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sprint-check { color: #22c55e; font-size: 16px; }
+
+    /* Footer CTA */
+    .footer-cta {
+      margin-top: 60px;
+      text-align: center;
+      padding: 40px;
+      background: #1a1d2e;
+      border: 1px solid #2d3561;
+      border-radius: 16px;
+    }
+    .footer-cta h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .footer-cta p {
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+    .cta-email {
+      color: #f97316;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .cta-name { font-size: 14px; color: #64748b; margin-top: 8px; }
+
+    /* Job signal banner */
+    .signal-banner {
+      background: rgba(96,165,250,0.05);
+      border: 1px solid rgba(96,165,250,0.2);
+      border-radius: 12px;
+      padding: 20px 28px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .signal-icon { font-size: 24px; flex-shrink: 0; }
+    .signal-text { font-size: 14px; color: #94a3b8; line-height: 1.5; }
+    .signal-text strong { color: #60a5fa; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-icon">🚚</div>
+      <div>
+        <div class="logo-text">Curri Driver — Android Reliability Audit</div>
+        <div class="logo-sub">Prepared by Elinext Mobile Engineering</div>
+      </div>
+    </div>
+    <div class="header-badge">Confidential · Feb 2026</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">Android Engineering Audit</div>
+    <h1>Your driver app is the<br><span>marketplace engine.</span></h1>
+    <p class="hero-sub">Three Android reliability bugs are silently costing Curri GMV, driver retention, and customer trust. Here's exactly what's breaking — and the fix.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card stat-green">
+      <div class="stat-number">4.7★</div>
+      <div class="stat-label">iOS Driver App</div>
+    </div>
+    <div class="stat-card stat-red">
+      <div class="stat-number">4.31★</div>
+      <div class="stat-label">Android Driver App</div>
+    </div>
+    <div class="stat-card stat-orange">
+      <div class="stat-number">0.39★</div>
+      <div class="stat-label">iOS–Android Gap</div>
+    </div>
+    <div class="stat-card stat-blue">
+      <div class="stat-number">3,400+</div>
+      <div class="stat-label">Android Reviews</div>
+    </div>
+  </div>
+
+  <!-- Signal Banner -->
+  <div class="main">
+    <div class="signal-banner">
+      <div class="signal-icon">📋</div>
+      <div class="signal-text">
+        Curri is actively hiring a <strong>Senior Mobile Engineer I, Driver App</strong> with requirements for <strong>"background services, push notifications, and geolocation."</strong> These are exactly the three technical areas where the current driver app has documented failures. The hiring timeline is 3–6 months. A targeted engineering sprint delivers results in 4–6 weeks.
+      </div>
+    </div>
+
+    <!-- Bug #1 -->
+    <div class="section-header">
+      <div class="section-tag">Three Documented Failures</div>
+      <h2>BEFORE → AFTER: Android Driver App</h2>
+    </div>
+
+    <div class="bug-card bug-critical">
+      <div class="bug-header">
+        <div class="bug-title-row">
+          <div class="bug-number">1</div>
+          <div class="bug-title">App Freeze on Job Accept</div>
+        </div>
+        <div class="bug-severity">CRITICAL</div>
+      </div>
+      <div class="panels">
+        <!-- BEFORE -->
+        <div class="panel panel-before">
+          <div class="panel-label">Before — Current State</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Curri Driver</span>
+                  <span>⚡ Available</span>
+                </div>
+                <div class="mock-map">
+                  <div class="mock-map-route"></div>
+                  <div class="mock-map-dot"></div>
+                </div>
+                <div class="mock-card" style="position:relative;">
+                  <div class="mock-company">HD Supply — Burbank</div>
+                  <div class="mock-route">Pickup → 5 stops → Deliver</div>
+                  <div class="mock-pay">
+                    <div class="mock-amount">$87.50</div>
+                    <div class="mock-miles">23 mi</div>
+                  </div>
+                  <div class="freeze-overlay">
+                    <div class="spinner"></div>
+                    <div class="freeze-text">App frozen...</div>
+                  </div>
+                </div>
+                <div class="mock-countdown">⏱ Accept window closing...</div>
+                <div class="mock-btn mock-btn-disabled">Accept Delivery</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-box">
+            <div class="evidence-label">Real Driver Reviews</div>
+            <div class="review-quote">"App freezes up when trying to accept a delivery and sometimes during a delivery. No one has ever replied back when I message or email about this."</div>
+            <div class="review-source">★☆☆☆☆ — App Store review</div>
+            <div class="review-quote">"App recently started freezing when a job offer pops up."</div>
+            <div class="review-source">★★☆☆☆ — App Store review</div>
+            <div class="review-quote">"19 notifications disappeared before I could open the screen."</div>
+            <div class="review-source">★☆☆☆☆ — App Store review</div>
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:#64748b; line-height:1.6;">
+            <strong style="color:#ef4444;">Root cause:</strong> React Native navigation race condition on FCM push wake. The <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">navigate()</code> call fires before the navigator is mounted → blank screen. Android OEM power optimization (Samsung OneUI, Xiaomi MIUI) kills the RN JS thread → cold restart loses the deep-link context.
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="panel panel-after">
+          <div class="panel-label">After — Proposed Fix</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Curri Driver</span>
+                  <span>⚡ Available</span>
+                </div>
+                <div class="mock-map">
+                  <div class="mock-map-route"></div>
+                  <div class="mock-map-dot"></div>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-company">HD Supply — Burbank</div>
+                  <div class="mock-route">Pickup → 5 stops → Deliver</div>
+                  <div class="mock-pay">
+                    <div class="mock-amount">$87.50</div>
+                    <div class="mock-miles">23 mi</div>
+                  </div>
+                </div>
+                <div class="mock-countdown" style="color:#16a34a;">✓ Ready to accept (28s)</div>
+                <div class="mock-btn mock-btn-accept">Accept Delivery ✓</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fix-box">
+            <div class="fix-label">Engineering Fix</div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Headless JS task handles FCM notification before navigator mounts — no race condition</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>React Navigation <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">onReady</code> guard defers deep-link until stack is initialized</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>30-second "pending offer" cache in AsyncStorage — cold-start restores the accept screen</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Android Foreground Service keeps JS thread alive during delivery window</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bug #2 -->
+    <div class="bug-card bug-high">
+      <div class="bug-header">
+        <div class="bug-title-row">
+          <div class="bug-number">2</div>
+          <div class="bug-title">Background GPS / Location Tracking Failures</div>
+        </div>
+        <div class="bug-severity">HIGH</div>
+      </div>
+      <div class="panels">
+        <!-- BEFORE -->
+        <div class="panel panel-before">
+          <div class="panel-label">Before — Current State</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Active Delivery</span>
+                  <span>🔴 GPS Weak</span>
+                </div>
+                <div class="mock-map" style="background:linear-gradient(135deg, #fef2f2, #fee2e2);">
+                  <div style="font-size:24px;">📍</div>
+                </div>
+                <div class="gps-bar">
+                  <div class="gps-warn">⚠ Location not updating</div>
+                  <div class="gps-sub">Driver appears stationary — customer seeing stale position</div>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-company" style="color:#dc2626;">Cannot mark arrival</div>
+                  <div class="mock-route">GPS required to confirm pickup location</div>
+                </div>
+                <div class="mock-btn mock-btn-disabled">Mark Arrived ✕</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-box">
+            <div class="evidence-label">Real Driver Reports</div>
+            <div class="review-quote">"Constant notifications incorrectly indicating they weren't moving while en route."</div>
+            <div class="review-source">App Store review — multiple reports</div>
+            <div class="review-quote">"Unable to mark arrival at destinations."</div>
+            <div class="review-source">Driver forum report</div>
+            <div class="review-quote">Curri job posting requirement: <em>"background services, push notifications, and geolocation"</em> — an explicit admission these are active engineering gaps.</div>
+            <div class="review-source">Senior Mobile Engineer I, Driver App — YC/LinkedIn job listing</div>
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:#64748b; line-height:1.6;">
+            <strong style="color:#f97316;">Root cause:</strong> Android Doze mode + App Standby Buckets (Android 6+, tightened in 12–14) pause background location without a Foreground Service. React Native <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">Geolocation</code> APIs alone are insufficient — screen-off kills updates within minutes.
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="panel panel-after">
+          <div class="panel-label">After — Proposed Fix</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Active Delivery</span>
+                  <span>🟢 GPS Live</span>
+                </div>
+                <div class="mock-map" style="background:linear-gradient(135deg, #f0fdf4, #dcfce7);">
+                  <div style="font-size:24px;">📍</div>
+                </div>
+                <div class="gps-bar gps-ok">
+                  <div class="gps-ok-text">✓ Location updating every 5s</div>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-company" style="color:#16a34a;">Arrived at Pickup ✓</div>
+                  <div class="mock-route">Customer notified · Timestamp logged</div>
+                </div>
+                <div class="mock-btn mock-btn-accept">Mark Arrived ✓</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fix-box">
+            <div class="fix-label">Engineering Fix</div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Android Foreground Service with persistent notification — location continues screen-off and Doze</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Migration to <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">react-native-background-geolocation</code> with proper Doze-aware wake lock</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Background location permission prompt with clear UX context ("We need this to track your delivery")</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>5-second location interval maintained during active delivery, reduced when idle</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bug #3 -->
+    <div class="bug-card bug-medium">
+      <div class="bug-header">
+        <div class="bug-title-row">
+          <div class="bug-number">3</div>
+          <div class="bug-title">Instant Cash-Out Disappears After Updates</div>
+        </div>
+        <div class="bug-severity">MEDIUM</div>
+      </div>
+      <div class="panels">
+        <!-- BEFORE -->
+        <div class="panel panel-before">
+          <div class="panel-label">Before — Current State</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Earnings</span>
+                  <span>💳</span>
+                </div>
+                <div class="payout-area">
+                  <div class="payout-balance">Available to withdraw</div>
+                  <div class="payout-amount">$214.50</div>
+                  <div class="payout-btn payout-btn-missing">Instant Pay (1% fee) — not available</div>
+                  <div class="payout-note">Standard transfer: 2–3 business days</div>
+                </div>
+                <div style="background:#fef2f2;border-top:1px solid #fee2e2;padding:10px 12px;">
+                  <div style="font-size:9px;color:#dc2626;font-weight:700;">⚠ Instant Pay unavailable</div>
+                  <div style="font-size:8px;color:#ef4444;margin-top:2px;">Try restarting app or reinstalling</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="evidence-box">
+            <div class="evidence-label">Real Driver Reports + Help Center</div>
+            <div class="review-quote">"Glitches like instant cash out not working occur here and there."</div>
+            <div class="review-source">App Store review</div>
+            <div class="review-quote">"Instant payment option disappeared after an app update — used to see it right beneath the payout amount."</div>
+            <div class="review-source">Driver review</div>
+            <div class="review-quote">Curri Help Center troubleshooting for payout: "Restart app · Logout · Clear cache · Reinstall" — indicating local state corruption.</div>
+            <div class="review-source">help.curri.com/en/articles/8475350</div>
+          </div>
+
+          <div style="margin-top:12px; font-size:12px; color:#64748b; line-height:1.6;">
+            <strong style="color:#eab308;">Root cause:</strong> Instant payout eligibility cached in AsyncStorage. On app update, cached state isn't migrated → <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">getItem('payoutMethod')</code> returns <code style="background:#1e293b;padding:2px 5px;border-radius:3px;font-size:10px;">null</code> → button hidden. Or: Stripe webhook updates payout status server-side; app only reads on cold start → stale state persists through sessions.
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="panel panel-after">
+          <div class="panel-label">After — Proposed Fix</div>
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-notch"><div class="phone-pill"></div></div>
+              <div class="phone-screen">
+                <div class="mock-header">
+                  <span>Earnings</span>
+                  <span>💳</span>
+                </div>
+                <div class="payout-area">
+                  <div class="payout-balance">Available to withdraw</div>
+                  <div class="payout-amount">$214.50</div>
+                  <div class="payout-btn payout-btn-active">⚡ Instant Pay (1% fee) — $212.36</div>
+                  <div class="payout-note">Funds arrive within minutes to your debit card</div>
+                </div>
+                <div style="background:#f0fdf4;border-top:1px solid #bbf7d0;padding:10px 12px;">
+                  <div style="font-size:9px;color:#16a34a;font-weight:700;">✓ Instant Pay ready</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fix-box">
+            <div class="fix-label">Engineering Fix</div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Payout eligibility fetched from server on app foreground — no stale local cache</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>AsyncStorage migration step on app version upgrade — preserves payout method across updates</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Pull-to-refresh on Earnings screen triggers Stripe eligibility re-check</span></div>
+            <div class="fix-item"><div class="fix-dot"></div><span>Error state shows "Tap to retry" instead of silently hiding the button</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Impact -->
+    <div class="impact-section">
+      <h2>What These Bugs Cost Curri</h2>
+      <p class="impact-sub">The driver app is the supply side of your marketplace. Driver friction = delivery capacity lost.</p>
+
+      <div class="impact-grid">
+        <div class="impact-item">
+          <div class="impact-icon">⚡</div>
+          <div class="impact-value">Job Accept Freeze</div>
+          <div class="impact-desc">Every frozen accept = one missed delivery. At scale, this is measurable GMV leakage from your Android driver fleet.</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-icon">📍</div>
+          <div class="impact-value">GPS Background Fail</div>
+          <div class="impact-desc">Customers see drivers "disappear." Operations teams get manual override requests. Proof-of-delivery disputes rise.</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-icon">💳</div>
+          <div class="impact-value">Instant Pay Broken</div>
+          <div class="impact-desc">Driver retention depends on fast pay. When instant cash-out fails silently, your best drivers compare alternatives.</div>
+        </div>
+      </div>
+
+      <div class="sprint-box">
+        <div class="sprint-title">Proposed: 4–6 Week Android Reliability Sprint</div>
+        <div class="sprint-item"><span class="sprint-check">✓</span><span>Fix job-accept freeze: Headless JS + React Navigation guard + Foreground Service</span></div>
+        <div class="sprint-item"><span class="sprint-check">✓</span><span>Fix background GPS: Android Foreground Service + Doze-aware location strategy</span></div>
+        <div class="sprint-item"><span class="sprint-check">✓</span><span>Fix instant payout: Server-side eligibility fetch + AsyncStorage migration</span></div>
+        <div class="sprint-item"><span class="sprint-check">✓</span><span>2 React Native engineers  + Android QA + delivery manager</span></div>
+        <div class="sprint-item"><span class="sprint-check">✓</span><span>You own all code. No lock-in. Sprint deliverables: before/after metrics, documented fixes.</span></div>
+      </div>
+    </div>
+
+    <!-- Footer CTA -->
+    <div class="footer-cta">
+      <h2>Want the full technical brief?</h2>
+      <p>Elinext specializes in marketplace driver apps. Happy to share detailed root-cause analysis and fix specifications.</p>
+      elinext.com/contacts/
+      <div class="cta-name">Elinext Mobile Engineering · Mobile Engineering Lead · Elinext</div>
+    </div>
+  </div>
+
+</body>
+</html>

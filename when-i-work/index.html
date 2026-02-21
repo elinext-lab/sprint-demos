@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>When I Work Android — Reliability Audit</title>
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Typography */
+    :root {
+      --green: #2E7D32;
+      --green-light: #43A047;
+      --green-pale: #E8F5E9;
+      --red: #C62828;
+      --red-light: #EF5350;
+      --red-pale: #FFEBEE;
+      --amber: #E65100;
+      --amber-pale: #FFF3E0;
+      --gray-900: #111827;
+      --gray-700: #374151;
+      --gray-500: #6B7280;
+      --gray-300: #D1D5DB;
+      --gray-100: #F3F4F6;
+      --gray-50: #F9FAFB;
+      --white: #FFFFFF;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--gray-100);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .site-header {
+      background: var(--gray-900);
+      color: var(--white);
+      padding: 28px 48px;
+      border-bottom: 3px solid var(--green);
+    }
+    .site-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .site-header .subtitle {
+      font-size: 13px;
+      color: var(--gray-300);
+      margin-top: 4px;
+    }
+    .site-header .byline {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #9CA3AF;
+    }
+    .site-header .byline a {
+      color: #60A5FA;
+      text-decoration: none;
+    }
+
+    /* Main layout */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Section intro */
+    .section-intro {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-intro h2 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.5px;
+    }
+    .section-intro p {
+      font-size: 16px;
+      color: var(--gray-500);
+      max-width: 640px;
+      margin: 10px auto 0;
+    }
+
+    /* Problem banner */
+    .problem-banner {
+      background: var(--red-pale);
+      border: 1px solid #FFCDD2;
+      border-left: 4px solid var(--red);
+      padding: 16px 20px;
+      border-radius: 6px;
+      margin-bottom: 36px;
+    }
+    .problem-banner h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .problem-banner p {
+      font-size: 14px;
+      color: #7F1D1D;
+      line-height: 1.5;
+    }
+
+    /* Comparison grid */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    @media (max-width: 720px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Panel */
+    .panel {
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .panel-label {
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-label.before {
+      background: var(--red-pale);
+      color: var(--red);
+      border-bottom: 2px solid #FFCDD2;
+    }
+    .panel-label.after {
+      background: var(--green-pale);
+      color: var(--green);
+      border-bottom: 2px solid #C8E6C9;
+    }
+    .panel-label svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    .panel-body {
+      padding: 24px;
+    }
+
+    /* Phone mockup */
+    .phone-mockup {
+      background: #1C1C1E;
+      border-radius: 32px;
+      padding: 16px;
+      width: 220px;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .phone-screen {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-notch {
+      background: #1C1C1E;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-notch::after {
+      content: '';
+      width: 60px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+    }
+
+    /* App UI inside phone */
+    .app-topbar {
+      background: #1D5F6E;
+      color: white;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .app-topbar .logo-text {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+    .app-topbar .time-text {
+      font-size: 10px;
+      opacity: 0.8;
+    }
+
+    .app-content {
+      flex: 1;
+      padding: 16px 14px;
+      background: #F7F8FA;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .shift-card {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #E5E7EB;
+    }
+    .shift-card .shift-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 2px;
+    }
+    .shift-card .shift-meta {
+      font-size: 10px;
+      color: var(--gray-500);
+    }
+
+    /* Clock button states */
+    .clock-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 14px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      width: 100%;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      letter-spacing: 0.2px;
+    }
+    .clock-btn.idle {
+      background: #1D5F6E;
+      color: white;
+    }
+    .clock-btn.tapped {
+      background: #E0F2F1;
+      color: #00796B;
+      border: 2px solid #80CBC4;
+    }
+    .clock-btn.failed {
+      background: #F7F8FA;
+      color: #9CA3AF;
+      border: 2px dashed var(--gray-300);
+    }
+    .clock-btn.success {
+      background: var(--green);
+      color: white;
+    }
+
+    /* Status indicator */
+    .status-bar {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-bar.missing {
+      background: #FFF3E0;
+      color: #E65100;
+      border: 1px solid #FFE0B2;
+    }
+    .status-bar.confirmed {
+      background: var(--green-pale);
+      color: var(--green);
+      border: 1px solid #C8E6C9;
+    }
+    .status-bar.queued {
+      background: #E3F2FD;
+      color: #1565C0;
+      border: 1px solid #BBDEFB;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-red { background: var(--red-light); }
+    .dot-green { background: var(--green-light); }
+    .dot-blue { background: #2196F3; }
+    .dot-pulse {
+      background: var(--red-light);
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Annotation below phone */
+    .annotation {
+      font-size: 12px;
+      color: var(--gray-500);
+      text-align: center;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    .annotation strong {
+      color: var(--gray-700);
+    }
+
+    /* Quote block */
+    .quote-block {
+      background: var(--red-pale);
+      border-left: 3px solid var(--red);
+      padding: 10px 14px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #7F1D1D;
+      line-height: 1.5;
+      font-style: italic;
+      margin-top: 12px;
+    }
+    .quote-block cite {
+      display: block;
+      margin-top: 6px;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 10px;
+      color: var(--red);
+    }
+
+    .quote-block.green-quote {
+      background: var(--green-pale);
+      border-left-color: var(--green);
+      color: #1B5E20;
+    }
+    .quote-block.green-quote cite {
+      color: var(--green);
+    }
+
+    /* Impact metrics */
+    .impact-section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .impact-section h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 24px;
+      letter-spacing: -0.3px;
+    }
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .impact-grid { grid-template-columns: 1fr; }
+    }
+    .impact-card {
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .impact-card.bad { background: var(--red-pale); border: 1px solid #FFCDD2; }
+    .impact-card.neutral { background: var(--amber-pale); border: 1px solid #FFE0B2; }
+    .impact-card.good { background: var(--green-pale); border: 1px solid #C8E6C9; }
+    .impact-card .metric {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+    .impact-card.bad .metric { color: var(--red); }
+    .impact-card.neutral .metric { color: var(--amber); }
+    .impact-card.good .metric { color: var(--green); }
+    .impact-card .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+    .impact-card .metric-desc {
+      font-size: 11px;
+      color: var(--gray-500);
+      line-height: 1.4;
+    }
+
+    /* Evidence table */
+    .evidence-section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .evidence-section h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+    .evidence-section .evidence-note {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+    table.evidence-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .evidence-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      border-bottom: 2px solid var(--gray-300);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-500);
+    }
+    .evidence-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: top;
+      line-height: 1.4;
+    }
+    .evidence-table tr:last-child td { border-bottom: none; }
+    .evidence-table tr:hover td { background: var(--gray-50); }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    .badge.critical { background: var(--red-pale); color: var(--red); }
+    .badge.high { background: var(--amber-pale); color: var(--amber); }
+    .badge.medium { background: #EDE7F6; color: #6A1B9A; }
+    .badge.vendor { background: #E3F2FD; color: #1565C0; }
+
+    /* Dashboard section */
+    .dashboard-section {
+      margin-bottom: 60px;
+    }
+    .dashboard-section h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+    .dashboard-section .section-desc {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+    .dashboard-mockup {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .dashboard-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+    .dashboard-subtitle {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green);
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green-light);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    .timesheet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .timesheet-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      gap: 12px;
+    }
+    .timesheet-row.pending {
+      background: var(--amber-pale);
+      border: 1px solid #FFE0B2;
+    }
+    .timesheet-row.ok {
+      background: var(--green-pale);
+      border: 1px solid #C8E6C9;
+    }
+    .timesheet-row.queued {
+      background: #E3F2FD;
+      border: 1px solid #BBDEFB;
+    }
+    .tr-name {
+      font-weight: 600;
+      color: var(--gray-900);
+      min-width: 100px;
+    }
+    .tr-detail {
+      font-size: 12px;
+      color: var(--gray-500);
+      flex: 1;
+    }
+    .tr-status {
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .tr-status.warn { color: var(--amber); }
+    .tr-status.good { color: var(--green); }
+    .tr-status.info { color: #1565C0; }
+
+    /* Offer section */
+    .offer-section {
+      background: var(--gray-900);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .offer-section h3 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .offer-section p {
+      font-size: 15px;
+      color: #D1D5DB;
+      max-width: 560px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+    .offer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 600px) {
+      .offer-grid { grid-template-columns: 1fr; }
+    }
+    .offer-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .offer-item .offer-value {
+      font-size: 26px;
+      font-weight: 900;
+      color: #4ADE80;
+      letter-spacing: -0.5px;
+    }
+    .offer-item .offer-label {
+      font-size: 12px;
+      color: #9CA3AF;
+      margin-top: 4px;
+    }
+    .cta-button {
+      display: inline-block;
+      background: #4ADE80;
+      color: #111827;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+    }
+    .contact-line {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #6B7280;
+    }
+    .contact-line a {
+      color: #60A5FA;
+      text-decoration: none;
+    }
+
+    /* Divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--gray-300);
+      margin: 48px 0;
+    }
+
+    /* Scrollspy nav (sticky) */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(249,250,251,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--gray-300);
+      padding: 12px 24px;
+      z-index: 10;
+      display: flex;
+      gap: 24px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .sticky-nav a {
+      color: var(--gray-500);
+      text-decoration: none;
+    }
+    .sticky-nav a:hover { color: var(--gray-900); }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="site-header">
+  <h1>When I Work Android — Reliability Audit</h1>
+  <div class="subtitle">Silent Failure Analysis: Clock-In/Out, GPS Geofencing, Push Notifications</div>
+  <div class="byline">
+    Prepared by <strong>Elinext Mobile Engineering</strong>, Elinext &mdash;
+    elinext.com/contacts/
+    &nbsp;|&nbsp; February 2026
+  </div>
+</div>
+
+<!-- Sticky nav -->
+<nav class="sticky-nav">
+  <a href="#problem">The Problem</a>
+  <a href="#before-after">Before / After</a>
+  <a href="#impact">Business Impact</a>
+  <a href="#evidence">Evidence</a>
+  <a href="#fix">The Fix</a>
+</nav>
+
+<div class="main">
+
+  <!-- PROBLEM STATEMENT -->
+  <div id="problem" style="padding-top: 8px;">
+    <div class="problem-banner">
+      <h3>The Invisible Problem</h3>
+      <p>
+        When I Work shows 4.8 stars on both iOS and Android. The rating looks fine.
+        The damage is invisible: clock-out requests that silently fail, GPS geofences that block
+        clock-in in every indoor environment, and push notifications that never arrive.
+        These failures do not generate 1-star reviews — they generate RevOps tickets, timesheet corrections,
+        and manager churn. Your own Help Center documents these failure modes. The rating hides the cost.
+      </p>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <div id="before-after">
+    <div class="section-intro">
+      <h2>The Clock-Out Problem: Before and After</h2>
+      <p>The same action. Two completely different outcomes. The difference is a WorkManager offline queue — six weeks of engineering work.</p>
+    </div>
+
+    <div class="comparison-grid">
+
+      <!-- BEFORE panel -->
+      <div class="panel">
+        <div class="panel-label before">
+          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+          Current State — Silent Failure
+        </div>
+        <div class="panel-body">
+
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app-topbar">
+                <span class="logo-text">When I Work</span>
+                <span class="time-text">5:47 PM</span>
+              </div>
+              <div class="app-content">
+
+                <div class="shift-card">
+                  <div class="shift-title">Afternoon Shift</div>
+                  <div class="shift-meta">3:00 PM – 6:00 PM &nbsp;|&nbsp; Kitchen</div>
+                </div>
+
+                <!-- Clock out button — tapped state -->
+                <div class="clock-btn tapped">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>
+                  Clock Out...
+                </div>
+
+                <!-- Missing confirmation -->
+                <div class="status-bar missing">
+                  <span class="status-dot dot-pulse"></span>
+                  Confirmation not received
+                </div>
+
+                <div style="font-size:10px; color:#9CA3AF; text-align:center; line-height:1.4;">
+                  Employee leaves the building.<br/>
+                  App appears to have accepted the request.<br/>
+                  Server never received it.
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="annotation">
+            <strong>Employee sees:</strong> the button responded. They leave.<br/>
+            <strong>Server sees:</strong> nothing. Still clocked in.
+          </div>
+
+          <div class="quote-block">
+            "You can't tell that it glitched until you go back to the app to clock in or clock out again."
+            <cite>— Paige F., Capterra, May 2024</cite>
+          </div>
+
+          <div class="quote-block" style="margin-top: 8px;">
+            "The green bar at the bottom would not be present...sometimes taking 3-20 minutes to resolve."
+            <cite>— G. Bruen, ComplaintsBoard</cite>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- AFTER panel -->
+      <div class="panel">
+        <div class="panel-label after">
+          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2.5 2.5L11 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>
+          Fixed State — Guaranteed Delivery
+        </div>
+        <div class="panel-body">
+
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app-topbar">
+                <span class="logo-text">When I Work</span>
+                <span class="time-text">5:47 PM</span>
+              </div>
+              <div class="app-content">
+
+                <div class="shift-card">
+                  <div class="shift-title">Afternoon Shift</div>
+                  <div class="shift-meta">3:00 PM – 6:00 PM &nbsp;|&nbsp; Kitchen</div>
+                </div>
+
+                <!-- Clock out success -->
+                <div class="clock-btn success">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                  Clocked Out
+                </div>
+
+                <!-- Confirmed status -->
+                <div class="status-bar confirmed">
+                  <span class="status-dot dot-green"></span>
+                  Confirmed 5:47 PM — receipt saved
+                </div>
+
+                <div class="status-bar queued" style="margin-top: 4px;">
+                  <span class="status-dot dot-blue"></span>
+                  Queued offline backup &bull; auto-syncs on signal
+                </div>
+
+                <div style="font-size:10px; color:#9CA3AF; text-align:center; line-height:1.4;">
+                  WorkManager queue persists through app kill,<br/>
+                  network loss, and device restart.
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="annotation">
+            <strong>Employee sees:</strong> confirmed receipt with timestamp.<br/>
+            <strong>Server sees:</strong> delivery guaranteed, even offline.
+          </div>
+
+          <div class="quote-block green-quote">
+            Mechanism: Android WorkManager enqueues clock-out as a persistent job.
+            Retries with exponential backoff. Server confirms receipt.
+            Employee gets a local notification: "Clock-out confirmed at 5:47 PM."
+            <cite>— Elinext Android Engineering Proposal</cite>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /before-after -->
+
+  <!-- SUPERVISOR DASHBOARD -->
+  <div class="dashboard-section" id="dashboard">
+    <h3>What the Manager Sees: Before and After</h3>
+    <p class="section-desc">The supervisor dashboard shows the real cost of silent failures — and what proper visibility looks like.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      @media(max-width:700px) { display: block; }
+
+      <!-- Before: manager dashboard -->
+      <div class="dashboard-mockup">
+        <div class="dashboard-header">
+          <div>
+            <div class="dashboard-title">Timesheet Review — Tuesday</div>
+            <div class="dashboard-subtitle" style="color: var(--red);">3 unresolved clock-outs require manual correction</div>
+          </div>
+          <div style="font-size: 11px; background: var(--red-pale); color: var(--red); padding: 4px 10px; border-radius: 20px; font-weight: 700;">BEFORE FIX</div>
+        </div>
+        <div class="timesheet-list">
+          <div class="timesheet-row pending">
+            <span class="tr-name">J. Martinez</span>
+            <span class="tr-detail">Still clocked in — last seen 5:47 PM. No clock-out received.</span>
+            <span class="tr-status warn">ACTION NEEDED</span>
+          </div>
+          <div class="timesheet-row pending">
+            <span class="tr-name">A. Torres</span>
+            <span class="tr-detail">Clocked in at 8:02 AM. GPS timed out — manager override required.</span>
+            <span class="tr-status warn">GPS FAIL</span>
+          </div>
+          <div class="timesheet-row pending">
+            <span class="tr-name">D. Kim</span>
+            <span class="tr-detail">Session dropped during shift. Timesheet has 4-hour gap.</span>
+            <span class="tr-status warn">MANUAL FIX</span>
+          </div>
+          <div class="timesheet-row ok">
+            <span class="tr-name">R. Patel</span>
+            <span class="tr-detail">Clocked in 3:01 PM / out 6:03 PM. No issues.</span>
+            <span class="tr-status good">OK</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- After: manager dashboard -->
+      <div class="dashboard-mockup">
+        <div class="dashboard-header">
+          <div>
+            <div class="dashboard-title">Timesheet Review — Tuesday</div>
+            <div class="dashboard-subtitle" style="color: var(--green);">All clock-outs confirmed. Zero corrections required.</div>
+          </div>
+          <div class="live-badge">
+            <span class="live-dot"></span>
+            Live
+          </div>
+        </div>
+        <div class="timesheet-list">
+          <div class="timesheet-row ok">
+            <span class="tr-name">J. Martinez</span>
+            <span class="tr-detail">In 3:00 PM / Out 5:47 PM. Receipt confirmed. WorkManager delivery.</span>
+            <span class="tr-status good">CONFIRMED</span>
+          </div>
+          <div class="timesheet-row ok">
+            <span class="tr-name">A. Torres</span>
+            <span class="tr-detail">In 8:02 AM — GPS via WiFi fallback (indoor). Geofence: pass.</span>
+            <span class="tr-status good">CONFIRMED</span>
+          </div>
+          <div class="timesheet-row queued">
+            <span class="tr-name">D. Kim</span>
+            <span class="tr-detail">Clock-out queued offline at 6:01 PM. Synced 6:04 PM on reconnect.</span>
+            <span class="tr-status info">SYNCED</span>
+          </div>
+          <div class="timesheet-row ok">
+            <span class="tr-name">R. Patel</span>
+            <span class="tr-detail">Clocked in 3:01 PM / out 6:03 PM. No issues.</span>
+            <span class="tr-status good">OK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- BUSINESS IMPACT -->
+  <div id="impact" class="impact-section">
+    <h3>Business Impact: The RevOps Cost of Silent Failures</h3>
+    <div class="impact-grid">
+      <div class="impact-card bad">
+        <div class="metric">~5%</div>
+        <div class="metric-label">Estimated Clock-Out Failure Rate</div>
+        <div class="metric-desc">Based on public complaint density vs. total daily events. Even 1% on millions of daily events = thousands of corrections.</div>
+      </div>
+      <div class="impact-card neutral">
+        <div class="metric">8–15 min</div>
+        <div class="metric-label">Manager Time per Correction</div>
+        <div class="metric-desc">Per manual timesheet correction: find the employee, verify the shift time, override in admin portal, recheck payroll export.</div>
+      </div>
+      <div class="impact-card bad">
+        <div class="metric">$0</div>
+        <div class="metric-label">Visible in App Store Rating</div>
+        <div class="metric-desc">Silent failures do not generate 1-star reviews. Churned managers do not return to leave feedback. The rating stays at 4.8.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 16px 20px; background: var(--gray-50); border-radius: 8px; font-size: 13px; color: var(--gray-700); line-height: 1.6;">
+      <strong>Help Center signal:</strong> When I Work maintains dedicated troubleshooting articles for GPS clock-in failure
+      (<a href="https://help.wheniwork.com/articles/troubleshooting-mobile-time-clocks/" style="color: #1565C0;">help.wheniwork.com</a>).
+      Companies write Help Center articles to deflect support volume. The existence of these articles is a
+      quantitative signal: the failure rate is high enough to justify structured self-service documentation.
+      The official GPS fix is to disable geofencing. That is not a solution — that is a feature being turned off.
+    </div>
+  </div>
+
+  <!-- EVIDENCE TABLE -->
+  <div id="evidence" class="evidence-section">
+    <h3>Evidence: All Failure Categories</h3>
+    <div class="evidence-note">All quotes are from public sources. No fabricated reviews.</div>
+    <table class="evidence-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Severity</th>
+          <th>Source</th>
+          <th>Quote / Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Silent clock-out</strong></td>
+          <td><span class="badge critical">Critical</span></td>
+          <td>Capterra, May 2024<br/>(Paige F.)</td>
+          <td>"You can't tell that it glitched until you go back to the app to clock in or clock out again."</td>
+        </tr>
+        <tr>
+          <td><strong>Silent clock-out</strong></td>
+          <td><span class="badge critical">Critical</span></td>
+          <td>ComplaintsBoard<br/>(G. Bruen)</td>
+          <td>"The green bar at the bottom would not be present...sometimes taking 3-20 minutes to resolve."</td>
+        </tr>
+        <tr>
+          <td><strong>Connect delay</strong></td>
+          <td><span class="badge high">High</span></td>
+          <td>ComplaintsBoard<br/>(F. Adams)</td>
+          <td>"Clocking in and out my employees had to waste 2 to 3 minutes waiting for the app to connect."</td>
+        </tr>
+        <tr>
+          <td><strong>Force close</strong></td>
+          <td><span class="badge high">High</span></td>
+          <td>ComplaintsBoard<br/>(I. Abbott)</td>
+          <td>"The app constantly force closes, freezes, has issues with the server or proxy."</td>
+        </tr>
+        <tr>
+          <td><strong>Freeze on use</strong></td>
+          <td><span class="badge high">High</span></td>
+          <td>ComplaintsBoard<br/>(Z. Kling)</td>
+          <td>"The app always freezes, requiring me to force close it."</td>
+        </tr>
+        <tr>
+          <td><strong>GPS failure</strong></td>
+          <td><span class="badge high">High</span></td>
+          <td>Help Center<br/>(official)</td>
+          <td>"Large building or basement — app cannot determine location and user cannot clock in or out."</td>
+        </tr>
+        <tr>
+          <td><strong>GPS fix = disable</strong></td>
+          <td><span class="badge vendor">Vendor Admission</span></td>
+          <td>Help Center<br/>(official)</td>
+          <td>Official workaround: "turn off the Must Be Near Location to Clock In/Out setting."</td>
+        </tr>
+        <tr>
+          <td><strong>Session drop</strong></td>
+          <td><span class="badge medium">Medium</span></td>
+          <td>ComplaintsBoard<br/>(N. Kuvalis)</td>
+          <td>"App kicked me out of my work group...super Frustrating." (multiple phones, 2+ years)</td>
+        </tr>
+        <tr>
+          <td><strong>Notification failure</strong></td>
+          <td><span class="badge medium">Medium</span></td>
+          <td>ComplaintsBoard<br/>(T. Shields)</td>
+          <td>"App alerts are constantly an issue...didn't get app notification."</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- THE FIX -->
+  <div id="fix" class="offer-section">
+    <h3>The Fix: 6-Week Android Stability Pass</h3>
+    <p>
+      Every failure category above is solved by standard Android platform APIs — WorkManager,
+      Fused Location Provider, FCM high-priority channels — that exist precisely for these problems.
+      This is not a rewrite. It is an infrastructure pass by engineers who have done this before.
+    </p>
+
+    <div class="offer-grid">
+      <div class="offer-item">
+        <div class="offer-value">$14–18K</div>
+        <div class="offer-label">Fixed-range engagement</div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-value">6–8 wk</div>
+        <div class="offer-label">Delivery timeline</div>
+      </div>
+      <div class="offer-item">
+        <div class="offer-value">2–3</div>
+        <div class="offer-label">Senior Android engineers</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 28px; font-size: 13px; color: #9CA3AF; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.6; margin-bottom: 28px;">
+      Phase 1 scope: WorkManager offline queue for clock-in/out, Fused Location Provider migration,
+      FCM high-priority channels. Phase 2 (optional): token refresh hardening, WorkChat notification reliability, crash telemetry.
+    </div>
+
+    
+      Request a 20-Minute Call
+    
+    <div class="contact-line">
+      Elinext Mobile Engineering, Elinext &nbsp;|&nbsp;
+      elinext.com/contacts/
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+</body>
+</html>

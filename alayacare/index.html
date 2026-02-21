@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlayaCare Mobile Reliability — Elinext Proposal</title>
+<style>
+  :root {
+    --ac-green: #2D6A4F;
+    --ac-green-light: #40916C;
+    --ac-teal: #52B788;
+    --ac-bg: #F0FFF4;
+    --danger: #C0392B;
+    --danger-light: #FDECEA;
+    --danger-dark: #7B1A1A;
+    --success: #1B6B3A;
+    --success-light: #E8F5EC;
+    --warning: #E67E22;
+    --warning-light: #FEF5E7;
+    --warning-dark: #78350F;
+    --gray: #6B7280;
+    --gray-light: #F3F4F6;
+    --text: #1A1A2E;
+    --border: #D1D5DB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #FAFBFC;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1B4332 0%, var(--ac-green) 50%, var(--ac-green-light) 100%);
+    color: white;
+    padding: 48px 40px 40px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+  .header h1 {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  .header p {
+    font-size: 16px;
+    opacity: 0.85;
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* RATING BANNER */
+  .rating-banner {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .rating-item { text-align: center; }
+  .rating-stars {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .rating-stars.warn { color: var(--warning); }
+  .rating-stars.ok { color: var(--ac-green-light); }
+  .rating-platform {
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .rating-reviews {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+  .rating-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray);
+    font-size: 13px;
+  }
+  .rating-note {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--warning);
+    margin-bottom: 2px;
+  }
+  .rating-subtext {
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 40px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ac-teal);
+    margin-bottom: 8px;
+  }
+  .section-heading {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ac-green);
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-size: 15px;
+    color: var(--gray);
+    margin-bottom: 36px;
+    max-width: 720px;
+  }
+
+  /* EVIDENCE */
+  .evidence-strip {
+    background: var(--danger-light);
+    border-left: 4px solid var(--danger);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .evidence-strip blockquote {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--danger-dark);
+    margin-bottom: 6px;
+  }
+  .evidence-source {
+    font-size: 11px;
+    color: var(--danger);
+    font-weight: 600;
+  }
+
+  .zendesk-quote {
+    background: #FFF8E1;
+    border-left: 4px solid #F59E0B;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .zendesk-quote p {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--warning-dark);
+    margin-bottom: 4px;
+  }
+  .zendesk-quote span {
+    font-size: 11px;
+    color: #92400E;
+  }
+
+  .regulation-box {
+    background: #EFF6FF;
+    border-left: 4px solid #3B82F6;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .regulation-box p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1E3A5F;
+    margin-bottom: 4px;
+  }
+  .regulation-box span {
+    font-size: 11px;
+    color: #3B82F6;
+    font-weight: 600;
+  }
+
+  /* COMPARISON */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 12px;
+  }
+  .panel {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .panel-header {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-header.before { background: var(--danger); color: white; }
+  .panel-header.after { background: var(--success); color: white; }
+  .panel-body {
+    background: white;
+    padding: 24px 20px;
+  }
+
+  /* PHONE MOCKUP */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .phone {
+    width: 200px;
+    border-radius: 24px;
+    border: 3px solid #374151;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .phone-notch {
+    background: #1F2937;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-notch-bar {
+    width: 60px;
+    height: 6px;
+    background: #4B5563;
+    border-radius: 3px;
+  }
+  .phone-screen {
+    background: #F9FAFB;
+    min-height: 280px;
+    padding: 10px;
+  }
+  .phone-status-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: #6B7280;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .app-bar {
+    background: var(--ac-green);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .phone-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 9px;
+  }
+  .phone-card-title {
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    border-left: 2px solid var(--border);
+    margin-left: 12px;
+    padding-left: 16px;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-item::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    left: -21px;
+    top: 4px;
+  }
+  .timeline-item.fail::before { background: var(--danger); }
+  .timeline-item.ok::before { background: #16A34A; }
+  .timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .timeline-label.fail { color: var(--danger); }
+  .timeline-label.ok { color: var(--success); }
+  .timeline-detail {
+    font-size: 12px;
+    color: var(--gray);
+  }
+  .timeline-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .timeline-tag.danger-tag { background: var(--danger-light); color: var(--danger); }
+  .timeline-tag.ok-tag { background: var(--success-light); color: var(--success); }
+
+  /* EVV TABLE */
+  .evv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .evv-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 10px 12px;
+    background: var(--gray-light);
+    border-bottom: 1px solid var(--border);
+  }
+  .evv-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .evv-table td.risk { color: var(--danger); font-weight: 700; }
+  .evv-table td.fix { color: var(--success); font-weight: 700; }
+  .evv-table tr:last-child td { border-bottom: none; }
+
+  /* TECH CARD */
+  .tech-card {
+    background: var(--gray-light);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+  .tech-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .code-line {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    background: #1F2937;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 2px 0;
+    display: block;
+  }
+  .code-line.red { color: #FCA5A5; }
+  .code-line.green { color: #86EFAC; }
+  .code-line.blue { color: #93C5FD; }
+
+  /* WORKFLOW CHAIN */
+  .workflow-chain {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .wf-box {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .wf-box.entry { background: var(--ac-green); color: white; }
+  .wf-box.blocked { background: #FEE2E2; color: var(--danger); border: 1px solid #FECACA; }
+  .wf-box.clear { background: var(--success-light); color: var(--success); border: 1px solid #86EFAC; }
+  .wf-arrow {
+    font-size: 14px;
+    color: var(--border);
+    padding: 0 4px;
+    font-weight: 700;
+  }
+  .wf-arrow.fail { color: var(--danger); }
+  .wf-arrow.ok { color: var(--success); }
+
+  /* ENGAGEMENT BOX */
+  .engagement-box {
+    background: linear-gradient(135deg, #1B4332 0%, var(--ac-green) 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 36px 40px;
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .eng-item h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .eng-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ac-teal);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .eng-detail {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: white;
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ac-green);
+    margin-bottom: 8px;
+  }
+  .footer-contact {
+    font-size: 14px;
+    color: var(--gray);
+  }
+  .footer-contact a {
+    color: var(--ac-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ROOT CAUSE GRID */
+  .root-cause-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .rc-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .rc-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ac-green);
+    margin-bottom: 8px;
+  }
+  .rc-card p {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .comparison { grid-template-columns: 1fr; }
+    .root-cause-grid { grid-template-columns: 1fr; }
+    .engagement-box { grid-template-columns: 1fr; padding: 24px; }
+    .rating-banner { gap: 24px; }
+    .section { padding: 36px 20px; }
+    .header { padding: 36px 20px 32px; }
+    .header h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Elinext Mobile Engineering -- Confidential Proposal</div>
+  <h1>AlayaCare Mobile Reliability Proposal</h1>
+  <p>GPS clock-in failures and data sync loss are not UX bugs. Under EVV, they are documentation failures that put Medicaid reimbursement at risk. Here is exactly where it breaks and how to fix it.</p>
+</div>
+
+<!-- RATING BANNER -->
+<div class="rating-banner">
+  <div class="rating-item">
+    <div class="rating-stars warn">4.2</div>
+    <div class="rating-platform">iOS App Store</div>
+    <div class="rating-reviews">~1,279 reviews -- id1030754584</div>
+  </div>
+  <div class="rating-divider">
+    <div class="rating-note">Below 4.3 reliability floor</div>
+    <div class="rating-subtext">Both platforms show same failure categories</div>
+  </div>
+  <div class="rating-item">
+    <div class="rating-stars ok">4.4</div>
+    <div class="rating-platform">Google Play</div>
+    <div class="rating-reviews">~1,720 reviews -- com.alayacare.careworkerapp</div>
+  </div>
+</div>
+
+<!-- EVV CONTEXT -->
+<div class="section">
+  <div class="section-label">Regulatory context</div>
+  <div class="section-heading">EVV: why mobile reliability is a compliance problem</div>
+  <div class="section-sub">Electronic Visit Verification is not optional. It is a federal mandate with financial consequences for every home health agency running AlayaCare.</div>
+
+  <div class="regulation-box">
+    <p>Section 12006(a), 21st Century Cures Act: States must require EVV for all Medicaid-funded personal care and home health services.</p>
+    <span>Required data: location of service delivery, time begins/ends, type of service, provider identity -- Medicaid.gov</span>
+  </div>
+
+  <table class="evv-table">
+    <thead>
+      <tr>
+        <th>EVV Data Element</th>
+        <th>AlayaCare Feature</th>
+        <th>Current Failure Mode</th>
+        <th>Compliance Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Location of service delivery</strong></td>
+        <td>GPS clock-in/out</td>
+        <td class="risk">"Not Within Proximities" error at client home</td>
+        <td class="risk">Visit location unverified -- denied claim</td>
+      </tr>
+      <tr>
+        <td><strong>Type of service performed</strong></td>
+        <td>Nurse notes, vital signs</td>
+        <td class="risk">Data sync loss -- notes disappear after submission</td>
+        <td class="risk">Undocumented visit = unbillable visit</td>
+      </tr>
+      <tr>
+        <td><strong>Time begins/ends</strong></td>
+        <td>Clock-in/out timestamps</td>
+        <td class="risk">Phantom clock state -- clocked out locally, still in on server</td>
+        <td class="risk">Inaccurate times -- overbilling or underbilling risk</td>
+      </tr>
+      <tr>
+        <td><strong>Individual providing service</strong></td>
+        <td>Care worker login</td>
+        <td class="risk">Login persistence failure -- re-auth during shifts</td>
+        <td class="risk">Cannot clock in = no EVV record</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- EVIDENCE FROM ZENDESK -->
+<div class="section">
+  <div class="section-label">Evidence from your own support center</div>
+  <div class="section-heading">Three Zendesk articles for one failure mode</div>
+  <div class="section-sub">Your engineering team has documented these as troubleshooting workflows. Three articles for GPS/location failure alone means the root cause is unresolved.</div>
+
+  <div class="zendesk-quote">
+    <p>"Mobile: Location Troubleshooting" -- Location determined by Wi-Fi, GPS, or mobile network</p>
+    <span>AlayaCare Zendesk -- alayacare.zendesk.com/hc/en-us/articles/27461582985115</span>
+  </div>
+  <div class="zendesk-quote">
+    <p>"Troubleshooting Incorrect Clock-In Location in Mobile App" -- Employee consistently receives incorrect location</p>
+    <span>AlayaCare Zendesk -- alayacare.zendesk.com/hc/en-us/articles/29856915494939</span>
+  </div>
+  <div class="zendesk-quote">
+    <p>"Troubleshooting the 'Not Within Proximities' Clock In/Out Issue" -- Error even when physically at client location</p>
+    <span>AlayaCare Zendesk -- alayacare.zendesk.com/hc/en-us/articles/29654083308187</span>
+  </div>
+
+  <div style="margin-top:24px;">
+    <div class="evidence-strip">
+      <blockquote>"Half the time the location of the clock in/out can't be pinned."</blockquote>
+      <div class="evidence-source">App Store Review -- iOS -- id1030754584</div>
+    </div>
+    <div class="evidence-strip">
+      <blockquote>"Despite being logged in and saving throughout, I received error messages upon submission and found that vital signs, comments, and progress notes had disappeared."</blockquote>
+      <div class="evidence-source">App Store Review -- iOS -- Nurse Documentation Loss</div>
+    </div>
+    <div class="evidence-strip">
+      <blockquote>"When I go to clock out and put care notes in, it says I've clocked out but it leaves me clocked in for hours."</blockquote>
+      <div class="evidence-source">App Store Review -- iOS -- Phantom Clock State</div>
+    </div>
+    <div class="evidence-strip">
+      <blockquote>"The app loses data and often wastes time because it loses internet connections."</blockquote>
+      <div class="evidence-source">Google Play Review -- Android -- com.alayacare.careworkerapp</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ROOT CAUSE ANALYSIS -->
+<div class="section">
+  <div class="section-label">Technical root cause analysis</div>
+  <div class="section-heading">Why these failures persist</div>
+  <div class="section-sub">Each failure category maps to a specific engineering root cause with a known fix.</div>
+
+  <div class="root-cause-grid">
+    <div class="rc-card">
+      <h4>GPS Cold Start Latency</h4>
+      <p>The app requests GPS only at clock-in -- a point-in-time fix. No location pre-warming during transit. Caregiver arrives, taps clock-in, gets a stale Wi-Fi-triangulated location with 50-100m accuracy. Proximity geofence rejects it.</p>
+      <div class="tech-card" style="margin-top:0;">
+        <code class="code-line red">// Point-in-time GPS fix -- no pre-warming</code>
+        <code class="code-line red">locationManager.requestSingleUpdate()</code>
+        <code class="code-line red">// Returns cached/Wi-Fi location, not GPS fix</code>
+      </div>
+    </div>
+
+    <div class="rc-card">
+      <h4>Data Sync Loss</h4>
+      <p>Nurse documentation held in memory, not committed to local database before sync. When connectivity drops (common in homes -- basements, rural), the form submission fails and all entered data is lost.</p>
+      <div class="tech-card" style="margin-top:0;">
+        <code class="code-line red">// Direct server submission -- no local persistence</code>
+        <code class="code-line red">api.submitNotes(formData) // fails silently on network loss</code>
+        <code class="code-line red">// No Room/CoreData write-first architecture</code>
+      </div>
+    </div>
+
+    <div class="rc-card">
+      <h4>Phantom Clock State</h4>
+      <p>App shows local "clocked out" before server confirmation. If network request fails, server still shows caregiver clocked in. No state reconciliation on app reopen. Creates billing discrepancies and phantom overtime.</p>
+      <div class="tech-card" style="margin-top:0;">
+        <code class="code-line red">// Optimistic UI without server confirmation</code>
+        <code class="code-line red">localState.setClockOut() // shown to user</code>
+        <code class="code-line red">api.clockOut() // may fail silently</code>
+      </div>
+    </div>
+
+    <div class="rc-card">
+      <h4>Auth Token Persistence</h4>
+      <p>"Remember me" does not survive app restarts. Token not stored in Android Keystore or iOS Keychain. Device timestamp mismatch (acknowledged in Zendesk) causes token validation failure. Session timeout shorter than visit duration.</p>
+      <div class="tech-card" style="margin-top:0;">
+        <code class="code-line red">// Token in volatile storage -- lost on restart</code>
+        <code class="code-line red">// No EncryptedSharedPreferences / Keychain</code>
+        <code class="code-line red">// Clock-dependent expiry validation</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- BEFORE / AFTER: GPS -->
+<div class="section">
+  <div class="section-label">The fix: GPS clock-in</div>
+  <div class="section-heading">From "Not Within Proximities" to reliable EVV verification</div>
+  <div class="section-sub">A foreground service pre-warms GPS during transit. By the time the caregiver arrives and taps clock-in, the GPS receiver has a precise fix.</div>
+
+  <div class="comparison">
+    <!-- BEFORE -->
+    <div class="panel">
+      <div class="panel-header before">BEFORE -- GPS cold start failure</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>8:15 AM</span><span>GPS: searching...</span></div>
+              <div class="app-bar"><span>AlayaCare</span><span style="font-size:8px;opacity:0.7;">Visit: Mrs. Johnson</span></div>
+              <div class="phone-card" style="border-color:#FCA5A5;">
+                <div class="phone-card-title" style="color:var(--danger);">Clock-In Failed</div>
+                <div style="text-align:center;padding:8px 0;">
+                  <div style="font-size:20px;margin-bottom:4px;">&#x26A0;</div>
+                  <div style="font-size:9px;color:var(--danger);font-weight:700;">Not Within Proximities</div>
+                  <div style="font-size:8px;color:var(--gray);margin-top:4px;">Your location could not be verified.<br>Please ensure location services are enabled.</div>
+                </div>
+              </div>
+              <div class="phone-card">
+                <div style="font-size:8px;color:var(--gray);">GPS accuracy: ~85m (Wi-Fi triangulation)<br>Required: within 50m of client address<br>Actual distance: 12m (standing in living room)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">GPS cold start</div>
+            <div class="timeline-detail">App opened at client home. GPS receiver not active. Returns cached Wi-Fi location with 85m accuracy.</div>
+          </div>
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">Proximity geofence rejects</div>
+            <div class="timeline-detail">85m accuracy exceeds 50m threshold. Caregiver physically present but electronically rejected.</div>
+            <div class="timeline-tag danger-tag">EVV: Location unverified</div>
+          </div>
+          <div class="timeline-item fail">
+            <div class="timeline-label fail">Manual workaround</div>
+            <div class="timeline-detail">Nurse waits, reopens app, tries again. 3-5 min lost per visit. Across 10 visits/day = 30-50 min wasted.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="panel">
+      <div class="panel-header after">AFTER -- GPS foreground service</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>8:15 AM</span><span style="color:#16A34A;">GPS: locked</span></div>
+              <div class="app-bar"><span>AlayaCare</span><span style="font-size:8px;opacity:0.7;">Visit: Mrs. Johnson</span></div>
+              <div class="phone-card" style="border-color:#86EFAC;">
+                <div class="phone-card-title" style="color:var(--success);">Clock-In Successful</div>
+                <div style="text-align:center;padding:8px 0;">
+                  <div style="font-size:20px;margin-bottom:4px;">&#x2705;</div>
+                  <div style="font-size:9px;color:var(--success);font-weight:700;">Location Verified</div>
+                  <div style="font-size:8px;color:var(--gray);margin-top:4px;">GPS accuracy: 8m<br>Within proximity: confirmed</div>
+                </div>
+              </div>
+              <div class="phone-card" style="border-color:#86EFAC;">
+                <div style="font-size:8px;color:var(--success);font-weight:700;">EVV Record Created</div>
+                <div style="font-size:8px;color:var(--gray);">Location, time, provider -- all verified electronically</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">GPS pre-warmed during transit</div>
+            <div class="timeline-detail">Foreground service activates GPS when next visit is within 15 min. Receiver has precise fix on arrival.</div>
+            <div class="timeline-tag ok-tag">8m accuracy vs 85m</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">Accuracy threshold check</div>
+            <div class="timeline-detail">App validates GPS accuracy before submitting clock-in. If accuracy insufficient, waits for convergence (5-10 sec, not 3-5 min).</div>
+          </div>
+          <div class="timeline-item ok">
+            <div class="timeline-label ok">Fallback: offline queue</div>
+            <div class="timeline-detail">If no connectivity, clock-in queued locally with GPS coordinates. Syncs when network reconnects. EVV record preserved.</div>
+            <div class="timeline-tag ok-tag">Zero visits lost</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- BEFORE / AFTER: DATA SYNC -->
+<div class="section">
+  <div class="section-label">The fix: nurse documentation</div>
+  <div class="section-heading">From "notes disappeared" to write-first architecture</div>
+  <div class="section-sub">Nurse notes write to encrypted local storage first. Sync to server is asynchronous with retry. No data is ever lost.</div>
+
+  <div class="comparison">
+    <div class="panel">
+      <div class="panel-header before">BEFORE -- Direct server submission</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>10:30 AM</span><span style="color:var(--danger);">1 bar</span></div>
+              <div class="app-bar"><span>AlayaCare</span><span style="font-size:8px;opacity:0.7;">Notes: Mr. Chen</span></div>
+              <div class="phone-card">
+                <div class="phone-card-title">Progress Notes</div>
+                <div style="font-size:8px;color:var(--gray);">Vital signs: BP 128/82, HR 76...<br>Medication: Lisinopril admin...<br>Assessment: Patient reports...</div>
+                <div style="font-size:8px;color:var(--gray);margin-top:4px;font-style:italic;">15 min of documentation...</div>
+              </div>
+              <div class="phone-card" style="border-color:#FCA5A5;">
+                <div class="phone-card-title" style="color:var(--danger);">Submission Error</div>
+                <div style="font-size:8px;color:var(--danger);">Unable to connect to server.<br>Your changes could not be saved.</div>
+              </div>
+              <div style="text-align:center;padding:8px;font-size:8px;color:var(--danger);font-weight:700;">Vital signs, comments, and progress notes -- gone.</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--gray);margin-top:8px;">
+          <strong>EVV impact:</strong> Visit occurred but documentation is lost. Under Medicaid, a service not documented is a service not delivered. The visit becomes unbillable.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header after">AFTER -- Local-first with sync queue</div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+            <div class="phone-screen">
+              <div class="phone-status-bar"><span>10:30 AM</span><span style="color:var(--warning);">Offline</span></div>
+              <div class="app-bar"><span>AlayaCare</span><span style="font-size:8px;opacity:0.7;">Notes: Mr. Chen</span></div>
+              <div class="phone-card" style="border-color:#86EFAC;">
+                <div class="phone-card-title" style="color:var(--success);">Saved Locally</div>
+                <div style="font-size:8px;color:var(--gray);">Vital signs: BP 128/82, HR 76...<br>Medication: Lisinopril admin...<br>Assessment: Patient reports...</div>
+              </div>
+              <div style="background:var(--warning-light);border:1px solid #FDE68A;border-radius:6px;padding:8px;font-size:8px;color:var(--warning-dark);margin-top:4px;">
+                <strong>Offline mode</strong> -- Notes saved to encrypted local storage. Will sync automatically when connected.
+              </div>
+              <div class="phone-card" style="border-color:#86EFAC;margin-top:8px;">
+                <div style="font-size:8px;color:var(--success);font-weight:700;">Sync complete</div>
+                <div style="font-size:8px;color:var(--gray);">Connected to Wi-Fi at next location. Notes synced successfully.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tech-card" style="margin-top:8px;">
+          <h4>Implementation</h4>
+          <code class="code-line green">// Write to local encrypted DB first</code>
+          <code class="code-line green">Room.insert(nurseNotes) // Android</code>
+          <code class="code-line green">CoreData.save(nurseNotes) // iOS</code>
+          <code class="code-line green">// Background sync with exponential backoff</code>
+          <code class="code-line green">WorkManager.enqueue(SyncWorker(noteId))</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- COST TABLE -->
+<div class="section">
+  <div class="section-label">Business impact</div>
+  <div class="section-heading">What each failure costs your agency clients</div>
+  <div class="section-sub">Every GPS failure, every lost note, every phantom clock state flows downstream to Medicaid reimbursement.</div>
+
+  <table class="evv-table">
+    <thead>
+      <tr>
+        <th>Failure Mode</th>
+        <th>Evidence</th>
+        <th>Cost Per Event</th>
+        <th>After Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>GPS clock-in failure</strong></td>
+        <td>3 Zendesk articles; "Not Within Proximities" error</td>
+        <td class="risk">$50-200 denied Medicaid claim per visit</td>
+        <td class="fix">$0 -- GPS pre-warming eliminates cold start</td>
+      </tr>
+      <tr>
+        <td><strong>Nurse notes data loss</strong></td>
+        <td>"Vital signs, comments, progress notes disappeared"</td>
+        <td class="risk">Unbillable visit + 15-30 min re-documentation</td>
+        <td class="fix">$0 -- Local-first write, async sync</td>
+      </tr>
+      <tr>
+        <td><strong>Phantom clock state</strong></td>
+        <td>"Clocked out but leaves me clocked in for hours"</td>
+        <td class="risk">Phantom overtime / billing discrepancy</td>
+        <td class="fix">Server-confirmed clock with reconciliation</td>
+      </tr>
+      <tr>
+        <td><strong>Login persistence failure</strong></td>
+        <td>"Must re-enter password every time" + Zendesk login article</td>
+        <td class="risk">Cannot clock in = no EVV record</td>
+        <td class="fix">Encrypted token in Keystore/Keychain</td>
+      </tr>
+      <tr>
+        <td><strong>App crash on documentation</strong></td>
+        <td>"App completely exits when obtaining signatures"</td>
+        <td class="risk">Complete documentation loss mid-visit</td>
+        <td class="fix">Auto-save drafts + crash recovery</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:24px;">
+    <div class="section-label">EVV care workflow -- current state</div>
+    <div class="workflow-chain">
+      <div class="wf-box entry">Arrive at Client</div>
+      <div class="wf-arrow fail">X</div>
+      <div class="wf-box blocked">GPS Clock-In</div>
+      <div class="wf-arrow">?</div>
+      <div class="wf-box blocked">Document Care</div>
+      <div class="wf-arrow">?</div>
+      <div class="wf-box blocked">GPS Clock-Out</div>
+      <div class="wf-arrow">?</div>
+      <div class="wf-box blocked">EVV Record</div>
+      <div class="wf-arrow">?</div>
+      <div class="wf-box blocked">Medicaid Claim</div>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="section-label">EVV care workflow -- after reliability pass</div>
+      <div class="workflow-chain">
+        <div class="wf-box entry">Arrive at Client</div>
+        <div class="wf-arrow ok">&#x2713;</div>
+        <div class="wf-box clear">GPS Clock-In</div>
+        <div class="wf-arrow ok">&#x2192;</div>
+        <div class="wf-box clear">Document Care</div>
+        <div class="wf-arrow ok">&#x2192;</div>
+        <div class="wf-box clear">GPS Clock-Out</div>
+        <div class="wf-arrow ok">&#x2192;</div>
+        <div class="wf-box clear">EVV Record</div>
+        <div class="wf-arrow ok">&#x2192;</div>
+        <div class="wf-box clear">Medicaid Claim</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENGAGEMENT BOX -->
+<div class="section" style="padding-bottom: 0;">
+  <div class="engagement-box">
+    <div class="eng-item">
+      <h3>Phase 1 Entry</h3>
+      <div class="eng-value">Scoped engagement</div>
+      <div class="eng-detail">Targeted native fixes — iOS + Android</div>
+    </div>
+    <div class="eng-item">
+      <h3>Deliverables</h3>
+      <div class="eng-value" style="font-size:16px;margin-top:4px;">GPS Pre-Warming -- Local-First Sync -- Secure Auth</div>
+      <div class="eng-detail">Foreground service GPS + Room/CoreData write-first + Keystore/Keychain token persistence</div>
+    </div>
+    <div class="eng-item">
+      <h3>Phase 2</h3>
+      <div class="eng-value">Scoped engagement</div>
+      <div class="eng-detail">WorkManager offline sync queue + crash recovery + draft persistence for clinical forms</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer" style="margin-top:48px;">
+  <div class="footer-logo">Elinext</div>
+  <div class="footer-contact">
+    Elinext Mobile Engineering<br>
+    Contact: elinext.com/contacts/ -- Elinext Mobile Engineering
+  </div>
+</div>
+
+</body>
+</html>

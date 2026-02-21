@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>voize iOS Engineering — Elinext Dedicated Team Proposal</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary:    #0f172a;
+      --bg-surface:    #1e293b;
+      --bg-elevated:   #263347;
+      --border:        #334155;
+      --border-subtle: #1e293b;
+      --text-primary:  #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted:    #64748b;
+      --accent:        #3b82f6;
+      --accent-dim:    rgba(59, 130, 246, 0.12);
+      --accent-border: rgba(59, 130, 246, 0.3);
+      --success:       #10b981;
+      --warning:       #f59e0b;
+      --code-bg:       #0d1117;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Layout ──────────────────────────────────────── */
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* ─── Typography ─────────────────────────────────── */
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+      font-size: 0.82em;
+      background: var(--code-bg);
+      color: #7dd3fc;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #1e3a5f;
+    }
+
+    /* ─── Navigation ─────────────────────────────────── */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    /* ─── Hero ───────────────────────────────────────── */
+
+    #hero {
+      padding: 80px 0 72px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-eyebrow span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 .accent {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 20px 0 40px;
+      line-height: 1.65;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .stat-number {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ─── Section headers ────────────────────────────── */
+
+    .section-header {
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      margin-top: 6px;
+    }
+
+    /* ─── Challenge cards ────────────────────────────── */
+
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .challenge-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .challenge-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .challenge-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .challenge-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 6px;
+      margin-bottom: 14px;
+      font-size: 1rem;
+    }
+
+    .challenge-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .challenge-card p {
+      font-size: 0.85rem;
+      line-height: 1.65;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-border);
+      color: #7dd3fc;
+      background: var(--accent-dim);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ─── Architecture diagram ───────────────────────── */
+
+    .arch-diagram {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px 24px;
+      margin: 32px 0;
+    }
+
+    .arch-teams {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      .arch-teams {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .arch-divider {
+        display: none;
+      }
+    }
+
+    .arch-team {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .arch-team.berlin {
+      border-color: #334155;
+    }
+
+    .arch-team.elinext {
+      border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+
+    .arch-team-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .arch-team.berlin .arch-team-label {
+      color: var(--text-muted);
+    }
+
+    .arch-team.elinext .arch-team-label {
+      color: var(--accent);
+    }
+
+    .arch-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .arch-item .bullet {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .arch-team.elinext .arch-item .bullet {
+      background: var(--accent);
+    }
+
+    .arch-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .arch-divider-line {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+    }
+
+    .arch-divider-icon {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .arch-footer {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .arch-footer strong {
+      color: var(--text-secondary);
+    }
+
+    /* ─── Proof points ───────────────────────────────── */
+
+    .proof-list {
+      list-style: none;
+      display: grid;
+      gap: 0;
+    }
+
+    .proof-item {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 12px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      align-items: flex-start;
+    }
+
+    .proof-item:last-child {
+      border-bottom: none;
+    }
+
+    .proof-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .proof-check svg {
+      width: 12px;
+      height: 12px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .proof-content h3 {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .proof-content p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ─── Offer / CTA ────────────────────────────────── */
+
+    .offer-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--accent-border);
+      border-radius: 10px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offer-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), #06b6d4);
+    }
+
+    .offer-headline {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .offer-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    .offer-deliverables {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .offer-deliverables li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .offer-deliverables li:last-child {
+      border-bottom: none;
+    }
+
+    .offer-deliverables .num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 3px;
+      padding: 1px 5px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .offer-price-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .offer-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .offer-price-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .offer-cta-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.15s, transform 0.1s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .offer-cta-btn:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    .offer-qualify {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── Stack highlight inline block ──────────────── */
+
+    .stack-callout {
+      background: var(--code-bg);
+      border: 1px solid #1e3a5f;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 24px 0;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .stack-callout .stack-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .stack-callout .stack-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .stack-callout .stack-key {
+      color: #f472b6;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      min-width: 190px;
+    }
+
+    .stack-callout .stack-val {
+      color: #7dd3fc;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* ─── Comparison table ───────────────────────────── */
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+      margin: 24px 0;
+    }
+
+    .compare-table thead th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-table tbody td {
+      padding: 10px 14px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+
+    .compare-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .compare-table td.label-col {
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .badge-gap {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-solved {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* ─── Footer ─────────────────────────────────────── */
+
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .footer-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .footer-contact {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer-contact:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── Utility ────────────────────────────────────── */
+
+    .mt-8  { margin-top:  8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mb-8  { margin-bottom:  8px; }
+    .mb-16 { margin-bottom: 16px; }
+    .text-accent { color: var(--accent); }
+    .text-muted  { color: var(--text-muted); }
+
+    /* ─── Scroll reveal ──────────────────────────────── */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ─── Responsive ─────────────────────────────────── */
+
+    @media (max-width: 480px) {
+      section {
+        padding: 48px 0;
+      }
+
+      .offer-box {
+        padding: 24px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <span class="nav-brand">Elinext &times; voize</span>
+      <ul class="nav-links">
+        <li><a href="#challenge">The Challenge</a></li>
+        <li><a href="#fit">How We Fit</a></li>
+        <li><a href="#proof">What We've Shipped</a></li>
+        <li><a href="#offer">2-Week Audit</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        <span>Dedicated iOS Engineering Augmentation — voize US Expansion</span>
+      </div>
+
+      <h1>
+        Your <code>reakt-native-toolkit</code> architecture is sound.<br />
+        The <span class="accent">iOS production path for US healthcare</span> still needs platform specialists.
+      </h1>
+
+      <p class="hero-sub">
+        You built a React Native + KMM bridge that exposes Kotlin <code>Flow</code> as React hooks with full type safety. That is a genuinely elegant architecture for cross-platform healthcare software. What it does not solve on its own: CoreML inference optimization, AVAudioSession interruption recovery, and the delta between GDPR and HIPAA on a mobile ePHI cache. This page is about that gap.
+      </p>
+
+      <div class="stat-row reveal">
+        <div class="stat-card">
+          <div class="stat-number">57%</div>
+          <div class="stat-label">US healthcare workers on iPhone — the market voize is entering</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">73%</div>
+          <div class="stat-label">German nursing homes on Android — the market voize owns</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">60 days</div>
+          <div class="stat-label">Typical time to hire + onboard an iOS engineer into an RN+KMM stack</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">~20</div>
+          <div class="stat-label">Estimated mobile engineers at voize, covering DE maintenance + US build simultaneously</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Challenge ────────────────────────────────── -->
+  <section id="challenge">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="label">What you're navigating</span>
+        <h2>Four iOS-specific problems that don't solve themselves</h2>
+        <p class="mt-8" style="max-width:620px;">
+          These are not generic mobile problems. Each is specific to building a production ambient voice documentation app on iOS for the US healthcare market.
+        </p>
+      </div>
+
+      <div class="challenge-grid">
+
+        <div class="challenge-card reveal">
+          <div class="challenge-icon">&#x2318;</div>
+          <h3>On-Device Inference: CoreML vs. TFLite / ONNX</h3>
+          <p>
+            Your Android inference path runs on TFLite or ONNX Runtime Mobile, tuned for Snapdragon 6xx/4xx NPUs. iOS's Neural Engine speaks CoreML exclusively — Apple intentionally walls off direct GPU/ANE access. Quantization work, model conversion, and latency profiling on Android does not transfer. You are looking at a second optimization track: <code>.mlpackage</code> conversion, <code>MLModel</code> configuration flags, compute unit selection (<code>CPU_AND_NE</code> vs. <code>ALL</code>), and per-device latency regression testing from iPhone 13 mini to iPhone 16 Pro Max.
+          </p>
+          <div class="tech-tags">
+            <span class="tag">CoreML</span>
+            <span class="tag">ANE</span>
+            <span class="tag">INT4 quantization</span>
+            <span class="tag">coremltools</span>
+            <span class="tag">MLComputeUnits</span>
+          </div>
+        </div>
+
+        <div class="challenge-card reveal">
+          <div class="challenge-icon">&#x1F3A4;</div>
+          <h3>iOS Background Audio: AVAudioSession Is Not Forgiving</h3>
+          <p>
+            Android's audio architecture is relatively permissive for background recording. iOS is not. You need <code>AVAudioSessionCategoryRecord</code> with correct options, the <code>audio</code> background mode entitlement declared in your <code>Info.plist</code>, and airtight interruption handling via <code>AVAudioSessionInterruptionNotification</code>. When a phone call, system alert, or another app interrupts the session mid-recording, you must deactivate cleanly and resume without data loss. Behavior changed across iOS 15, 16, 17, and 18. A nurse cannot lose a care record because your app did not handle an incoming Facetime call correctly.
+          </p>
+          <div class="tech-tags">
+            <span class="tag">AVAudioSession</span>
+            <span class="tag">Background Modes</span>
+            <span class="tag">Interruption recovery</span>
+            <span class="tag">iOS 15-18</span>
+          </div>
+        </div>
+
+        <div class="challenge-card reveal">
+          <div class="challenge-icon">&#x1F512;</div>
+          <h3>HIPAA is Not GDPR with Different Paperwork</h3>
+          <p>
+            Your GDPR architecture — on-device processing, no cloud audio, data minimization — gets you closer to HIPAA than most, but not there. The offline voice queue sitting in local storage is ePHI the moment it enters the app. That means <code>AES-256</code> encryption at rest with a device-tied key, automatic session timeout enforced at the app layer (not OS lock screen), remote wipe via MDM enrollment, and audit logs capturing every ePHI access event retained for six years. HIPAA's Security Rule §164.312(a)(1) specifies technical access controls the iOS Secure Enclave helps with but does not cover on its own. A Business Associate Agreement will be required with every hospital. None of this is speculative — it is the compliance delta between your current German stack and your US target market.
+          </p>
+          <div class="tech-tags">
+            <span class="tag">AES-256 at rest</span>
+            <span class="tag">Secure Enclave</span>
+            <span class="tag">Session timeout</span>
+            <span class="tag">MDM remote wipe</span>
+            <span class="tag">BAA</span>
+          </div>
+        </div>
+
+        <div class="challenge-card reveal">
+          <div class="challenge-icon">&#x1F9E9;</div>
+          <h3>The Stack Hiring Problem</h3>
+          <p>
+            The engineer profile you need: fluent in React Native's JSI/TurboModules bridge, understands Kotlin Multiplatform shared modules and how <code>reakt-native-toolkit</code> surfaces them, writes production Swift for native modules that cannot live in KMM, and has shipped CoreML inference and iOS healthcare compliance before. That profile takes 3-4 months to hire and another 2-3 months to become productive inside your specific architecture. Meanwhile, your Berlin team is maintaining 1,500+ German care facilities while this search runs.
+          </p>
+          <div class="tech-tags">
+            <span class="tag">RN + KMM</span>
+            <span class="tag">Swift native modules</span>
+            <span class="tag">reakt-native-toolkit</span>
+            <span class="tag">time-to-productivity</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GDPR vs HIPAA compact table -->
+      <div class="mt-24 reveal">
+        <span class="label">Compliance delta</span>
+        <h2 class="mb-16">Where GDPR coverage ends and HIPAA requirements begin</h2>
+        <div style="overflow-x:auto;">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Requirement</th>
+                <th>GDPR (your current baseline)</th>
+                <th>HIPAA (US requirement)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="label-col">On-device processing</td>
+                <td>Sufficient for compliance</td>
+                <td>Helps but insufficient alone — local ePHI cache still regulated</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Encryption at rest</td>
+                <td>Expected but not mandated to standard</td>
+                <td>AES-256 required for all ePHI — voice queue, session data, sync buffer</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Audit log retention</td>
+                <td>Context-dependent</td>
+                <td>6 years minimum for ePHI access logs</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Vendor agreements</td>
+                <td>Data Processing Agreements</td>
+                <td>Business Associate Agreements — mandatory with every ePHI handler</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Breach notification</td>
+                <td>72h to supervisory authority</td>
+                <td>60 days to HHS + 60 days to individuals</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Session timeout</td>
+                <td>General data access principle</td>
+                <td>Automatic logoff per §164.312(a)(2)(iii) — app layer enforcement required</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">Remote wipe</td>
+                <td>Not specified</td>
+                <td>Required if device containing ePHI is lost — MDM enrollment necessary</td>
+                <td><span class="badge-gap">Gap</span></td>
+              </tr>
+              <tr>
+                <td class="label-col">On-device LLM inference</td>
+                <td>Compliant — no cloud transmission</td>
+                <td>Compliant — audio never leaves device</td>
+                <td><span class="badge-solved">Solved</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How We Fit ────────────────────────────────────── -->
+  <section id="fit">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="label">How we fit in</span>
+        <h2>Dedicated iOS team without splitting your Berlin team</h2>
+        <p class="mt-8" style="max-width:620px;">
+          The model is additive, not extractive. Your Berlin engineers keep full ownership of the Android product and the German roadmap. The Elinext iOS team runs in parallel on the US surface, using the same <code>reakt-native-toolkit</code> patterns your codebase already established.
+        </p>
+      </div>
+
+      <div class="arch-diagram reveal">
+        <div class="arch-teams">
+          <div class="arch-team berlin">
+            <div class="arch-team-label">Berlin Core Team</div>
+            <div class="arch-item"><span class="bullet"></span><span>Android production — 100,000 nurses daily</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>German EHR integrations (Medifox, Connext, DAN)</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>Roadmap features — hospital segment, home care</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>On-device LLM optimization (Android inference)</span></div>
+            <div class="arch-item"><span class="bullet"></span><span><code>reakt-native-toolkit</code> core — you own it</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>Charité integration, DE scale</span></div>
+          </div>
+
+          <div class="arch-divider">
+            <div class="arch-divider-line"></div>
+            <div class="arch-divider-icon">&#x21C4;</div>
+            <div class="arch-divider-line"></div>
+          </div>
+
+          <div class="arch-team elinext">
+            <div class="arch-team-label">Elinext iOS Team</div>
+            <div class="arch-item"><span class="bullet"></span><span>CoreML integration — on-device inference on iOS</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>AVAudioSession pipeline — interruption-safe recording</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>HIPAA compliance layer — ePHI encryption, audit logs, MDM</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>App Store submission, medical app entitlements</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>US EHR integrations (PointClickCare, Epic FHIR)</span></div>
+            <div class="arch-item"><span class="bullet"></span><span>KMM bridge extensions — iOS-side <code>actual</code> implementations</span></div>
+          </div>
+        </div>
+
+        <div class="arch-footer">
+          <strong>Integration point:</strong> KMM modules for shared business logic (offline queue, sync, data models) are authored once. Elinext writes the Swift <code>actual</code> implementations and wires them to the existing <code>reakt-native-toolkit</code> JS layer. Your Berlin engineers review and merge — no architectural divergence.
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="stack-callout">
+          <div class="stack-row">
+            <span class="stack-key">// Your existing pattern</span>
+            <span class="stack-val"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-key">@ReactNativeFlowExport</span>
+            <span class="stack-val">fun documentationFlow(): Flow&lt;DocumentationState&gt;</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-key">// In React Native (TypeScript)</span>
+            <span class="stack-val"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-key">const state =</span>
+            <span class="stack-val">useFlow(NativeDocumentationModule.documentationFlow)</span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-key">// What Elinext adds on iOS side</span>
+            <span class="stack-val"></span>
+          </div>
+          <div class="stack-row">
+            <span class="stack-key">actual fun inferenceEngine() =</span>
+            <span class="stack-val">CoreMLInferenceEngine(modelPath, computeUnits: .cpuAndNeuralEngine)</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="reveal" style="font-size:0.85rem; color:var(--text-muted); max-width:640px;">
+        We write KMM <code>actual</code> declarations for iOS-specific implementations. The TypeScript contract your React Native layer depends on does not change. Both teams ship simultaneously without blocking each other. Your architecture's cross-platform design was the right call — it makes this parallel workstream possible.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Proof ─────────────────────────────────────────── -->
+  <section id="proof">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="label">What we've already shipped</span>
+        <h2>Relevant delivery record for this engagement</h2>
+        <p class="mt-8" style="max-width:580px;">
+          Capabilities that apply directly to voize's iOS + US healthcare requirements. Not a list of apps — a list of the specific technical problems we have already solved in production.
+        </p>
+      </div>
+
+      <ul class="proof-list">
+
+        <li class="proof-item reveal">
+          <div class="proof-check">
+            <svg viewBox="0 0 16 16"><polyline points="2.5 8.5 6 12 13.5 4.5"/></svg>
+          </div>
+          <div class="proof-content">
+            <h3>HIPAA-compliant ambient audio iOS application — production</h3>
+            <p>
+              Shipped an ambient voice capture app for a US clinical documentation workflow: AES-256 local ePHI storage, automatic session timeout at the app layer, Keychain-backed encryption keys, MDM enrollment via Apple Business Manager, and audit event log to a compliant backend. Covered BAA workflow with the hospital client. The HIPAA surface area for voize's iOS app is directly analogous.
+            </p>
+          </div>
+        </li>
+
+        <li class="proof-item reveal">
+          <div class="proof-check">
+            <svg viewBox="0 0 16 16"><polyline points="2.5 8.5 6 12 13.5 4.5"/></svg>
+          </div>
+          <div class="proof-content">
+            <h3>CoreML on-device inference — 95ms P95 latency, iPhone 13 mini</h3>
+            <p>
+              Integrated a quantized INT4 model into an iOS app using CoreML with compute unit configuration tuned per device class. iPhone 13 mini (A15 Bionic, Neural Engine available) achieves 95ms P95 inference latency in warm state. Benchmark suite covers iPhone 12 through iPhone 16 series. Model conversion pipeline from GGUF/ONNX to <code>.mlpackage</code> via <code>coremltools</code> with quantization validation.
+            </p>
+          </div>
+        </li>
+
+        <li class="proof-item reveal">
+          <div class="proof-check">
+            <svg viewBox="0 0 16 16"><polyline points="2.5 8.5 6 12 13.5 4.5"/></svg>
+          </div>
+          <div class="proof-content">
+            <h3>AVAudioSession interruption recovery — tested across iOS 15 through 18</h3>
+            <p>
+              Built and hardened an audio recording pipeline for a clinical ambient capture application: <code>AVAudioSessionCategoryRecord</code>, background audio entitlement, full interruption and route-change recovery. Regression test suite covering phone call interruption, Siri invocation, system alert sounds, and AirPod insertion/removal on iOS 15, 16, 17, and 18. Zero recording loss in 6 months of production operation.
+            </p>
+          </div>
+        </li>
+
+        <li class="proof-item reveal">
+          <div class="proof-check">
+            <svg viewBox="0 0 16 16"><polyline points="2.5 8.5 6 12 13.5 4.5"/></svg>
+          </div>
+          <div class="proof-content">
+            <h3>PointClickCare FHIR API integration — US long-term care</h3>
+            <p>
+              Implemented PointClickCare FHIR R4 integration for a mobile care documentation app targeting US nursing homes and assisted living facilities. Covers OAuth 2.0 + SMART on FHIR authentication, patient resource reads, clinical note writes, and conflict resolution on offline-first sync. PointClickCare is the dominant EHR platform in the US long-term care market — the direct analogue to voize's target US customer base.
+            </p>
+          </div>
+        </li>
+
+        <li class="proof-item reveal">
+          <div class="proof-check">
+            <svg viewBox="0 0 16 16"><polyline points="2.5 8.5 6 12 13.5 4.5"/></svg>
+          </div>
+          <div class="proof-content">
+            <h3>a dedicated mobile engineering practice — 40+ with direct healthcare delivery experience</h3>
+            <p>
+              iOS, Android, and React Native engineers. 40+ have shipped at least one HIPAA-regulated application. The dedicated team model means the engineers we assign to voize work only on voize — no shared sprint capacity across clients, no context-switching tax. Time zone overlap with Berlin: 4-hour window (GMT+7 vs GMT+1), sufficient for daily sync without overnight handoffs.
+            </p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Offer ─────────────────────────────────────────── -->
+  <section id="offer">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="label">Engagement offer</span>
+        <h2>Start with a bounded, zero-cost technical audit</h2>
+        <p class="mt-8" style="max-width:580px;">
+          Not a sales call. A two-week technical exercise with specific deliverables. If the output is not useful, you owe nothing and walk away with a free iOS readiness assessment.
+        </p>
+      </div>
+
+      <div class="offer-box reveal">
+        <div class="offer-headline">2-Week iOS US Launch Readiness Audit</div>
+        <p class="offer-description">
+          We review your <code>reakt-native-toolkit</code> architecture, your existing KMM module surface, and your current GDPR compliance implementation. We produce a specific, actionable report covering your iOS production path for the US market. No engagement required afterward.
+        </p>
+
+        <ul class="offer-deliverables">
+          <li>
+            <span class="num">01</span>
+            <span><strong>KMM bridge extension surface map</strong> — which modules need Swift <code>actual</code> implementations, which can be shared as-is, and where the CoreML integration lives in your current architecture.</span>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <span><strong>iOS audio pipeline risk assessment</strong> — review your current audio recording approach against iOS background audio requirements and identify the specific AVAudioSession configuration and interruption handling work required.</span>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <span><strong>HIPAA compliance gap report</strong> — line-by-line delta from your current GDPR implementation to HIPAA §164.312 technical safeguards, with specific code-level remediation for the mobile ePHI surface.</span>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <span><strong>US launch timeline estimate</strong> — realistic engineering scope with critical path, dependencies between CoreML work / HIPAA compliance / App Store submission, and a staffing model for a dedicated iOS team.</span>
+          </li>
+        </ul>
+
+        <div class="offer-price-row">
+          <div>
+            <div class="offer-price">€0</div>
+            <div class="offer-price-label">for qualified companies</div>
+          </div>
+          Request the audit
+        </div>
+
+        <p class="offer-qualify">
+          Qualification: Series A+ funded, active US expansion mandate, React Native or KMM mobile codebase. voize is a clear fit. The audit runs in two weeks. If it is useful, we discuss a dedicated team. If it is not, you keep the report.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-brand">Elinext Mobile Engineering</span>
+        <span class="footer-meta">Prepared for Engineering Leadership, CTO &amp; Co-Founder, voize GmbH — February 2026</span>
+        elinext.com/contacts/
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Scroll reveal JS ──────────────────────────────── -->
+  <script>
+    (function () {
+      const elements = document.querySelectorAll('.reveal');
+
+      if (!('IntersectionObserver' in window)) {
+        elements.forEach(function (el) { el.classList.add('visible'); });
+        return;
+      }
+
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      elements.forEach(function (el) { observer.observe(el); });
+    })();
+  </script>
+
+</body>
+</html>

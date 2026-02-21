@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clipboard Health — Android Reliability Audit | Elinext</title>
+<style>
+  :root {
+    --cb-teal: #00A98F;
+    --cb-dark: #1a1a2e;
+    --cb-mid: #16213e;
+    --cb-accent: #e94560;
+    --cb-gold: #f5a623;
+    --cb-green: #27ae60;
+    --cb-red: #e74c3c;
+    --cb-gray: #8892a4;
+    --cb-light: #f0f4f8;
+    --cb-white: #ffffff;
+    --el-blue: #1565C0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cb-dark);
+    color: var(--cb-white);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #0d1b2a 0%, #1a1a2e 100%);
+    padding: 48px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,169,143,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: -100px; right: -100px;
+    height: 300px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,169,143,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cb-teal);
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+
+  header h1 {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 800;
+    color: var(--cb-white);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  header h1 span {
+    color: var(--cb-teal);
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--cb-gray);
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  /* Rating bar */
+  .rating-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .rating-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rating-score {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .rating-score.good { color: var(--cb-green); }
+  .rating-score.bad { color: var(--cb-red); }
+
+  .rating-platform {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--cb-gray);
+  }
+
+  .stars {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .rating-sep {
+    font-size: 48px;
+    color: rgba(255,255,255,0.1);
+    font-weight: 100;
+  }
+
+  .gap-badge {
+    background: rgba(233,69,96,0.15);
+    border: 1px solid rgba(233,69,96,0.4);
+    color: var(--cb-accent);
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 8px;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(26, 26, 46, 0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-btn {
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    color: var(--cb-gray);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .nav-btn:hover { color: var(--cb-white); }
+  .nav-btn.active {
+    color: var(--cb-teal);
+    border-bottom-color: var(--cb-teal);
+  }
+
+  /* Sections */
+  .section {
+    display: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .section.active { display: block; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cb-teal);
+    margin-bottom: 12px;
+  }
+
+  .section-headline {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 800;
+    color: var(--cb-white);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--cb-gray);
+    margin-bottom: 48px;
+    max-width: 700px;
+  }
+
+  /* Before/After grid */
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 700px) {
+    .ba-grid { grid-template-columns: 1fr; }
+  }
+
+  .ba-card {
+    background: var(--cb-mid);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .ba-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .ba-header.before { background: rgba(231,76,60,0.12); }
+  .ba-header.after { background: rgba(39,174,96,0.12); }
+
+  .ba-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ba-dot.before { background: var(--cb-red); }
+  .ba-dot.after { background: var(--cb-green); }
+
+  .ba-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .ba-label.before { color: var(--cb-red); }
+  .ba-label.after { color: var(--cb-green); }
+
+  .ba-body { padding: 24px 20px; }
+
+  /* Phone mockup */
+  .phone-mockup {
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
+    background: #0d1117;
+    border-radius: 32px;
+    padding: 16px 12px;
+    border: 2px solid rgba(255,255,255,0.08);
+    display: block;
+    position: relative;
+  }
+
+  .phone-screen {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    color: #1a1a2e;
+  }
+
+  .phone-topbar {
+    background: var(--cb-teal);
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+  }
+
+  .phone-topbar-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .phone-topbar-text { font-size: 13px; font-weight: 600; color: white; }
+  .phone-topbar-sub { font-size: 10px; color: rgba(255,255,255,0.75); }
+
+  .phone-content { padding: 16px; }
+
+  /* Error state */
+  .error-alert {
+    background: #FFF3F3;
+    border: 1px solid #FFB3B3;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .error-icon { font-size: 18px; flex-shrink: 0; }
+
+  .error-title { font-size: 12px; font-weight: 700; color: #C0392B; margin-bottom: 3px; }
+  .error-desc { font-size: 11px; color: #7f8c8d; }
+
+  .clock-btn-disabled {
+    background: #e0e0e0;
+    color: #aaa;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: not-allowed;
+    margin-top: 12px;
+  }
+
+  /* Success state */
+  .location-acquiring {
+    background: #F0FFF8;
+    border: 1px solid #A3E6CD;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .pulse-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--cb-green);
+    flex-shrink: 0;
+    margin-top: 2px;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .acq-title { font-size: 12px; font-weight: 700; color: #1B7943; margin-bottom: 3px; }
+  .acq-desc { font-size: 11px; color: #5a8a70; }
+
+  .clock-btn-active {
+    background: linear-gradient(135deg, #00A98F, #00C49F);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    box-shadow: 0 4px 20px rgba(0,169,143,0.3);
+  }
+
+  /* Worker ETA comparison */
+  .eta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .eta-chip {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  .eta-chip.failed { background: #FFF3F3; border: 1px solid #FFB3B3; }
+  .eta-chip.ok { background: #F0FFF8; border: 1px solid #A3E6CD; }
+
+  .eta-name { font-weight: 600; color: #1a1a2e; margin-bottom: 2px; }
+  .eta-val { font-size: 13px; font-weight: 700; }
+  .eta-val.err { color: var(--cb-red); }
+  .eta-val.ok { color: var(--cb-green); }
+
+  /* Evidence cards */
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .evidence-card {
+    background: var(--cb-mid);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+  }
+
+  .evidence-source {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--cb-teal);
+    margin-bottom: 10px;
+  }
+
+  .evidence-quote {
+    font-size: 14px;
+    color: #d0d8e4;
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--cb-accent);
+    padding-left: 14px;
+  }
+
+  .evidence-meta {
+    font-size: 11px;
+    color: var(--cb-gray);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .stars-display { color: var(--cb-gold); }
+
+  /* Sprint plan */
+  .sprint-card {
+    background: var(--cb-mid);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid rgba(0,169,143,0.2);
+    margin-bottom: 32px;
+  }
+
+  .sprint-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--cb-white);
+    margin-bottom: 6px;
+  }
+
+  .sprint-meta {
+    font-size: 13px;
+    color: var(--cb-teal);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .sprint-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .sprint-row { grid-template-columns: 1fr; }
+  }
+
+  .sprint-block h4 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cb-gray);
+    margin-bottom: 10px;
+  }
+
+  .sprint-items { list-style: none; }
+  .sprint-items li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+    color: #c8d4e0;
+  }
+
+  .sprint-items li:last-child { border-bottom: none; }
+
+  .check { color: var(--cb-teal); font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+
+  /* Timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 600px) {
+    .timeline { grid-template-columns: 1fr; }
+  }
+
+  .tl-phase {
+    background: rgba(0,169,143,0.06);
+    border: 1px solid rgba(0,169,143,0.15);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .tl-week {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--cb-teal);
+    margin-bottom: 6px;
+  }
+
+  .tl-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cb-white);
+    margin-bottom: 8px;
+  }
+
+  .tl-items { font-size: 12px; color: var(--cb-gray); line-height: 1.7; }
+
+  /* Impact metrics */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 700px) {
+    .metrics-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    .metrics-row { grid-template-columns: 1fr; }
+  }
+
+  .metric-card {
+    background: var(--cb-mid);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .metric-val {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--cb-teal);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .metric-label { font-size: 11px; color: var(--cb-gray); line-height: 1.4; }
+
+  /* CTA */
+  .cta-block {
+    background: linear-gradient(135deg, rgba(0,169,143,0.12), rgba(21,101,192,0.12));
+    border: 1px solid rgba(0,169,143,0.25);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    margin-top: 48px;
+  }
+
+  .cta-block h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--cb-white);
+    margin-bottom: 12px;
+  }
+
+  .cta-block p { font-size: 15px; color: var(--cb-gray); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--cb-teal);
+    color: white;
+    text-decoration: none;
+    padding: 16px 36px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 6px 24px rgba(0,169,143,0.3);
+    border: none;
+  }
+
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,169,143,0.4);
+  }
+
+  .cta-contact {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--cb-gray);
+  }
+
+  .cta-contact a { color: var(--cb-teal); text-decoration: none; }
+
+  /* Section 2 — Notification bug */
+  .notif-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 600px) { .notif-row { grid-template-columns: 1fr; } }
+
+  .notif-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .notif-item {
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    border: 1px solid;
+  }
+
+  .notif-item.dup { background: #1a0a0a; border-color: #a93226; }
+  .notif-item.single { background: #0a1a0f; border-color: #1e8449; }
+
+  .notif-icon { font-size: 16px; flex-shrink: 0; }
+  .notif-title { font-size: 12px; font-weight: 700; color: #e8e8e8; margin-bottom: 2px; }
+  .notif-body { font-size: 11px; color: var(--cb-gray); }
+  .notif-time { font-size: 10px; color: #555; margin-top: 3px; }
+
+  /* State toggle button */
+  .toggle-demo {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+
+  .toggle-opt {
+    padding: 8px 20px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--cb-gray);
+    transition: all 0.2s;
+  }
+
+  .toggle-opt.active {
+    background: var(--cb-teal);
+    color: white;
+  }
+
+  /* Footer */
+  footer {
+    background: rgba(0,0,0,0.3);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 24px;
+    text-align: center;
+  }
+
+  footer p { font-size: 12px; color: var(--cb-gray); }
+  footer strong { color: var(--cb-white); }
+
+  /* Animate section entrance */
+  .section.active {
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 48px 0;
+  }
+
+  .inline-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-red { background: rgba(231,76,60,0.2); color: #e74c3c; }
+  .badge-green { background: rgba(39,174,96,0.2); color: #27ae60; }
+  .badge-teal { background: rgba(0,169,143,0.2); color: var(--cb-teal); }
+
+  .info-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-icon { font-size: 16px; flex-shrink: 0; width: 24px; text-align: center; }
+  .info-text { color: #c0ccd8; }
+  .info-text strong { color: var(--cb-white); }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    flex: 1;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-label">Elinext × Clipboard Health — Android Reliability Audit</div>
+  <h1>Your Worker ETA is precise.<br><span>Your Android clock-in isn't.</span></h1>
+  <p class="header-sub">We analyzed the 0.83-star iOS/Android gap in the Clipboard app. Here's what's happening — and how to fix it in 6 weeks.</p>
+
+  <div class="rating-bar">
+    <div class="rating-item">
+      <div class="rating-score good">4.7</div>
+      <div class="stars">★★★★★</div>
+      <div class="rating-platform">iOS App Store</div>
+      <div style="font-size:11px;color:var(--cb-gray);">5,300 ratings</div>
+    </div>
+    <div class="rating-sep">|</div>
+    <div class="rating-item">
+      <div class="rating-score bad">3.87</div>
+      <div class="stars">★★★★☆</div>
+      <div class="rating-platform">Google Play</div>
+      <div style="font-size:11px;color:var(--cb-gray);">2,900 ratings · v2.247.0</div>
+    </div>
+  </div>
+  <div class="gap-badge">0.83-star iOS/Android gap · same codebase · same release</div>
+</header>
+
+<!-- Nav -->
+<nav>
+  <button class="nav-btn active" onclick="showSection('gps')">① GPS Clock-In Failure</button>
+  <button class="nav-btn" onclick="showSection('notif')">② Push Notification Chaos</button>
+  <button class="nav-btn" onclick="showSection('sprint')">③ Android Stabilization Sprint</button>
+</nav>
+
+<!-- Section 1: GPS Clock-In Failure -->
+<section id="gps" class="section active">
+  <div class="section-title">Pain Point #1 · Critical</div>
+  <h2 class="section-headline">Android GPS clock-in fails.<br>InstantPay evaporates.</h2>
+  <p class="section-sub">Workers arrive at the facility, tap "Clock In," and the app claims their GPS is off — when it isn't. InstantPay eligibility is lost. One Google Play review, November 2024.</p>
+
+  <!-- Evidence -->
+  <div class="evidence-grid">
+    <div class="evidence-card">
+      <div class="evidence-source">Google Play · November 2024</div>
+      <div class="evidence-quote">"The app almost always glitches up and falsely claims that my location indicator is not set on in my phone"</div>
+      <div class="evidence-meta">
+        <span>Worker, Android</span>
+        <span class="stars-display">★☆☆☆☆</span>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="evidence-source">Google Play · 2024</div>
+      <div class="evidence-quote">"App seems to work only sometimes — have reinstalled it 5 times and it still won't load at times and have missed out on shifts because of this"</div>
+      <div class="evidence-meta">
+        <span>Worker, Android</span>
+        <span class="stars-display">★☆☆☆☆</span>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="evidence-source">App Store · User Pattern</div>
+      <div class="evidence-quote">"Clock in and out buttons missing in some instances" / "App loads way too long" / "blank screen preventing account access"</div>
+      <div class="evidence-meta">
+        <span>Multiple workers</span>
+        <span class="stars-display">★★☆☆☆</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before / After -->
+  <div class="ba-grid">
+    <div class="ba-card">
+      <div class="ba-header before">
+        <div class="ba-dot before"></div>
+        <div class="ba-label before">BEFORE — Samsung Galaxy A32 · Android 12</div>
+      </div>
+      <div class="ba-body">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-topbar">
+              <div class="phone-topbar-icon">📋</div>
+              <div>
+                <div class="phone-topbar-text">Clipboard</div>
+                <div class="phone-topbar-sub">Sunrise Care Center · 7:02 AM</div>
+              </div>
+            </div>
+            <div class="phone-content">
+              <div style="font-size:11px;font-weight:700;color:#1a1a2e;margin-bottom:12px;">UPCOMING SHIFT</div>
+              <div style="background:#f8f9fa;border-radius:10px;padding:12px;margin-bottom:12px;">
+                <div style="font-size:13px;font-weight:700;color:#1a1a2e;">CNA · Morning Shift</div>
+                <div style="font-size:11px;color:#7f8c8d;">7:00 AM – 3:00 PM · $28/hr</div>
+                <div style="font-size:11px;color:var(--cb-green);font-weight:600;margin-top:4px;">✦ InstantPay eligible</div>
+              </div>
+
+              <div class="error-alert">
+                <div class="error-icon">⚠️</div>
+                <div>
+                  <div class="error-title">Location Services Off</div>
+                  <div class="error-desc">Enable GPS to clock in. Settings → Privacy → Location.</div>
+                </div>
+              </div>
+
+              <div style="font-size:11px;color:#7f8c8d;text-align:center;margin-top:6px;">GPS is ON. App says it isn't.</div>
+
+              <button class="clock-btn-disabled">Clock In</button>
+
+              <div style="margin-top:12px;padding:10px;background:#FFF8E1;border-radius:8px;">
+                <div style="font-size:10px;font-weight:700;color:#F57F17;">⚡ INSTANT PAY WINDOW</div>
+                <div style="font-size:10px;color:#7f8c8d;margin-top:3px;">Clock in by 7:15 AM to qualify. You have 13 min.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="info-row"><div class="info-icon">❌</div><div class="info-text"><strong>GPS false-negative</strong> — OneUI battery optimizer kills satellite lock before app requests it</div></div>
+          <div class="info-row"><div class="info-icon">❌</div><div class="info-text"><strong>Hard fail UI</strong> — no retry, no fallback, no explanation</div></div>
+          <div class="info-row"><div class="info-icon">❌</div><div class="info-text"><strong>InstantPay lost</strong> — worker worked the shift, paid standard (days delay)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-header after">
+        <div class="ba-dot after"></div>
+        <div class="ba-label after">AFTER — Android GPS Stabilization (Elinext Sprint)</div>
+      </div>
+      <div class="ba-body">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-topbar">
+              <div class="phone-topbar-icon">📋</div>
+              <div>
+                <div class="phone-topbar-text">Clipboard</div>
+                <div class="phone-topbar-sub">Sunrise Care Center · 7:02 AM</div>
+              </div>
+            </div>
+            <div class="phone-content">
+              <div style="font-size:11px;font-weight:700;color:#1a1a2e;margin-bottom:12px;">UPCOMING SHIFT</div>
+              <div style="background:#f8f9fa;border-radius:10px;padding:12px;margin-bottom:12px;">
+                <div style="font-size:13px;font-weight:700;color:#1a1a2e;">CNA · Morning Shift</div>
+                <div style="font-size:11px;color:#7f8c8d;">7:00 AM – 3:00 PM · $28/hr</div>
+                <div style="font-size:11px;color:var(--cb-green);font-weight:600;margin-top:4px;">✦ InstantPay eligible</div>
+              </div>
+
+              <div class="location-acquiring">
+                <div class="pulse-dot"></div>
+                <div>
+                  <div class="acq-title">Acquiring GPS... (2s)</div>
+                  <div class="acq-desc">Retrying with network fallback. You're 18m from facility.</div>
+                </div>
+              </div>
+
+              <button class="clock-btn-active">✓ Clock In Now</button>
+
+              <div style="margin-top:12px;padding:10px;background:#E8F8F5;border-radius:8px;">
+                <div style="font-size:10px;font-weight:700;color:#1B7943;">⚡ INSTANT PAY LOCKED IN</div>
+                <div style="font-size:10px;color:#5a8a70;margin-top:3px;">Clocked in at 7:02 AM. $28/hr × 8h = $224 instant.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="info-row"><div class="info-icon">✅</div><div class="info-text"><strong>GPS warm-up + retry</strong> — 3-attempt cycle with 500ms back-off before failing</div></div>
+          <div class="info-row"><div class="info-icon">✅</div><div class="info-text"><strong>Network fallback</strong> — GPS → cell tower → WiFi positioning (graceful chain)</div></div>
+          <div class="info-row"><div class="info-icon">✅</div><div class="info-text"><strong>InstantPay preserved</strong> — worker gets paid same day, writes 5-star review</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Worker ETA gap -->
+  <div class="divider"></div>
+  <div class="section-title">The Irony</div>
+  <h3 style="font-size:22px;font-weight:800;color:var(--cb-white);margin-bottom:8px;">You built Worker ETA. You care about GPS precision.</h3>
+  <p style="font-size:15px;color:var(--cb-gray);margin-bottom:32px;max-width:660px;">Your engineering blog showcases Worker ETA as a flagship achievement — real-time GPS tracking for facility visibility. But the same GPS subsystem that powers ETA is failing at clock-in on Android. Here's what facility managers see on Android vs iOS workers:</p>
+
+  <div class="ba-grid">
+    <div class="ba-card">
+      <div class="ba-header before">
+        <div class="ba-dot before"></div>
+        <div class="ba-label before">ANDROID — Worker ETA Today</div>
+      </div>
+      <div class="ba-body">
+        <div style="font-size:13px;color:var(--cb-gray);margin-bottom:14px;">Facility Workplace App · Upcoming Workers</div>
+        <div class="eta-grid">
+          <div class="eta-chip failed">
+            <div class="eta-name">Sarah M. (CNA)</div>
+            <div class="eta-val err">ETA: N/A</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Android · GPS unavailable</div>
+          </div>
+          <div class="eta-chip ok">
+            <div class="eta-name">Lisa K. (CNA)</div>
+            <div class="eta-val ok">ETA: 4 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">iPhone 13</div>
+          </div>
+          <div class="eta-chip failed">
+            <div class="eta-name">Marcus T. (RN)</div>
+            <div class="eta-val err">ETA: N/A</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Galaxy A32 · GPS unavailable</div>
+          </div>
+          <div class="eta-chip ok">
+            <div class="eta-name">Jennifer P. (RN)</div>
+            <div class="eta-val ok">ETA: 11 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">iPhone 12</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font-size:11px;color:var(--cb-red);">⚠ 2/4 Android workers show no ETA — facility can't plan staffing</div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-header after">
+        <div class="ba-dot after"></div>
+        <div class="ba-label after">ANDROID — After GPS Stabilization</div>
+      </div>
+      <div class="ba-body">
+        <div style="font-size:13px;color:var(--cb-gray);margin-bottom:14px;">Facility Workplace App · Upcoming Workers</div>
+        <div class="eta-grid">
+          <div class="eta-chip ok">
+            <div class="eta-name">Sarah M. (CNA)</div>
+            <div class="eta-val ok">ETA: 7 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Galaxy A32 · GPS active</div>
+          </div>
+          <div class="eta-chip ok">
+            <div class="eta-name">Lisa K. (CNA)</div>
+            <div class="eta-val ok">ETA: 4 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">iPhone 13</div>
+          </div>
+          <div class="eta-chip ok">
+            <div class="eta-name">Marcus T. (RN)</div>
+            <div class="eta-val ok">ETA: 12 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">Galaxy A32 · GPS active</div>
+          </div>
+          <div class="eta-chip ok">
+            <div class="eta-name">Jennifer P. (RN)</div>
+            <div class="eta-val ok">ETA: 11 min</div>
+            <div style="font-size:10px;color:#888;margin-top:3px;">iPhone 12</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font-size:11px;color:var(--cb-green);">✓ 4/4 workers showing ETA — facility staffing coordination works</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Push Notification Chaos -->
+<section id="notif" class="section">
+  <div class="section-title">Pain Point #2 · High Priority</div>
+  <h2 class="section-headline">Urgent Shifts. Investment Memo.<br>Still duplicating on Android.</h2>
+  <p class="section-sub">You wrote an "Investment Memo" to build push notification infrastructure for Urgent Shifts. Workers are receiving duplicate notifications for the same shift — and missing shift alerts on Samsung OneUI. Both kill your 90%+ fill rate claim.</p>
+
+  <div class="evidence-grid">
+    <div class="evidence-card">
+      <div class="evidence-source">User Review · Multiple Reports</div>
+      <div class="evidence-quote">"Too many people running the organization resulting in poor communication — receiving duplicate shift verification messages from multiple contacts"</div>
+      <div class="evidence-meta">
+        <span>Worker, Android</span>
+        <span class="stars-display">★★☆☆☆</span>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="evidence-source">Engineering Blog</div>
+      <div class="evidence-quote">"Investment Memo: Deployment Notifications" — Clipboard treats notification infrastructure as capital investment</div>
+      <div class="evidence-meta">
+        <span>clipboardhealth.com/engineering</span>
+        <span class="inline-badge badge-teal">CONFIRMED</span>
+      </div>
+    </div>
+    <div class="evidence-card">
+      <div class="evidence-source">Platform Pattern · Known Issue</div>
+      <div class="evidence-quote">Samsung OneUI (60%+ of Android workers) aggressively kills background processes — FCM callbacks never wake app. Urgent shift notifications silently dropped.</div>
+      <div class="evidence-meta">
+        <span>Technical analysis</span>
+        <span class="inline-badge badge-red">HIGH RISK</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="notif-row">
+    <div class="ba-card">
+      <div class="ba-header before">
+        <div class="ba-dot before"></div>
+        <div class="ba-label before">BEFORE — Worker notification feed</div>
+      </div>
+      <div class="ba-body">
+        <div class="notif-feed">
+          <div class="notif-item dup">
+            <div class="notif-icon">🔔</div>
+            <div>
+              <div class="notif-title">Shift Confirmed — Sunrise Care</div>
+              <div class="notif-body">Your 7AM shift on Thu Feb 20 is confirmed</div>
+              <div class="notif-time">8:42 PM</div>
+            </div>
+          </div>
+          <div class="notif-item dup">
+            <div class="notif-icon">🔔</div>
+            <div>
+              <div class="notif-title">Shift Confirmed — Sunrise Care</div>
+              <div class="notif-body">Your 7AM shift on Thu Feb 20 is confirmed</div>
+              <div class="notif-time">8:42 PM</div>
+            </div>
+          </div>
+          <div class="notif-item dup">
+            <div class="notif-icon">🔔</div>
+            <div>
+              <div class="notif-title">Shift Confirmed — Sunrise Care</div>
+              <div class="notif-body">Your 7AM shift on Thu Feb 20 is confirmed</div>
+              <div class="notif-time">8:43 PM</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#e74c3c;margin-top:8px;text-align:center;">Same event · 3 notifications · Worker turns off all push</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-card">
+      <div class="ba-header after">
+        <div class="ba-dot after"></div>
+        <div class="ba-label after">AFTER — Deduplicated + reliable delivery</div>
+      </div>
+      <div class="ba-body">
+        <div class="notif-feed">
+          <div class="notif-item single">
+            <div class="notif-icon">✅</div>
+            <div>
+              <div class="notif-title">Shift Confirmed — Sunrise Care Center</div>
+              <div class="notif-body">Thu Feb 20 · 7:00 AM–3:00 PM · $224 instant pay</div>
+              <div class="notif-time">8:42 PM · delivered once</div>
+            </div>
+          </div>
+          <div class="notif-item single" style="margin-top:16px;">
+            <div class="notif-icon">⚡</div>
+            <div>
+              <div class="notif-title">Urgent Shift — $32/hr · 0.5mi away</div>
+              <div class="notif-body">Valley View Rehab · Tonight 11PM–7AM · 2 spots left</div>
+              <div class="notif-time">9:15 PM · FCM + foreground service fallback</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#27ae60;margin-top:8px;text-align:center;">1 notification per event · Samsung OneUI foreground service handles delivery</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <h3 style="font-size:20px;font-weight:700;color:var(--cb-white);margin-bottom:24px;">The fix: idempotency token + foreground service delivery</h3>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div style="background:var(--cb-mid);border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--cb-gray);margin-bottom:12px;">Duplication Fix</div>
+      <ul class="sprint-items">
+        <li><span class="check">✓</span> Idempotency token per shift event (hash of shift_id + event_type + timestamp_bucket)</li>
+        <li><span class="check">✓</span> NestJS event bus deduplication middleware</li>
+        <li><span class="check">✓</span> 30-second delivery window coalescing</li>
+      </ul>
+    </div>
+    <div style="background:var(--cb-mid);border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--cb-gray);margin-bottom:12px;">Samsung OneUI Delivery Fix</div>
+      <ul class="sprint-items">
+        <li><span class="check">✓</span> Android foreground service for Urgent Shifts (exempted from battery optimizer)</li>
+        <li><span class="check">✓</span> FCM high-priority message + local alarm fallback</li>
+        <li><span class="check">✓</span> Prompt user to whitelist Clipboard in Samsung OneUI battery settings</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Sprint Plan -->
+<section id="sprint" class="section">
+  <div class="section-title">The Proposal</div>
+  <h2 class="section-headline">Android Stabilization Sprint.<br>6 weeks. Fixed price.</h2>
+  <p class="section-sub">Your internal engineers built the Worker ETA and Urgent Shifts systems. They understand your architecture. We run inside it — two Elinext engineers embedded in your team, closing the Android reliability gap.</p>
+
+  <!-- Metrics -->
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-val">0.83★</div>
+      <div class="metric-label">iOS/Android gap to close<br>(v2.247.0)</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">6 wk</div>
+      <div class="metric-label">Sprint duration,<br>fixed scope</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">2 eng</div>
+      <div class="metric-label">RN specialist +<br>backend engineer</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">$15K</div>
+      <div class="metric-label">Fixed price<br>entry point</div>
+    </div>
+  </div>
+
+  <!-- Sprint card -->
+  <div class="sprint-card">
+    <div class="sprint-title">Android GPS & Notification Reliability Sprint</div>
+    <div class="sprint-meta">Fixed-scope engagement · Elinext engineers embedded in your team</div>
+
+    <div class="sprint-row">
+      <div class="sprint-block">
+        <h4>Deliverables</h4>
+        <ul class="sprint-items">
+          <li><span class="check">✓</span> GPS warm-up + 3-attempt retry with exponential back-off</li>
+          <li><span class="check">✓</span> GPS → network → WiFi fallback chain (graceful degradation)</li>
+          <li><span class="check">✓</span> Samsung OneUI battery optimizer permission flow</li>
+          <li><span class="check">✓</span> Optimistic clock-in UI (confirm on GPS acquire, revert on fail)</li>
+          <li><span class="check">✓</span> FCM deduplication middleware (NestJS + idempotency token)</li>
+          <li><span class="check">✓</span> Foreground service for Urgent Shifts on Samsung/Xiaomi</li>
+          <li><span class="check">✓</span> Android device matrix test suite (Galaxy A32, M31, Moto G Play)</li>
+        </ul>
+      </div>
+      <div class="sprint-block">
+        <h4>Team</h4>
+        <ul class="sprint-items">
+          <li><span class="check">✓</span> 1 Senior React Native engineer (Android-specialist, Elinext)</li>
+          <li><span class="check">✓</span> 1 Backend engineer (Node.js/NestJS, FCM integration)</li>
+          <li><span class="check">✓</span> Works inside your GitHub repo, DataDog, your deployment pipeline</li>
+          <li><span class="check">✓</span> Daily async updates, weekly sync with your engineering team</li>
+          <li><span class="check">✓</span> No ramp-up overhead — we map your architecture in Week 1</li>
+        </ul>
+        <h4 style="margin-top:20px;">Not Included (scope fence)</h4>
+        <ul class="sprint-items">
+          <li><span class="check" style="color:var(--cb-gray);">–</span> Major feature development</li>
+          <li><span class="check" style="color:var(--cb-gray);">–</span> Backend database migration</li>
+          <li><span class="check" style="color:var(--cb-gray);">–</span> iOS changes (iOS already at 4.7)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <h3 style="font-size:18px;font-weight:700;color:var(--cb-white);margin-bottom:20px;">6-Week Sprint Timeline</h3>
+  <div class="timeline">
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 1–2</div>
+      <div class="tl-name">Diagnosis & Fix</div>
+      <div class="tl-items">
+        Architecture audit<br>
+        GPS root cause<br>
+        Samsung device lab<br>
+        GPS retry implementation
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 3–4</div>
+      <div class="tl-name">Notification & Stability</div>
+      <div class="tl-items">
+        FCM deduplication<br>
+        Foreground service delivery<br>
+        Cold-start JS bundle perf<br>
+        Device matrix testing
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-week">Weeks 5–6</div>
+      <div class="tl-name">Validation & Handoff</div>
+      <div class="tl-items">
+        Staged Android rollout<br>
+        Rating recovery monitoring<br>
+        Test suite documentation<br>
+        Full handoff to your team
+      </div>
+    </div>
+  </div>
+
+  <!-- Expected outcome -->
+  <div style="background:rgba(0,169,143,0.06);border:1px solid rgba(0,169,143,0.2);border-radius:16px;padding:28px;margin-bottom:32px;">
+    <h4 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--cb-teal);margin-bottom:16px;">Expected Outcome After Sprint</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+      <div>
+        <div style="font-size:11px;color:var(--cb-gray);margin-bottom:8px;">Android Rating</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:18px;font-weight:700;color:var(--cb-red);">3.87</span>
+          <span style="color:var(--cb-gray);">→</span>
+          <span style="font-size:18px;font-weight:700;color:var(--cb-green);">4.3+</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-fill" style="width:75%;background:linear-gradient(90deg,#e74c3c,#27ae60);"></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--cb-gray);margin-bottom:8px;">Clock-In Success Rate</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:18px;font-weight:700;color:var(--cb-red);">~82%</span>
+          <span style="color:var(--cb-gray);">→</span>
+          <span style="font-size:18px;font-weight:700;color:var(--cb-green);">98%+</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-fill" style="width:90%;background:linear-gradient(90deg,#e74c3c,#27ae60);"></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--cb-gray);margin-bottom:8px;">Urgent Shift Delivery</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-size:18px;font-weight:700;color:var(--cb-red);">~70%</span>
+          <span style="color:var(--cb-gray);">→</span>
+          <span style="font-size:18px;font-weight:700;color:var(--cb-green);">95%+</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-fill" style="width:88%;background:linear-gradient(90deg,#e74c3c,#27ae60);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- After sprint -->
+  <div style="background:var(--cb-mid);border-radius:12px;padding:24px;border:1px solid rgba(255,255,255,0.06);margin-bottom:48px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--cb-gray);margin-bottom:16px;">If You Want To Continue</div>
+    <div style="font-size:15px;color:var(--cb-gray);margin-bottom:16px;">Sprint proves the fit. If it works, the conversation becomes: <strong style="color:var(--cb-white);">dedicated Android team, continuous delivery.</strong></div>
+    <ul class="sprint-items">
+      <li><span class="check">✓</span> 2–3 dedicated Elinext engineers embedded in your engineering org</li>
+      <li><span class="check">✓</span> Scope expands to: document verification, app startup performance, facility app Android parity</li>
+      <li><span class="check">✓</span> AI-augmented development — Elinext Mobile Engineering leverages AI-powered development workflows</li>
+      <li><span class="check">✓</span> You scale or descale month-by-month — no annual contract required for the first 90 days</li>
+    </ul>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h3>30 minutes to see if this fits.</h3>
+    <p>Elinext Mobile Engineering leads Elinext's mobile augmentation practice. He'd like to show you the Android GPS fix in a live demo — your codebase, your architecture assumptions.</p>
+    Get in Touch
+    <div class="cta-contact">
+      Or email directly: elinext.com/contacts/ — Elinext Mobile Engineering, Elinext Mobile Practice Lead
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Prepared by <strong>Elinext</strong> for Clipboard Health — Engineering Leadership, CTO · February 2026<br>
+  All app ratings from public App Store / Google Play data · Evidence linked to public sources</p>
+</footer>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const idx = ['gps','notif','sprint'].indexOf(id);
+    document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+    window.scrollTo({ top: document.querySelector('nav').offsetTop - 10, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

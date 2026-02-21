@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwick Android — Before/After: Integration Stability Sprint</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --qwick-purple: #7B3FE4;
+    --qwick-purple-dark: #5B2DBF;
+    --qwick-green: #22C55E;
+    --qwick-red: #EF4444;
+    --qwick-orange: #F97316;
+    --qwick-amber: #F59E0B;
+    --qwick-gray-50: #F8FAFC;
+    --qwick-gray-100: #F1F5F9;
+    --qwick-gray-200: #E2E8F0;
+    --qwick-gray-400: #94A3B8;
+    --qwick-gray-600: #475569;
+    --qwick-gray-800: #1E293B;
+    --qwick-gray-900: #0F172A;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0A0A1A;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, #0F0F2E 0%, #1a0a3e 100%);
+    border-bottom: 1px solid rgba(123, 63, 228, 0.3);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FCA5A5;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .header-badge .dot { width: 6px; height: 6px; background: #EF4444; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .header h1 { font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .header h1 span { color: var(--qwick-purple); }
+  .header p { color: #94A3B8; font-size: 14px; max-width: 600px; margin: 0 auto; }
+
+  /* ===== RATING BANNER ===== */
+  .rating-banner {
+    background: linear-gradient(135deg, #1a0a0a, #2d1515);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 16px;
+    margin: 24px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .rating-item { text-align: center; }
+  .rating-number { font-size: 48px; font-weight: 900; line-height: 1; }
+  .rating-number.bad { color: #EF4444; }
+  .rating-number.ok { color: #F59E0B; }
+  .rating-number.good { color: #22C55E; }
+  .rating-stars { font-size: 18px; margin: 4px 0; }
+  .rating-label { font-size: 11px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rating-reviews { font-size: 12px; color: #64748B; margin-top: 2px; }
+  .rating-divider { width: 1px; height: 60px; background: rgba(239, 68, 68, 0.2); }
+  .rating-gap-badge {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 8px;
+    padding: 8px 16px;
+    text-align: center;
+  }
+  .rating-gap-badge .gap-number { font-size: 28px; font-weight: 900; color: #EF4444; }
+  .rating-gap-badge .gap-label { font-size: 11px; color: #FCA5A5; }
+
+  /* ===== NAV TABS ===== */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin: 0 24px 24px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #64748B;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--qwick-purple);
+    color: #fff;
+  }
+  .tab-btn:not(.active):hover { background: rgba(255,255,255,0.08); color: #94A3B8; }
+
+  /* ===== PANELS ===== */
+  .panel { display: none; padding: 0 24px 40px; }
+  .panel.active { display: block; }
+
+  /* ===== BEFORE/AFTER SPLIT ===== */
+  .split-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 640px) { .split-view { grid-template-columns: 1fr; } }
+
+  .split-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .split-card.before { border-color: rgba(239, 68, 68, 0.3); }
+  .split-card.after { border-color: rgba(34, 197, 94, 0.3); }
+
+  .split-header {
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .split-header.before { background: rgba(239,68,68,0.1); color: #FCA5A5; border-bottom: 1px solid rgba(239,68,68,0.2); }
+  .split-header.after { background: rgba(34,197,94,0.1); color: #86EFAC; border-bottom: 1px solid rgba(34,197,94,0.2); }
+
+  .split-content { padding: 16px; }
+
+  /* ===== PHONE MOCKUP ===== */
+  .phone-wrapper { display: flex; justify-content: center; margin-bottom: 16px; }
+  .phone {
+    width: 220px;
+    background: #1E2030;
+    border-radius: 32px;
+    padding: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 2px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .phone-notch {
+    width: 80px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    margin: 0 auto 10px;
+  }
+  .phone-screen {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 380px;
+  }
+
+  /* App UI Components */
+  .app-topbar {
+    background: #7B3FE4;
+    padding: 12px 14px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .app-topbar .back { font-size: 18px; opacity: 0.8; }
+  .app-body { padding: 12px; background: #F8FAFC; min-height: 340px; }
+
+  /* Shift card */
+  .shift-card-app {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .shift-card-app:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(123,63,228,0.2); }
+  .shift-card-app.available { border-color: #E2E8F0; }
+  .shift-card-app.claiming {
+    border-color: #7B3FE4;
+    background: linear-gradient(135deg, #F5F0FF, #fff);
+  }
+  .shift-card-app.claimed { border-color: #22C55E; background: #F0FDF4; }
+  .shift-card-app.gone { opacity: 0; pointer-events: none; }
+  .shift-card-app .role { font-size: 13px; font-weight: 700; color: #1E293B; margin-bottom: 2px; }
+  .shift-card-app .venue { font-size: 11px; color: #64748B; margin-bottom: 6px; }
+  .shift-card-app .shift-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .shift-chip {
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 3px 8px;
+  }
+  .chip-pay { background: #DCFCE7; color: #15803D; }
+  .chip-time { background: #EFF6FF; color: #1D4ED8; }
+  .chip-dist { background: #FFF7ED; color: #C2410C; }
+  .chip-claim { background: #F5F0FF; color: #7B3FE4; }
+  .chip-done { background: #DCFCE7; color: #15803D; }
+
+  .claim-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(123, 63, 228, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 10px;
+  }
+  .shift-card-app.claiming .claim-overlay { opacity: 1; }
+  .claim-overlay .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Error state */
+  .error-toast {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    display: none;
+  }
+  .error-toast.show { display: block; }
+  .error-toast .error-title { font-size: 11px; font-weight: 700; color: #DC2626; margin-bottom: 2px; }
+  .error-toast .error-body { font-size: 10px; color: #7F1D1D; }
+
+  /* Success state */
+  .success-toast {
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    display: none;
+  }
+  .success-toast.show { display: block; }
+  .success-toast .success-title { font-size: 11px; font-weight: 700; color: #15803D; margin-bottom: 2px; }
+  .success-toast .success-body { font-size: 10px; color: #14532D; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    display: none;
+  }
+  .empty-state.show { display: block; }
+  .empty-state .empty-icon { font-size: 32px; margin-bottom: 8px; }
+  .empty-state p { font-size: 11px; color: #94A3B8; }
+
+  /* ===== INFO CARDS ===== */
+  .info-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .info-card h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .info-card p, .info-card li { font-size: 12px; color: #94A3B8; line-height: 1.6; }
+  .info-card ul { padding-left: 16px; }
+  .info-card .evidence-link { font-size: 11px; color: #7B3FE4; text-decoration: underline; }
+
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; border-radius: 4px; padding: 2px 8px; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+  .tag-green { background: rgba(34,197,94,0.15); color: #86EFAC; }
+  .tag-purple { background: rgba(123,63,228,0.15); color: #C4B5FD; }
+  .tag-amber { background: rgba(245,158,11,0.15); color: #FDE68A; }
+
+  /* ===== SECTION TITLE ===== */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: rgba(123,63,228,0.3); }
+  .timeline-item { position: relative; margin-bottom: 20px; }
+  .timeline-dot {
+    position: absolute;
+    left: -20px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--qwick-purple);
+    background: #0A0A1A;
+  }
+  .timeline-item h5 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .timeline-item p { font-size: 12px; color: #94A3B8; }
+
+  /* ===== PAYMENT PANEL ===== */
+  .payment-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .payment-row .pr-label { font-size: 12px; color: #94A3B8; }
+  .payment-row .pr-amount { font-size: 14px; font-weight: 700; }
+  .payment-row .pr-amount.danger { color: #EF4444; }
+  .payment-row .pr-amount.safe { color: #22C55E; }
+
+  /* ===== SPRINT CARD ===== */
+  .sprint-card {
+    background: linear-gradient(135deg, rgba(123,63,228,0.15), rgba(91,45,191,0.08));
+    border: 1px solid rgba(123,63,228,0.3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .sprint-card h3 { font-size: 16px; font-weight: 800; color: #C4B5FD; margin-bottom: 12px; }
+  .sprint-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .sprint-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--qwick-purple);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .sprint-text h5 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .sprint-text p { font-size: 12px; color: #94A3B8; }
+
+  /* ===== CTA ===== */
+  .cta-block {
+    background: linear-gradient(135deg, rgba(123,63,228,0.2), rgba(91,45,191,0.1));
+    border: 1px solid rgba(123,63,228,0.4);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    margin-top: 24px;
+  }
+  .cta-block h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .cta-block p { font-size: 14px; color: #94A3B8; margin-bottom: 20px; }
+  .cta-detail { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  .cta-detail-item { text-align: center; }
+  .cta-detail-item .d-number { font-size: 24px; font-weight: 900; color: var(--qwick-purple); }
+  .cta-detail-item .d-label { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cta-email {
+    display: inline-block;
+    background: var(--qwick-purple);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .cta-email:hover { background: var(--qwick-purple-dark); }
+
+  /* Button */
+  .demo-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+  }
+  .btn-reset {
+    background: rgba(255,255,255,0.08);
+    color: #94A3B8;
+  }
+  .btn-reset:hover { background: rgba(255,255,255,0.12); }
+
+  /* ===== REVIEW QUOTES ===== */
+  .review-quote {
+    background: rgba(239,68,68,0.08);
+    border-left: 3px solid #EF4444;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .review-quote p { font-size: 12px; color: #FCA5A5; font-style: italic; line-height: 1.5; }
+  .review-quote .review-meta { font-size: 10px; color: #64748B; margin-top: 4px; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">
+    <span class="dot"></span>
+    LIVE PRODUCT ISSUE — FEBRUARY 2026
+  </div>
+  <h1>Qwick Android: <span>1.59 / 5</span> Stars</h1>
+  <p>Post-acquisition integration sprint proposal for Engineering Leadership, CTO — by Elinext Mobile Engineering</p>
+</div>
+
+<!-- RATING BANNER -->
+<div class="rating-banner">
+  <div class="rating-item">
+    <div class="rating-number good">4.8</div>
+    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+    <div class="rating-label">Qwick iOS (legacy)</div>
+    <div class="rating-reviews">17,872 reviews</div>
+  </div>
+  <div class="rating-divider"></div>
+  <div class="rating-item">
+    <div class="rating-number ok">4.0</div>
+    <div class="rating-stars">⭐⭐⭐⭐☆</div>
+    <div class="rating-label">Gigpro+Qwick iOS</div>
+    <div class="rating-reviews">3,208 reviews</div>
+  </div>
+  <div class="rating-divider"></div>
+  <div class="rating-item">
+    <div class="rating-number bad">1.59</div>
+    <div class="rating-stars">⭐☆☆☆☆</div>
+    <div class="rating-label">Gigpro+Qwick Android</div>
+    <div class="rating-reviews">~2,300 reviews</div>
+  </div>
+  <div class="rating-gap-badge">
+    <div class="gap-number">−2.41</div>
+    <div class="gap-label">iOS → Android gap<br>same version v2.110.0</div>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab(0)">1. Shift Claiming Bug</button>
+  <button class="tab-btn" onclick="switchTab(1)">2. Stripe Incident</button>
+  <button class="tab-btn" onclick="switchTab(2)">3. Integration Sprint</button>
+</div>
+
+<!-- ==================== PANEL 1: SHIFT CLAIMING ==================== -->
+<div class="panel active" id="panel-0">
+
+  <div class="section-title">Bug #1: Shift Disappears on Tap</div>
+
+  <div class="split-view">
+
+    <!-- BEFORE -->
+    <div class="split-card before">
+      <div class="split-header before">
+        <span>⚠</span> BEFORE — Current Android Behavior
+      </div>
+      <div class="split-content">
+        <div class="phone-wrapper">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app-topbar">
+                <span class="back">‹</span>
+                <span>Available Shifts</span>
+                <span>📍</span>
+              </div>
+              <div class="app-body" id="before-body">
+                <div class="error-toast" id="before-error">
+                  <div class="error-title">⚠ Shift Unavailable</div>
+                  <div class="error-body">This shift is no longer available.</div>
+                </div>
+                <div class="empty-state" id="before-empty">
+                  <div class="empty-icon">😕</div>
+                  <p>No shifts available<br>near you right now.</p>
+                </div>
+
+                <div class="shift-card-app available" id="before-shift-1" onclick="beforeTap(1)">
+                  <div class="claim-overlay"><span class="spinner"></span></div>
+                  <div class="role">Bartender</div>
+                  <div class="venue">The Capital Grille • 0.8 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$28/hr</span>
+                    <span class="shift-chip chip-time">6PM–11PM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+                <div class="shift-card-app available" id="before-shift-2" onclick="beforeTap(2)">
+                  <div class="claim-overlay"><span class="spinner"></span></div>
+                  <div class="role">Server</div>
+                  <div class="venue">Marriott Marquis • 1.2 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$22/hr</span>
+                    <span class="shift-chip chip-time">7PM–12AM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+                <div class="shift-card-app available" id="before-shift-3" onclick="beforeTap(3)">
+                  <div class="claim-overlay"><span class="spinner"></span></div>
+                  <div class="role">Barback</div>
+                  <div class="venue">Kimpton Overland • 2.1 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$20/hr</span>
+                    <span class="shift-chip chip-time">5PM–10PM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <small style="color:#64748B; font-size:11px;">Tap any shift to see what happens →</small>
+        </div>
+        <button class="demo-btn btn-reset" onclick="resetBefore()">↺ Reset Demo</button>
+
+        <div class="info-card" style="margin-top:12px;">
+          <h4><span class="tag tag-red">ROOT CAUSE</span></h4>
+          <p>Race condition: claim API call returns. Android bridge processes the "shift removed from available list" event before the "claim confirmed" event. UI shows empty state. No feedback. Worker doesn't know if they got the shift.</p>
+        </div>
+
+        <div class="review-quote">
+          <p>"Tap a shift, it just disappears. No idea if I claimed it or someone else did. Show up to the job — turned away."</p>
+          <div class="review-meta">⭐ 1-star review, Google Play — November 2025</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="split-card after">
+      <div class="split-header after">
+        <span>✓</span> AFTER — Optimistic UI with Claim Lock
+      </div>
+      <div class="split-content">
+        <div class="phone-wrapper">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app-topbar">
+                <span class="back">‹</span>
+                <span>Available Shifts</span>
+                <span>📍</span>
+              </div>
+              <div class="app-body" id="after-body">
+                <div class="success-toast" id="after-success">
+                  <div class="success-title">✓ Shift Claimed!</div>
+                  <div class="success-body">Bartender · The Capital Grille · 6–11PM</div>
+                </div>
+
+                <div class="shift-card-app available" id="after-shift-1" onclick="afterTap(1)">
+                  <div class="claim-overlay"><span class="spinner"></span> Claiming…</div>
+                  <div class="role">Bartender</div>
+                  <div class="venue">The Capital Grille • 0.8 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$28/hr</span>
+                    <span class="shift-chip chip-time">6PM–11PM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+                <div class="shift-card-app available" id="after-shift-2">
+                  <div class="role">Server</div>
+                  <div class="venue">Marriott Marquis • 1.2 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$22/hr</span>
+                    <span class="shift-chip chip-time">7PM–12AM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+                <div class="shift-card-app available" id="after-shift-3">
+                  <div class="role">Barback</div>
+                  <div class="venue">Kimpton Overland • 2.1 mi</div>
+                  <div class="shift-meta">
+                    <span class="shift-chip chip-pay">$20/hr</span>
+                    <span class="shift-chip chip-time">5PM–10PM</span>
+                    <span class="shift-chip chip-dist">Today</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 10px;">
+          <small style="color:#64748B; font-size:11px;">Tap first shift to see optimistic UI →</small>
+        </div>
+        <button class="demo-btn btn-reset" onclick="resetAfter()">↺ Reset Demo</button>
+
+        <div class="info-card" style="margin-top:12px;">
+          <h4><span class="tag tag-green">FIX</span></h4>
+          <ul>
+            <li>Optimistic UI: lock shift immediately on tap ("Claiming…" overlay)</li>
+            <li>Claim state written to AsyncStorage before API call fires</li>
+            <li>Confirm OR revert based on API response — not the list refresh</li>
+            <li>Worker always sees deterministic feedback</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h4>Scope</h4>
+          <p>3–4 weeks, 1 senior React Native engineer. Fixed price. No dependency on backend changes.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== PANEL 2: STRIPE INCIDENT ==================== -->
+<div class="panel" id="panel-1">
+
+  <div class="section-title">Bug #2: November 2025 Stripe Incident</div>
+
+  <div class="info-card" style="border-color: rgba(239,68,68,0.3); margin-bottom:20px;">
+    <h4>🚨 <span class="tag tag-red">CONFIRMED PUBLIC INCIDENT</span></h4>
+    <p>November 2025: Multiple Android users charged $400–600+ via Stripe without authorization. Qwick acknowledged: <em>"billing system was incorrectly configured and sent charges at an incorrect interval."</em> Accounts suspended post-incident.</p>
+  </div>
+
+  <div class="split-view">
+
+    <div class="split-card before">
+      <div class="split-header before">
+        <span>⚠</span> BEFORE — Dual Stripe Configuration
+      </div>
+      <div class="split-content">
+
+        <div class="info-card">
+          <h4>What happened (technical)</h4>
+          <p style="margin-bottom:8px;">Two Stripe configurations ran simultaneously post-merger:</p>
+          <ul>
+            <li>Qwick's original Stripe account (webhooks: charge.success → qwick.com/webhooks)</li>
+            <li>Gigpro's Stripe account (webhooks: charge.success → gigpro.com/webhooks)</li>
+          </ul>
+          <p style="margin-top:8px;">Migrated users had payment tokens in both systems. Android users (primary Gigpro app bundle = com.gigpro) hit both webhook endpoints for a single transaction.</p>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div class="payment-row">
+            <span class="pr-label">Qwick billing trigger</span>
+            <span class="pr-amount danger">−$400.00</span>
+          </div>
+          <div class="payment-row">
+            <span class="pr-label">Gigpro billing trigger (legacy)</span>
+            <span class="pr-amount danger">−$400.00</span>
+          </div>
+          <div class="payment-row" style="border-color:rgba(239,68,68,0.3); background: rgba(239,68,68,0.06);">
+            <span class="pr-label" style="color:#FCA5A5; font-weight:700;">Worker sees on Stripe</span>
+            <span class="pr-amount danger" style="font-size:20px;">−$800.00</span>
+          </div>
+        </div>
+
+        <div class="review-quote">
+          <p>"Charged $400 for absolutely nothing. Support is a chatbot. This is theft. I'm calling my bank."</p>
+          <div class="review-meta">⭐ 1-star review, Google Play — November 2025</div>
+        </div>
+        <div class="review-quote">
+          <p>"App debited me twice. Account locked. Six days to get it back. Still haven't gotten my money."</p>
+          <div class="review-meta">⭐ 1-star review, Google Play — November 2025</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="split-card after">
+      <div class="split-header after">
+        <span>✓</span> AFTER — Unified Payment Configuration
+      </div>
+      <div class="split-content">
+
+        <div class="info-card">
+          <h4>The fix</h4>
+          <ul>
+            <li>Audit all active Stripe webhook endpoints across both legacy configurations</li>
+            <li>Migrate all payment tokens to single Stripe account</li>
+            <li>Implement idempotency keys on all charge operations</li>
+            <li>Add charge deduplication layer (Redis or DB-level)</li>
+            <li>Archive (not delete) Gigpro Stripe configuration after verified migration</li>
+          </ul>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div class="payment-row">
+            <span class="pr-label">Unified billing trigger</span>
+            <span class="pr-amount safe">$28.00 earned</span>
+          </div>
+          <div class="payment-row">
+            <span class="pr-label">Idempotency check</span>
+            <span class="pr-amount safe">Duplicate blocked ✓</span>
+          </div>
+          <div class="payment-row" style="border-color:rgba(34,197,94,0.3); background: rgba(34,197,94,0.06);">
+            <span class="pr-label" style="color:#86EFAC; font-weight:700;">Worker sees on Stripe</span>
+            <span class="pr-amount safe" style="font-size:20px;">+$140.00</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h4>Why this is urgent</h4>
+          <p>If both configurations are still active, every migrated Android user is at risk of re-occurrence. CFPB complaint threshold: 5+ unauthorized charges to same merchant = formal investigation trigger. One news article about "gig app stealing from hospitality workers" is brand-level damage.</p>
+        </div>
+
+        <div class="info-card">
+          <h4>Scope</h4>
+          <p>2–3 weeks, 1 backend engineer with Stripe expertise. Part of the Android Stabilization Sprint.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==================== PANEL 3: SPRINT PLAN ==================== -->
+<div class="panel" id="panel-2">
+
+  <div class="section-title">Android Stabilization Sprint</div>
+
+  <div class="sprint-card">
+    <h3>6-Week Sprint Plan — Elinext Proposal</h3>
+
+    <div class="sprint-item">
+      <div class="sprint-num">1</div>
+      <div class="sprint-text">
+        <h5>Week 1–2: Stripe Audit + Deduplication</h5>
+        <p>Map all active webhook endpoints. Consolidate to single Stripe account. Implement idempotency keys. Eliminate duplicate charge risk. <span class="tag tag-amber">Reduces liability</span></p>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div class="sprint-num">2</div>
+      <div class="sprint-text">
+        <h5>Week 2–4: Shift Claiming — Optimistic UI</h5>
+        <p>Rebuild claim flow with optimistic UI + claim lock. AsyncStorage write on tap. Deterministic feedback (success/taken) replaces race-condition empty state. <span class="tag tag-green">Stops 1-star review flow</span></p>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div class="sprint-num">3</div>
+      <div class="sprint-text">
+        <h5>Week 3–5: FCM Notification Audit</h5>
+        <p>Audit Firebase project configuration post-merger. Implement high-priority notification channels. Test on Samsung Galaxy A14/A23 (OneUI 6) and Moto G series. Add battery optimization prompt. <span class="tag tag-purple">Restores supply engagement</span></p>
+      </div>
+    </div>
+
+    <div class="sprint-item">
+      <div class="sprint-num">4</div>
+      <div class="sprint-text">
+        <h5>Week 5–6: Identity Migration Remediation</h5>
+        <p>Audit failed account migrations. Re-run migration for affected Gigpro users with shift history transfer. Fix password reset flow for dual-origin accounts. <span class="tag tag-green">Restores worker loyalty</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+    <div class="info-card" style="border-color: rgba(123,63,228,0.3);">
+      <h4>Team Size</h4>
+      <p style="font-size:20px; font-weight:900; color: #C4B5FD;">2 engineers</p>
+      <p>1 senior React Native (mobile)<br>1 backend (Node.js / Stripe)</p>
+    </div>
+    <div class="info-card" style="border-color: rgba(123,63,228,0.3);">
+      <h4>Duration</h4>
+      <p style="font-size:20px; font-weight:900; color: #C4B5FD;">6 weeks</p>
+      <p>Fixed-scope engagement</p>
+    </div>
+  </div>
+
+  <div class="section-title">Recovery Projection</div>
+
+  <div class="info-card">
+    <h4>From 1.59 → 3.5+ (6-month projection)</h4>
+    <div class="timeline" style="margin-top:12px;">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h5>Week 1: Stop the bleeding</h5>
+        <p>Stripe fix prevents new unauthorized charge reviews. Shift claiming fix stops "disappearing shift" reviews. Net: 1-star volume drops sharply.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h5>Month 2–3: Workers re-engage</h5>
+        <p>FCM fix means Android workers get notified again. More shifts worked → more earned → more positive experiences → organic 4–5 star reviews.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h5>Month 4–6: Rating recovers</h5>
+        <p>With 1-star flow stopped and 4-5 star flow restarted, the 1.59 average recovers toward 3.5+. Google Play re-ranks the app in gig worker search results.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h3>Ready to ship in February</h3>
+    <p>Elinext Mobile Engineering<br>This sprint is scoped. Fixed price. No ongoing commitment required to start.</p>
+    <div class="cta-detail">
+      <div class="cta-detail-item">
+        <div class="d-number">2</div>
+        <div class="d-label">Engineers</div>
+      </div>
+      <div class="cta-detail-item">
+        <div class="d-number">6</div>
+        <div class="d-label">Weeks</div>
+      </div>
+      <div class="cta-detail-item">
+        <div class="d-number">$12–18K</div>
+        <div class="d-label">Fixed price</div>
+      </div>
+    </div>
+    
+      elinext.com/contacts/
+    
+    <div style="margin-top:12px; font-size:12px; color:#475569;">Elinext Mobile Engineering, Mobile Product Development · Elinext</div>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+    document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  }
+
+  // BEFORE demo: shift disappears with error
+  let beforeState = {};
+  function beforeTap(n) {
+    const card = document.getElementById('before-shift-' + n);
+    if (card.classList.contains('claiming') || card.classList.contains('gone')) return;
+    card.classList.add('claiming');
+    setTimeout(() => {
+      card.classList.remove('claiming');
+      card.classList.add('gone');
+      // Show error only sometimes to simulate race condition
+      if (n === 1) {
+        document.getElementById('before-error').classList.add('show');
+      }
+      // Check if all gone → show empty state
+      const shifts = ['before-shift-1','before-shift-2','before-shift-3'];
+      const allGone = shifts.every(id => document.getElementById(id).classList.contains('gone'));
+      if (allGone) {
+        document.getElementById('before-error').classList.remove('show');
+        document.getElementById('before-empty').classList.add('show');
+      }
+    }, 800);
+  }
+
+  function resetBefore() {
+    ['before-shift-1','before-shift-2','before-shift-3'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('claiming','gone','claimed');
+    });
+    document.getElementById('before-error').classList.remove('show');
+    document.getElementById('before-empty').classList.remove('show');
+  }
+
+  // AFTER demo: optimistic UI, then success
+  let afterClaimed = false;
+  function afterTap(n) {
+    if (afterClaimed) return;
+    const card = document.getElementById('after-shift-' + n);
+    if (card.classList.contains('claiming') || card.classList.contains('claimed')) return;
+    card.classList.add('claiming');
+    setTimeout(() => {
+      card.classList.remove('claiming');
+      card.classList.add('claimed');
+      // Update chip
+      card.querySelector('.shift-meta').innerHTML = '<span class="shift-chip chip-done">✓ Shift Claimed!</span>';
+      document.getElementById('after-success').classList.add('show');
+      afterClaimed = true;
+    }, 1000);
+  }
+
+  function resetAfter() {
+    afterClaimed = false;
+    ['after-shift-1','after-shift-2','after-shift-3'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('claiming','claimed');
+    });
+    // Reset shift metas
+    const metas = [
+      '<span class="shift-chip chip-pay">$28/hr</span><span class="shift-chip chip-time">6PM–11PM</span><span class="shift-chip chip-dist">Today</span>',
+      '<span class="shift-chip chip-pay">$22/hr</span><span class="shift-chip chip-time">7PM–12AM</span><span class="shift-chip chip-dist">Today</span>',
+      '<span class="shift-chip chip-pay">$20/hr</span><span class="shift-chip chip-time">5PM–10PM</span><span class="shift-chip chip-dist">Today</span>'
+    ];
+    ['after-shift-1','after-shift-2','after-shift-3'].forEach((id,i) => {
+      document.getElementById(id).querySelector('.shift-meta').innerHTML = metas[i];
+    });
+    document.getElementById('after-success').classList.remove('show');
+  }
+</script>
+
+</body>
+</html>

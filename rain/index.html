@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rain EWA — Enhanced Mobile Experience</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: #0f0f14;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* Phone shell */
+    .phone {
+      width: 220px;
+      min-width: 320px;
+      background: #1a1a22;
+      border-radius: 44px;
+      padding: 16px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.08);
+    }
+
+    .phone-inner {
+      background: #0f1117;
+      border-radius: 32px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px 4px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* Screen switcher */
+    .screens { position: relative; }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      min-height: 620px;
+    }
+    .screen.active { display: flex; }
+
+    /* ── SCREEN 1: Dashboard ── */
+    .dashboard-header {
+      background: linear-gradient(160deg, #1e6bff 0%, #0a3fd4 60%, #071d6b 100%);
+      padding: 20px 20px 28px;
+    }
+
+    .earned-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .earned-amount {
+      font-size: 44px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .earned-period {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 10px;
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .cta-section {
+      background: #0f1117;
+      padding: 16px 20px;
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      background: #1e6bff;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .available-note {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 8px;
+    }
+
+    /* Transfer status tracker */
+    .tracker-section {
+      padding: 16px 20px;
+      background: #0f1117;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tracker-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .transfer-card {
+      background: #1a1a22;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .transfer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .transfer-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .transfer-time {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Progress tracker */
+    .progress-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .track-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .track-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .track-dot.done {
+      background: #1e6bff;
+      color: #fff;
+    }
+
+    .track-dot.active {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(30,107,255,0.4);
+    }
+
+    .track-dot.active::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #1e6bff;
+    }
+
+    .track-dot.pending {
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.15);
+    }
+
+    .track-line {
+      flex: 1;
+      height: 2px;
+      margin-top: -11px;
+      position: relative;
+    }
+
+    .track-line.done { background: #1e6bff; }
+    .track-line.pending { background: rgba(255,255,255,0.1); }
+
+    .track-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 5px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .track-label.active-label { color: #fff; font-weight: 600; }
+    .track-label.done-label { color: #1e6bff; }
+
+    .eta-line {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 8px;
+    }
+
+    .eta-line strong { color: #4ade80; }
+
+    /* Repayment forecast card */
+    .repay-card {
+      background: #1a1a22;
+      border-radius: 16px;
+      padding: 14px;
+      margin: 0 20px 12px;
+      border: 1px solid rgba(255,200,80,0.2);
+    }
+
+    .repay-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .repay-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,200,80,0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .repay-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .repay-body {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+
+    .repay-body strong { color: #ffd350; }
+
+    /* AI agent section */
+    .ai-section {
+      padding: 12px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .ai-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #1e6bff, #a855f7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .ai-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .ai-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .ai-bubble {
+      background: rgba(30,107,255,0.1);
+      border: 1px solid rgba(30,107,255,0.2);
+      border-radius: 0 14px 14px 14px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .ai-action {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ai-chip {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 16px 16px;
+      background: #1a1a22;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .nav-item.active { opacity: 1; }
+
+    .nav-icon { font-size: 20px; }
+
+    .nav-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── SCREEN 2: Transfer Flow ── */
+    .transfer-header-bar {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px 8px;
+      gap: 12px;
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .screen-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .amount-picker {
+      padding: 20px;
+    }
+
+    .amount-display {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .amount-big {
+      font-size: 52px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -2px;
+    }
+
+    .amount-max {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+
+    .slider-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .slider-fill {
+      height: 100%;
+      width: 62%;
+      background: linear-gradient(90deg, #1e6bff, #60a5fa);
+      border-radius: 3px;
+    }
+
+    .slider-thumb {
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: -8px;
+      left: calc(62% - 11px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .speed-options {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .speed-option {
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .speed-option.selected {
+      border-color: #1e6bff;
+      background: rgba(30,107,255,0.06);
+    }
+
+    .speed-left { display: flex; align-items: center; gap: 10px; }
+
+    .speed-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .speed-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .speed-time {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .speed-time.highlight { color: #4ade80; }
+
+    .speed-cost {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .speed-cost.free { color: #4ade80; }
+
+    .confirm-section {
+      padding: 16px 20px;
+      margin-top: auto;
+    }
+
+    .confirm-btn {
+      display: block;
+      width: 100%;
+      background: #1e6bff;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      cursor: pointer;
+    }
+
+    .confirm-disclaimer {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* ── SCREEN 3: Card coming soon ── */
+    .card-hero {
+      padding: 24px 20px;
+      background: linear-gradient(160deg, #0f2a1a 0%, #0f1117 100%);
+    }
+
+    .card-visual {
+      width: 100%;
+      aspect-ratio: 1.586;
+      background: linear-gradient(135deg, #1a3a28 0%, #0d4f2e 50%, #062b1a 100%);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(74,222,128,0.2);
+      margin-bottom: 16px;
+    }
+
+    .card-logo {
+      font-size: 18px;
+      font-weight: 800;
+      color: #4ade80;
+      letter-spacing: -0.5px;
+    }
+
+    .card-number {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 3px;
+      margin-top: 24px;
+    }
+
+    .card-limit-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 12px;
+    }
+
+    .card-limit-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .card-limit-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4ade80;
+    }
+
+    .card-limit-sub {
+      font-size: 9px;
+      color: rgba(74,222,128,0.6);
+    }
+
+    .card-chip {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 36px;
+      height: 28px;
+      background: linear-gradient(135deg, #ffd700, #ffa500);
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+
+    .card-coming-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(74,222,128,0.1);
+      border: 1px solid rgba(74,222,128,0.3);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .card-features {
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feature-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .feature-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(74,222,128,0.08);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .feature-text { flex: 1; }
+
+    .feature-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .feature-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+    }
+
+    .waitlist-btn {
+      margin: 16px 20px 0;
+      display: block;
+      background: rgba(74,222,128,0.1);
+      border: 1.5px solid rgba(74,222,128,0.4);
+      color: #4ade80;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 14px;
+      padding: 13px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Right panel — annotation */
+    .annotations {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .annotation-header {
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .annotation-tag {
+      display: inline-block;
+      background: rgba(30,107,255,0.15);
+      border: 1px solid rgba(30,107,255,0.3);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: #60a5fa;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .annotation-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .annotation-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: -8px;
+    }
+
+    .tab {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab.active {
+      background: rgba(30,107,255,0.15);
+      color: #60a5fa;
+    }
+
+    .note-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .note-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .note-number {
+      width: 22px;
+      height: 22px;
+      background: #1e6bff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .note-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .note-card-body {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    .note-card-body strong {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tech-tag {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* Screen selector */
+    .screen-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .sel-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .sel-btn.active {
+      background: rgba(30,107,255,0.15);
+      border-color: rgba(30,107,255,0.3);
+      color: #60a5fa;
+    }
+
+    @media (max-width: 700px) {
+      .container { flex-direction: column; align-items: center; }
+      .annotations { max-width: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Phone -->
+  <div class="phone">
+    <div class="phone-inner">
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●● 5G 🔋</span>
+      </div>
+
+      <!-- SCREEN 1: Dashboard with transfer tracker -->
+      <div class="screen active" id="screen-1">
+
+        <div class="dashboard-header">
+          <div class="earned-label">Earned this pay period</div>
+          <div class="earned-amount">$623.40</div>
+          <div class="earned-period">Feb 3 – Feb 19 · Walmart #1482</div>
+          <div class="sync-badge">
+            <div class="sync-dot"></div>
+            Synced 12 min ago · next sync 5:30 PM
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <button class="cta-btn" onclick="switchScreen(2)">Access $311 now →</button>
+          <div class="available-note">Up to 50% available · $311.70</div>
+        </div>
+
+        <!-- Transfer tracker -->
+        <div class="tracker-section">
+          <div class="tracker-title">Last transfer</div>
+          <div class="transfer-card">
+            <div class="transfer-header">
+              <div class="transfer-amount">$150.00</div>
+              <div class="transfer-time">Today, 7:22 AM</div>
+            </div>
+            <!-- Progress track -->
+            <div class="progress-track">
+              <div class="track-step">
+                <div class="track-dot done">✓</div>
+                <div class="track-label done-label">Sent</div>
+              </div>
+              <div class="track-line done"></div>
+              <div class="track-step">
+                <div class="track-dot done">✓</div>
+                <div class="track-label done-label">Processing</div>
+              </div>
+              <div class="track-line done"></div>
+              <div class="track-step">
+                <div class="track-dot active"></div>
+                <div class="track-label active-label">In Transit</div>
+              </div>
+              <div class="track-line pending"></div>
+              <div class="track-step">
+                <div class="track-dot pending"></div>
+                <div class="track-label">Deposited</div>
+              </div>
+            </div>
+            <div class="eta-line">Estimated arrival: <strong>Today by 11:30 AM</strong> · Chase checking ···4821</div>
+          </div>
+        </div>
+
+        <!-- Repayment forecast -->
+        <div class="repay-card">
+          <div class="repay-header">
+            <div class="repay-icon">📅</div>
+            <div class="repay-title">Next paycheck forecast</div>
+          </div>
+          <div class="repay-body">
+            Your Feb 21 paycheck of ~$847 will include a <strong>$150 repayment</strong>. You'll take home <strong>~$697</strong>.
+          </div>
+        </div>
+
+        <!-- AI agent -->
+        <div class="ai-section">
+          <div class="ai-header">
+            <div class="ai-avatar">🧠</div>
+            <div>
+              <div class="ai-title">Rain Advisor</div>
+              <div class="ai-sub">Financial wellness · powered by AI</div>
+            </div>
+          </div>
+          <div class="ai-bubble">
+            You've accessed wages 3 times this month. Your rent is due Feb 28 — want me to set aside $850 automatically from your next paycheck?
+          </div>
+          <div class="ai-action">
+            <div class="ai-chip">Yes, set it aside</div>
+            <div class="ai-chip">Remind me later</div>
+            <div class="ai-chip">No thanks</div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <div class="nav-item active">
+            <div class="nav-icon">💵</div>
+            <div class="nav-label">Access</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">📊</div>
+            <div class="nav-label">Spending</div>
+          </div>
+          <div class="nav-item" onclick="switchScreen(3)">
+            <div class="nav-icon">💳</div>
+            <div class="nav-label">Card</div>
+          </div>
+          <div class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Profile</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SCREEN 2: Transfer amount picker -->
+      <div class="screen" id="screen-2">
+        <div class="transfer-header-bar">
+          <div class="back-btn" onclick="switchScreen(1)">←</div>
+          <div class="screen-title">Get paid now</div>
+        </div>
+
+        <div class="amount-picker">
+          <div class="amount-display">
+            <div class="amount-big">$194</div>
+            <div class="amount-max">of $311.70 available</div>
+          </div>
+          <div class="slider-track">
+            <div class="slider-fill"></div>
+            <div class="slider-thumb"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.3)">
+            <span>$20</span><span>$311</span>
+          </div>
+        </div>
+
+        <div class="speed-options">
+          <div class="speed-option selected">
+            <div class="speed-left">
+              <div class="speed-icon" style="background:rgba(30,107,255,0.1)">⚡</div>
+              <div>
+                <div class="speed-name">Instant</div>
+                <div class="speed-time highlight">Arrives within 30 min</div>
+              </div>
+            </div>
+            <div class="speed-cost">$3.00</div>
+          </div>
+          <div class="speed-option">
+            <div class="speed-left">
+              <div class="speed-icon" style="background:rgba(74,222,128,0.08)">🏦</div>
+              <div>
+                <div class="speed-name">Standard ACH</div>
+                <div class="speed-time">Arrives by Feb 21 (Thu)</div>
+              </div>
+            </div>
+            <div class="speed-cost free">Free</div>
+          </div>
+        </div>
+
+        <div style="padding: 10px 20px;">
+          <div style="background:#1a1a22;border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.06)">
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px">Transfer summary</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff">
+              <span>Advance</span><span>$194.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">
+              <span>Instant fee</span><span>$3.00</span>
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:8px 0"></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px;color:#fff;font-weight:600">
+              <span>You receive</span><span>$191.00</span>
+            </div>
+            <div style="font-size:10px;color:rgba(255,200,80,0.8);margin-top:8px">
+              📅 Repaid from Feb 21 paycheck · you'll take home ~$653
+            </div>
+          </div>
+        </div>
+
+        <div class="confirm-section">
+          <button class="confirm-btn" onclick="switchScreen(1)">Send $191 to Chase ···4821</button>
+          <div class="confirm-disclaimer">Advance will be deducted from your next paycheck automatically</div>
+        </div>
+
+        <div class="bottom-nav">
+          <div class="nav-item active"><div class="nav-icon">💵</div><div class="nav-label">Access</div></div>
+          <div class="nav-item"><div class="nav-icon">📊</div><div class="nav-label">Spending</div></div>
+          <div class="nav-item"><div class="nav-icon">💳</div><div class="nav-label">Card</div></div>
+          <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: Credit card coming soon -->
+      <div class="screen" id="screen-3">
+        <div class="transfer-header-bar">
+          <div class="back-btn" onclick="switchScreen(1)">←</div>
+          <div class="screen-title">Rain Card</div>
+        </div>
+
+        <div class="card-hero">
+          <div class="card-visual">
+            <div class="card-logo">rain</div>
+            <div class="card-chip"></div>
+            <div class="card-number">•••• •••• •••• 4821</div>
+            <div class="card-limit-row">
+              <div>
+                <div class="card-limit-label">Dynamic credit limit</div>
+                <div class="card-limit-value">$623</div>
+                <div class="card-limit-sub">= your current earned wages</div>
+              </div>
+              <div style="text-align:right">
+                <div class="card-limit-label">Updates in</div>
+                <div style="font-size:18px;font-weight:700;color:#4ade80">3h 22m</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-coming-badge">
+            <span>🌧</span> Coming Q3 2025 · Join waitlist
+          </div>
+        </div>
+
+        <div class="card-features">
+          <div class="feature-row">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">
+              <div class="feature-name">Limit tied to what you've earned</div>
+              <div class="feature-desc">No credit check. Limit updates every shift.</div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-icon">🛡</div>
+            <div class="feature-text">
+              <div class="feature-name">Auto-repay from paycheck</div>
+              <div class="feature-desc">Balance repaid at payday. No interest. No surprises.</div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-icon">📊</div>
+            <div class="feature-text">
+              <div class="feature-name">Real-time spending breakdown</div>
+              <div class="feature-desc">Groceries, gas, rent — categorized automatically.</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="waitlist-btn" onclick="switchScreen(1)">Join the waitlist →</button>
+
+        <div class="bottom-nav" style="margin-top:12px">
+          <div class="nav-item"><div class="nav-icon">💵</div><div class="nav-label">Access</div></div>
+          <div class="nav-item"><div class="nav-icon">📊</div><div class="nav-label">Spending</div></div>
+          <div class="nav-item active"><div class="nav-icon">💳</div><div class="nav-label">Card</div></div>
+          <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Annotations panel -->
+  <div class="annotations">
+
+    <div class="annotation-header">
+      <div class="annotation-tag">Prototype · Elinext for Rain</div>
+      <div class="annotation-title">Three workstreams Elinext can own</div>
+      <div class="annotation-sub">Rain has 5 product surfaces launching in 2025. This prototype shows the three where Elinext can ship independently — freeing Mario's senior team for HCM integration depth.</div>
+    </div>
+
+    <div class="screen-selector">
+      <div class="sel-btn active" onclick="selectScreen(1, this)">Screen 1: Dashboard</div>
+      <div class="sel-btn" onclick="selectScreen(2, this)">Screen 2: Transfer</div>
+      <div class="sel-btn" onclick="selectScreen(3, this)">Screen 3: Card</div>
+    </div>
+
+    <div class="note-card" id="note-1">
+      <div class="note-card-header">
+        <div class="note-number">1</div>
+        <div class="note-card-title">Transfer status tracker</div>
+      </div>
+      <div class="note-card-body">
+        Rain's #1 user complaint: "where is my money?" Users report 3–7 day waits while the app shows success. The problem isn't the transfer speed — it's the <strong>UX transparency gap</strong> between Rails state and user expectation. A real-time 4-step tracker (Sent → Processing → In Transit → Deposited) with ETA eliminates the trust-breaking ambiguity. <strong>This is 3 React Native components + a WebSocket state subscription</strong> tied to Rain's existing payment webhook infrastructure.
+      </div>
+      <div class="tag-row">
+        <span class="tech-tag">React Native</span>
+        <span class="tech-tag">WebSocket</span>
+        <span class="tech-tag">Payment webhooks</span>
+        <span class="tech-tag">Push notifications</span>
+      </div>
+    </div>
+
+    <div class="note-card" id="note-2" style="display:none">
+      <div class="note-card-header">
+        <div class="note-number">2</div>
+        <div class="note-card-title">Repayment forecast + transparent summary</div>
+      </div>
+      <div class="note-card-body">
+        Users report shock when repayments hit their paycheck unexpectedly — "they took my whole check." This screen adds <strong>proactive repayment forecasting</strong>: before a user confirms a transfer, they see exactly what their next paycheck will look like after repayment. This doesn't require backend changes — it reads from data Rain already has (scheduled repayment + projected paycheck). <strong>Pure UI workstream.</strong>
+      </div>
+      <div class="tag-row">
+        <span class="tech-tag">React Native</span>
+        <span class="tech-tag">Existing repayment API</span>
+        <span class="tech-tag">UX design</span>
+      </div>
+    </div>
+
+    <div class="note-card" id="note-3" style="display:none">
+      <div class="note-card-header">
+        <div class="note-number">3</div>
+        <div class="note-card-title">Credit card mobile surface (new, Q3 2025)</div>
+      </div>
+      <div class="note-card-body">
+        Rain announced an EWA-secured credit card with a <strong>dynamic credit limit tied to earned wages</strong>. This is an entirely new product domain: card issuance, real-time balance, transaction history, spending categorization, card controls (freeze/unfreeze). This is a <strong>full-feature workstream</strong> that can be built and owned independently by an embedded Elinext squad without touching the core EWA flow.
+      </div>
+      <div class="tag-row">
+        <span class="tech-tag">React Native</span>
+        <span class="tech-tag">Card management API</span>
+        <span class="tech-tag">Marqeta / card issuer</span>
+        <span class="tech-tag">KYC flow</span>
+      </div>
+    </div>
+
+    <div class="note-card" style="border-color:rgba(74,222,128,0.12)">
+      <div class="note-card-header">
+        <div style="font-size:18px">🎯</div>
+        <div class="note-card-title">Why this works for Mario</div>
+      </div>
+      <div class="note-card-body">
+        Mario's PhD is on mobile app efficiency. He founded <strong>Tappas</strong> — a crowdsourced mobile testing company. He does not need generic mobile developers. He needs a team with <strong>real-device testing discipline and React Native depth</strong> that can own a workstream end-to-end without supervision. Frame Elinext as an embedded extension squad, not a vendor. <strong>No handoffs. Ownership model.</strong>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function switchScreen(n) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + n).classList.add('active');
+    // update note cards
+    document.querySelectorAll('[id^="note-"]').forEach(c => c.style.display = 'none');
+    const nc = document.getElementById('note-' + n);
+    if (nc) nc.style.display = 'block';
+  }
+
+  function selectScreen(n, btn) {
+    document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    switchScreen(n);
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceTrade Mobile — Reliability Layer Analysis | Elinext</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy:     #1a2744;
+      --navy-mid: #243460;
+      --navy-light: #2e4080;
+      --white:    #ffffff;
+      --orange:   #f5a623;
+      --orange-dark: #e09010;
+      --bg:       #e8ecf0;
+      --bg-card:  #f4f6f9;
+      --green:    #28a745;
+      --green-light: #d4edda;
+      --red:      #dc3545;
+      --red-light: #fde8ea;
+      --text:     #1a2744;
+      --text-mid: #3d4f6e;
+      --text-muted: #6b7c99;
+      --border:   #d0d8e4;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* ─── LAYOUT ────────────────────────────────── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 64px 0;
+    }
+
+    section:nth-child(even) {
+      background: var(--white);
+    }
+
+    section:nth-child(odd) {
+      background: var(--bg);
+    }
+
+    /* ─── TYPOGRAPHY ────────────────────────────── */
+    h1 { font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+    h2 { font-size: 1.65rem; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    h4 { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    p  { margin-bottom: 1em; }
+    p:last-child { margin-bottom: 0; }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+
+    /* ─── HERO ──────────────────────────────────── */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 72px 0 60px;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--navy);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      color: var(--white);
+      max-width: 680px;
+      margin-bottom: 16px;
+    }
+
+    .hero .subhead {
+      font-size: 1.2rem;
+      color: #a8b8d8;
+      max-width: 580px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .hero-meta-item {
+      font-size: 0.85rem;
+      color: #8898b8;
+    }
+
+    .hero-meta-item strong {
+      color: var(--white);
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .hero-meta-contact {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .hero-meta-contact a {
+      color: var(--orange);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .hero-meta-contact a:hover {
+      text-decoration: underline;
+    }
+
+    /* ─── AI CONTEXT SECTION ────────────────────── */
+    .ai-context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .ai-column {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .ai-column.accelerating {
+      border-top: 3px solid var(--green);
+    }
+
+    .ai-column.slowing {
+      border-top: 3px solid var(--red);
+    }
+
+    .ai-column-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ai-column-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ai-column-icon.green { background: var(--green-light); }
+    .ai-column-icon.red   { background: var(--red-light); }
+
+    .ai-feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .ai-feature-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .ai-feature-dot.green { background: var(--green); }
+    .ai-feature-dot.red   { background: var(--red); }
+
+    .ai-feature-item-text strong {
+      display: block;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ai-feature-item-text span {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .insight-callout {
+      margin-top: 28px;
+      background: #fff8ec;
+      border: 1px solid #f5d898;
+      border-left: 4px solid var(--orange);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-size: 0.88rem;
+      color: var(--text-mid);
+    }
+
+    .insight-callout strong {
+      color: var(--text);
+    }
+
+    /* ─── BUG SECTIONS ──────────────────────────── */
+    .bug-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .bug-number {
+      background: var(--navy);
+      color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .bug-title-block h2 {
+      margin-bottom: 4px;
+    }
+
+    .bug-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .before-after-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    /* ─── PANEL CARDS ───────────────────────────── */
+    .panel {
+      border-radius: 10px;
+      padding: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .panel-before {
+      background: #fdf3f4;
+      border-top: 3px solid var(--red);
+    }
+
+    .panel-after {
+      background: #f3fdf6;
+      border-top: 3px solid var(--green);
+    }
+
+    .panel-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-before .panel-label { color: var(--red); }
+    .panel-after  .panel-label { color: var(--green); }
+
+    /* ─── PHONE MOCKUP ──────────────────────────── */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 20px;
+    }
+
+    .phone {
+      width: 180px;
+      background: #1c1c1e;
+      border-radius: 28px;
+      padding: 10px 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 1px 0 rgba(255,255,255,0.08) inset;
+      border: 2px solid #3a3a3c;
+    }
+
+    .phone-notch {
+      width: 60px;
+      height: 8px;
+      background: #0a0a0a;
+      border-radius: 0 0 8px 8px;
+      margin: 0 auto 6px;
+    }
+
+    .phone-status {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 6px;
+      margin-bottom: 8px;
+    }
+
+    .phone-status-time {
+      font-size: 7px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .phone-status-icons {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .phone-status-bar {
+      width: 14px;
+      height: 6px;
+      border: 1px solid #fff;
+      border-radius: 1px;
+      position: relative;
+    }
+
+    .phone-status-bar::after {
+      content: '';
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 65%;
+      height: calc(100% - 2px);
+      background: #fff;
+      border-radius: 0.5px;
+    }
+
+    .phone-screen {
+      background: #f2f2f7;
+      border-radius: 18px;
+      min-height: 280px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-app-bar {
+      background: var(--navy);
+      border-radius: 10px 10px 0 0;
+      padding: 8px 10px;
+      margin: -12px -10px 12px;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .phone-app-title {
+      font-size: 8px;
+      font-weight: 700;
+      color: white;
+      text-align: center;
+    }
+
+    .phone-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .phone-row {
+      font-size: 7.5px;
+      color: #3a3a3c;
+      line-height: 1.4;
+    }
+
+    .phone-label {
+      font-size: 6.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8e8e93;
+      margin-bottom: 2px;
+    }
+
+    .phone-value {
+      font-size: 8px;
+      font-weight: 600;
+      color: #1c1c1e;
+    }
+
+    .phone-btn {
+      display: block;
+      text-align: center;
+      padding: 7px;
+      border-radius: 7px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .phone-btn-red {
+      background: var(--red);
+      color: white;
+    }
+
+    .phone-btn-green {
+      background: var(--green);
+      color: white;
+    }
+
+    .phone-btn-navy {
+      background: var(--navy);
+      color: white;
+    }
+
+    .phone-alert {
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 7px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .phone-alert-error {
+      background: #fde8ea;
+      color: var(--red);
+      border: 1px solid #f5c6cb;
+    }
+
+    .phone-alert-success {
+      background: var(--green-light);
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .phone-alert-info {
+      background: #e8f4ff;
+      color: #004085;
+      border: 1px solid #b8d4f0;
+    }
+
+    .phone-alert-warning {
+      background: #fff8ec;
+      color: #856404;
+      border: 1px solid #f5d898;
+    }
+
+    .phone-divider {
+      height: 1px;
+      background: #d1d1d6;
+      margin: 4px 0;
+    }
+
+    .phone-network-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 7px;
+    }
+
+    .network-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 1px;
+      height: 8px;
+    }
+
+    .network-bar {
+      width: 2px;
+      background: currentColor;
+      border-radius: 0.5px;
+    }
+
+    .network-bar.filled { opacity: 1; }
+    .network-bar.empty  { opacity: 0.25; }
+
+    .network-good { color: var(--green); }
+    .network-bad  { color: var(--red); }
+
+    .sync-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .sync-dot-red   { background: var(--red); }
+    .sync-dot-green { background: var(--green); }
+    .sync-dot-amber { background: var(--orange); }
+
+    /* ─── EVIDENCE QUOTE ────────────────────────── */
+    .evidence {
+      margin: 16px 0 0;
+    }
+
+    .evidence-quote {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--navy);
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      color: var(--text-mid);
+      font-style: italic;
+      position: relative;
+    }
+
+    .evidence-quote::before {
+      content: '\201C';
+      font-size: 2.5rem;
+      color: var(--border);
+      position: absolute;
+      top: -8px;
+      left: 8px;
+      line-height: 1;
+      font-style: normal;
+    }
+
+    .evidence-source {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-style: normal;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ─── IMPACT BADGES ─────────────────────────── */
+    .impact-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .impact-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .impact-badge-red {
+      background: var(--red-light);
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .impact-badge-orange {
+      background: #fff8ec;
+      color: #7a4d00;
+      border: 1px solid #f5d898;
+    }
+
+    /* ─── ARCH NOTE ─────────────────────────────── */
+    .arch-note {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-mid);
+    }
+
+    .arch-note-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+
+    .arch-note code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.78rem;
+      background: #eaf7ee;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: #155724;
+    }
+
+    .sprint-badge {
+      display: inline-block;
+      margin-top: 12px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ─── LAPTOP MOCKUP ─────────────────────────── */
+    .laptop-wrap {
+      margin: 12px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .laptop {
+      width: 210px;
+    }
+
+    .laptop-screen {
+      background: #1c1c1e;
+      border-radius: 8px 8px 0 0;
+      padding: 6px;
+      border: 2px solid #3a3a3c;
+    }
+
+    .laptop-inner {
+      background: #f5f5f5;
+      border-radius: 4px;
+      padding: 8px 10px;
+      min-height: 90px;
+    }
+
+    .laptop-bar {
+      background: var(--navy);
+      border-radius: 3px 3px 0 0;
+      padding: 4px 8px;
+      margin: -8px -10px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .laptop-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .laptop-title {
+      font-size: 6.5px;
+      font-weight: 600;
+      color: white;
+      margin-left: 4px;
+    }
+
+    .laptop-row {
+      font-size: 7px;
+      color: #3a3a3c;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .laptop-status-chip {
+      display: inline-block;
+      font-size: 6.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    .laptop-status-red {
+      background: var(--red-light);
+      color: #721c24;
+    }
+
+    .laptop-status-green {
+      background: var(--green-light);
+      color: #155724;
+    }
+
+    .laptop-base {
+      background: #d1d1d6;
+      height: 8px;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .laptop-foot {
+      background: #b0b0b5;
+      height: 4px;
+      width: 80%;
+      margin: 0 auto;
+      border-radius: 0 0 6px 6px;
+    }
+
+    /* ─── SPRINT TABLE ──────────────────────────── */
+    .sprint-table-wrap {
+      overflow-x: auto;
+      margin-top: 32px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead tr {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--bg-card);
+    }
+
+    tbody td {
+      padding: 16px 16px;
+      vertical-align: top;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+
+    tbody td:first-child {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .table-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+
+    .table-tag-foundation {
+      background: #e8f4ff;
+      color: #004085;
+    }
+
+    .table-tag-optional {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .price-strong {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* ─── WHY ELINEXT ───────────────────────────── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 36px;
+    }
+
+    .why-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .why-card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--orange);
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .why-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .why-card p {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+    }
+
+    /* ─── CTA / FOOTER ──────────────────────────── */
+    .cta-section {
+      background: var(--navy);
+      padding: 56px 0;
+      color: var(--white);
+    }
+
+    .cta-inner {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .cta-inner h2 {
+      color: var(--white);
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .cta-inner p {
+      color: #a8b8d8;
+      margin-bottom: 28px;
+    }
+
+    .cta-email {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .cta-email:hover {
+      background: var(--orange-dark);
+    }
+
+    .footer {
+      background: #111d36;
+      padding: 20px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: #5a6e8e;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 700px) {
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.3rem; }
+
+      .ai-context-grid,
+      .before-after-grid,
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .hero-meta-contact {
+        margin-left: 0;
+        text-align: left;
+      }
+
+      .phone {
+        width: 200px;
+      }
+    }
+
+    /* ─── UTILITY ───────────────────────────────── */
+    .mt-0  { margin-top: 0; }
+    .mt-8  { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Technical Analysis — February 2026</div>
+    <h1>ServiceTrade Mobile<br>Reliability Layer Analysis</h1>
+    <p class="subhead">3 specific bugs preventing your AI features from landing in the field — with architecture and sprint scope for each fix.</p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <strong>Prepared for</strong>
+        Engineering Leadership — Co-Founder &amp; CTO, ServiceTrade
+      </div>
+      <div class="hero-meta-item">
+        <strong>Platform</strong>
+        iOS 4.2&#9733; / 582 reviews &nbsp;&middot;&nbsp; Android 4.0&#9733;
+      </div>
+      <div class="hero-meta-item">
+        <strong>Scope</strong>
+        Field workflow: clock-in/out, compliance forms, session management
+      </div>
+      <div class="hero-meta-item hero-meta-contact">
+        <strong>Elinext Mobile Engineering</strong>
+        elinext.com/contacts/
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════ AI CONTEXT -->
+<section id="context">
+  <div class="container">
+    <p class="section-label">The Strategic Context</p>
+    <h2>AI Acceleration Meets Reliability Debt</h2>
+    <p class="section-intro">
+      Smart Scan shipped in November 2025 — AI nameplate recognition in the field. Your February 2026 Technician Insights Report shows <strong>32% of technicians</strong> report technology that adds work rather than removes it. The reliability layer — offline resilience, form finalization, session stability — is the constraint that prevents AI features from delivering on their promise.
+    </p>
+
+    <div class="ai-context-grid">
+      <div class="ai-column accelerating">
+        <div class="ai-column-header">
+          <div class="ai-column-icon green">&#10003;</div>
+          <div>
+            <h4 style="color: var(--green); margin-bottom: 2px;">What's Accelerating</h4>
+            <p class="text-muted mt-0">ServiceTrade AI feature momentum</p>
+          </div>
+        </div>
+        <ul class="ai-feature-list">
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot green"></span>
+            <div class="ai-feature-item-text">
+              <strong>Smart Scan</strong>
+              <span>AI nameplate recognition — shipped Nov 2025. Technicians photograph nameplates; AI extracts asset data instantly.</span>
+            </div>
+          </li>
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot green"></span>
+            <div class="ai-feature-item-text">
+              <strong>Smart Insights</strong>
+              <span>AI-generated service recommendations surfaced from job history and asset data.</span>
+            </div>
+          </li>
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot green"></span>
+            <div class="ai-feature-item-text">
+              <strong>SmartTranscribe</strong>
+              <span>Voice-to-text job notes — reduces field documentation time.</span>
+            </div>
+          </li>
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot green"></span>
+            <div class="ai-feature-item-text">
+              <strong>Smart Recommendations</strong>
+              <span>Upsell opportunity identification at point of service.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ai-column slowing">
+        <div class="ai-column-header">
+          <div class="ai-column-icon red">&#9888;</div>
+          <div>
+            <h4 style="color: var(--red); margin-bottom: 2px;">What's Slowing It Down</h4>
+            <p class="text-muted mt-0">3 reliability bugs in the field workflow</p>
+          </div>
+        </div>
+        <ul class="ai-feature-list">
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot red"></span>
+            <div class="ai-feature-item-text">
+              <strong>Bug 1 — Clock-In/Out Failure</strong>
+              <span>Weak LTE in basements and rooftop mechanical rooms causes silent failures. No offline queue. Payroll errors on retry.</span>
+            </div>
+          </li>
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot red"></span>
+            <div class="ai-feature-item-text">
+              <strong>Bug 2 — ServiceForms Silent Drop</strong>
+              <span>Compliance form shows "Submitted" on device; back-office record shows Incomplete. Silent Device Magic webhook failure. NFPA gap.</span>
+            </div>
+          </li>
+          <li class="ai-feature-item">
+            <span class="ai-feature-dot red"></span>
+            <div class="ai-feature-item-text">
+              <strong>Bug 3 — Session Reset + Data Bleed</strong>
+              <span>OAuth token expiry mid-shift triggers permission resets. In worst case, notes appear under wrong customer account.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="insight-callout">
+      <strong>The compounding problem:</strong> Smart Scan, SmartTranscribe, and Smart Insights all depend on reliable data capture and session integrity. When a technician's session resets mid-job or a compliance form silently drops, AI features produce incorrect or incomplete inputs — amplifying rather than solving the problem your 2026 report identified.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ BUG 1 -->
+<section id="bug1">
+  <div class="container">
+    <div class="bug-header">
+      <div class="bug-number">BUG 01</div>
+      <div class="bug-title-block">
+        <h2>Clock-In / Clock-Out Connectivity Failure</h2>
+        <p class="bug-subtitle">Silent rejection under weak LTE — basements, rooftop units, underground parking</p>
+      </div>
+    </div>
+
+    <div class="before-after-grid">
+      <!-- BEFORE -->
+      <div class="panel panel-before">
+        <div class="panel-label">Current State — Before Fix</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">9:14</span>
+              <div class="phone-status-icons">
+                <span style="font-size:6px; color:#ff3b30; font-weight:700;">No Signal</span>
+                <div class="phone-status-bar" style="border-color:#ff3b30;">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceTrade</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">Current Job</div>
+                <div class="phone-value">Acme HVAC — Basement Level 2</div>
+                <div class="phone-divider"></div>
+                <div class="phone-label">Network</div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <div class="network-bars network-bad">
+                    <div class="network-bar" style="height:2px;" class="filled"></div>
+                    <div class="network-bar empty" style="height:4px;"></div>
+                    <div class="network-bar empty" style="height:6px;"></div>
+                    <div class="network-bar empty" style="height:8px;"></div>
+                  </div>
+                  <span class="phone-row" style="color:var(--red);">Weak LTE</span>
+                </div>
+                <div class="phone-divider"></div>
+                <div class="phone-btn phone-btn-red">Clock Out</div>
+                <div class="phone-alert phone-alert-error">
+                  <strong>Network error</strong> — request timed out.<br>Please try again.
+                </div>
+                <div style="font-size:6.5px; color:var(--red); margin-top:2px;">
+                  Event discarded. Nothing saved locally.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="evidence">
+          <div class="evidence-quote">
+            "low connectivity causes the app to reject clock-in/out events, causing payroll losses and data duplication when submitted information is retried"
+            <span class="evidence-source">App Store review — "Testing Patience: Field Tech Edition", February 2024</span>
+          </div>
+        </div>
+
+        <div class="impact-list">
+          <span class="impact-badge impact-badge-red">Payroll discrepancies</span>
+          <span class="impact-badge impact-badge-red">Duplicate records on retry</span>
+          <span class="impact-badge impact-badge-red">Technician disputes</span>
+          <span class="impact-badge impact-badge-orange">Android Doze mode amplifies</span>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="panel panel-after">
+        <div class="panel-label">After Fix — Offline-First Queue</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">9:14</span>
+              <div class="phone-status-icons">
+                <span style="font-size:6px; color:#34c759; font-weight:700;">Queued</span>
+                <div class="phone-status-bar" style="border-color:#34c759;">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceTrade</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">Current Job</div>
+                <div class="phone-value">Acme HVAC — Basement Level 2</div>
+                <div class="phone-divider"></div>
+                <div class="phone-btn phone-btn-green">Clock Out</div>
+                <div class="phone-alert phone-alert-success">
+                  <strong>&#10003; Saved locally</strong><br>
+                  Will sync automatically when signal returns.
+                </div>
+                <div class="phone-divider"></div>
+                <div class="phone-label">Sync Queue</div>
+                <div style="font-size:7px; color:#155724; font-weight:600;">
+                  <span class="sync-dot sync-dot-amber"></span>1 event pending upload
+                </div>
+                <div style="margin-top:6px;" class="phone-alert phone-alert-success" style="font-size:6.5px;">
+                  <strong>&#10003; Synced</strong> — Clock-out confirmed at 9:31am when back in signal range.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-note">
+          <div class="arch-note-label">Architecture</div>
+          <code>Offline write queue</code> → <code>Idempotency keys</code> → <code>Flush on reconnect</code><br>
+          <span style="margin-top:4px; display:block;">Local SQLite/Core Data event store. Each clock event assigned a UUID. On reconnect, queue drains in order; server deduplicates by UUID. Android Doze-aware background sync via WorkManager / BGTaskScheduler.</span>
+        </div>
+
+        <div class="sprint-badge">Sprint scope: 3 weeks / 1 mobile engineer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ BUG 2 -->
+<section id="bug2">
+  <div class="container">
+    <div class="bug-header">
+      <div class="bug-number">BUG 02</div>
+      <div class="bug-title-block">
+        <h2>ServiceForms (Device Magic) Silent Finalization Failure</h2>
+        <p class="bug-subtitle">Compliance form shows "Submitted" on device; back-office record shows Incomplete</p>
+      </div>
+    </div>
+
+    <div class="before-after-grid">
+      <!-- BEFORE -->
+      <div class="panel panel-before">
+        <div class="panel-label">Current State — Before Fix</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">14:22</span>
+              <div class="phone-status-icons">
+                <div class="phone-status-bar">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceForms</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">NFPA 25 Inspection Form</div>
+                <div class="phone-value">Building 4 — Fire Suppression</div>
+                <div class="phone-divider"></div>
+                <div class="phone-btn phone-btn-navy">Submit Form</div>
+                <div class="phone-alert phone-alert-success">
+                  <strong>&#10003; Form Submitted</strong><br>
+                  Device Magic confirmed receipt.
+                </div>
+                <div class="phone-divider"></div>
+                <div style="font-size:6.5px; color:var(--text-muted);">
+                  Technician leaves site — assumes complete.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="laptop-wrap">
+          <div class="laptop">
+            <div class="laptop-screen">
+              <div class="laptop-inner">
+                <div class="laptop-bar">
+                  <div class="laptop-dot" style="background:#ff5f56;"></div>
+                  <div class="laptop-dot" style="background:#ffbd2e;"></div>
+                  <div class="laptop-dot" style="background:#27c93f;"></div>
+                  <span class="laptop-title">ServiceTrade — Inspection Records</span>
+                </div>
+                <div class="laptop-row" style="font-weight:700; color:var(--red);">Back Office — Next Day</div>
+                <div class="laptop-row">Customer: ABC Property Management</div>
+                <div class="laptop-row">
+                  Inspection: NFPA 25 Annual
+                  &nbsp;<span class="laptop-status-chip laptop-status-red">INCOMPLETE</span>
+                </div>
+                <div class="laptop-row" style="color:var(--red); font-weight:600;">
+                  Action required — form not received
+                </div>
+                <div class="laptop-row" style="color:var(--text-muted);">ServiceForms record: webhook delivery failed</div>
+              </div>
+            </div>
+            <div class="laptop-base"></div>
+            <div class="laptop-foot"></div>
+          </div>
+        </div>
+
+        <div class="evidence">
+          <div class="evidence-quote">
+            "Device Magic report generation fails to finalize in ServiceTrade; technician must return to job site to recapture data"
+            <span class="evidence-source">App Store review, September 2024 — confirmed form completion; ServiceTrade record showed incomplete</span>
+          </div>
+        </div>
+
+        <div class="impact-list">
+          <span class="impact-badge impact-badge-red">NFPA compliance gap</span>
+          <span class="impact-badge impact-badge-red">Repeat truck roll: $200–500</span>
+          <span class="impact-badge impact-badge-orange">Device Magic: 31+ documented outages</span>
+          <span class="impact-badge impact-badge-orange">Silent webhook failure — no client retry</span>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="panel panel-after">
+        <div class="panel-label">After Fix — Explicit Sync State</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">14:22</span>
+              <div class="phone-status-icons">
+                <div class="phone-status-bar" style="border-color:#34c759;">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceForms</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">NFPA 25 Inspection Form</div>
+                <div class="phone-value">Building 4 — Fire Suppression</div>
+                <div class="phone-divider"></div>
+                <div class="phone-btn phone-btn-navy">Submit Form</div>
+                <div class="phone-alert phone-alert-info">
+                  <strong>Awaiting ServiceTrade sync&#8230;</strong><br>
+                  <span style="color:#555;">Confirming webhook receipt</span>
+                </div>
+                <div class="phone-alert phone-alert-success" style="margin-top:4px;">
+                  <strong>&#10003; Finalized in ServiceTrade</strong><br>
+                  Inspection record confirmed complete.
+                </div>
+                <div style="font-size:6.5px; color:#155724; margin-top:3px; font-weight:600;">
+                  Safe to leave site.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="laptop-wrap">
+          <div class="laptop">
+            <div class="laptop-screen">
+              <div class="laptop-inner">
+                <div class="laptop-bar">
+                  <div class="laptop-dot" style="background:#ff5f56;"></div>
+                  <div class="laptop-dot" style="background:#ffbd2e;"></div>
+                  <div class="laptop-dot" style="background:#27c93f;"></div>
+                  <span class="laptop-title">ServiceTrade — Inspection Records</span>
+                </div>
+                <div class="laptop-row">Customer: ABC Property Management</div>
+                <div class="laptop-row">
+                  Inspection: NFPA 25 Annual
+                  &nbsp;<span class="laptop-status-chip laptop-status-green">COMPLETE</span>
+                </div>
+                <div class="laptop-row" style="color:#155724; font-weight:600;">
+                  &#10003; ServiceForms sync confirmed
+                </div>
+                <div class="laptop-row" style="color:var(--text-muted);">No technician callback required.</div>
+              </div>
+            </div>
+            <div class="laptop-base"></div>
+            <div class="laptop-foot"></div>
+          </div>
+        </div>
+
+        <div class="arch-note">
+          <div class="arch-note-label">Architecture</div>
+          <code>Webhook acknowledgment</code> → <code>Background polling fallback</code> → <code>Explicit sync state</code><br>
+          <span style="margin-top:4px; display:block;">On form submit, hold "Awaiting sync" state. Poll ServiceTrade record status at 10s/30s/60s intervals until confirmed complete. If polling fails after 3 attempts, surface actionable error — not silent success. Idempotent resubmit safe.</span>
+        </div>
+
+        <div class="sprint-badge">Sprint scope: 2 weeks / 1 engineer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ BUG 3 -->
+<section id="bug3">
+  <div class="container">
+    <div class="bug-header">
+      <div class="bug-number">BUG 03</div>
+      <div class="bug-title-block">
+        <h2>Session Reset &amp; Data Integrity Breach</h2>
+        <p class="bug-subtitle">OAuth token expiry mid-shift triggers permission resets — worst case: notes appear under wrong customer account</p>
+      </div>
+    </div>
+
+    <div class="before-after-grid">
+      <!-- BEFORE -->
+      <div class="panel panel-before">
+        <div class="panel-label">Current State — Before Fix</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">15:47</span>
+              <div class="phone-status-icons">
+                <div class="phone-status-bar">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceTrade</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">Current Job — 6hrs into shift</div>
+                <div class="phone-value">Riverside Tower — Chiller Inspection</div>
+                <div class="phone-divider"></div>
+                <div class="phone-alert phone-alert-error">
+                  <strong>Session expired</strong><br>
+                  Please re-authenticate to continue.
+                </div>
+                <div class="phone-btn phone-btn-red" style="margin-top:4px;">Sign In Again</div>
+                <div class="phone-divider"></div>
+                <div style="font-size:6.5px; color:var(--red);">Unsaved work discarded. Context lost.</div>
+                <div class="phone-alert phone-alert-warning" style="margin-top:4px;">
+                  <strong>Warning:</strong> Last attachment uploaded under previous session — may be attributed to prior customer.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="evidence">
+          <div class="evidence-quote">
+            "attachment upload failures, duplicated files, random permission resets, clock-in events disconnecting unexpectedly"
+            <span class="evidence-source">App Store review — "10/10 Would not recommend", July 2024</span>
+          </div>
+        </div>
+
+        <div class="evidence" style="margin-top:10px;">
+          <div class="evidence-quote">
+            "comments migrating between customer accounts"
+            <span class="evidence-source">App Store review — "Reliable&#8230;. Nope not at all", August 2024</span>
+          </div>
+        </div>
+
+        <div class="impact-list">
+          <span class="impact-badge impact-badge-red">Billing disputes</span>
+          <span class="impact-badge impact-badge-red">Wrong-customer data attribution</span>
+          <span class="impact-badge impact-badge-red">Compliance audit exposure</span>
+          <span class="impact-badge impact-badge-orange">Technician friction — re-auth mid-shift</span>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="panel panel-after">
+        <div class="panel-label">After Fix — Proactive Token Refresh</div>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-status">
+              <span class="phone-status-time">15:47</span>
+              <div class="phone-status-icons">
+                <span style="font-size:6px; color:#34c759; font-weight:700;">Secure</span>
+                <div class="phone-status-bar" style="border-color:#34c759;">
+                  <span style="display:none;"></span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-app-bar">
+                <div class="phone-app-title">ServiceTrade</div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-label">Current Job — 6hrs into shift</div>
+                <div class="phone-value">Riverside Tower — Chiller Inspection</div>
+                <div class="phone-divider"></div>
+                <div class="phone-alert phone-alert-success">
+                  <strong>&#10003; Session active</strong><br>
+                  Auth refreshed silently at 15:44.
+                </div>
+                <div class="phone-divider"></div>
+                <div class="phone-label">Context</div>
+                <div style="font-size:7px; color:#155724; font-weight:600;">
+                  <span class="sync-dot sync-dot-green"></span>Scope: Riverside Tower only
+                </div>
+                <div style="font-size:6.5px; color:var(--text-muted); margin-top:3px;">
+                  Uploads attributed to current customer. Session scope locked per job context.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-note">
+          <div class="arch-note-label">Architecture</div>
+          <code>Proactive token refresh</code> → <code>Background heartbeat</code> → <code>Context isolation per job</code><br>
+          <span style="margin-top:4px; display:block;">Refresh token 5 minutes before expiry using background task (iOS BGAppRefreshTask / Android WorkManager). Each job context maintains isolated customer scope — uploads, notes, and attachments bound to active job ID, preventing cross-customer attribution. Session heartbeat confirms scope integrity every 30 minutes on long shifts.</span>
+        </div>
+
+        <div class="sprint-badge">Sprint scope: 2 weeks / 1 engineer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ SPRINT TABLE -->
+<section id="sprint">
+  <div class="container">
+    <p class="section-label">Engagement Model</p>
+    <h2>Sprint Proposal</h2>
+    <p class="section-intro">
+      Both sprints are fixed-scope, fixed-price. No retainer, no lock-in. You own all code. The foundation sprint eliminates all three bugs; the expand sprint is optional and supports your AI feature pipeline.
+    </p>
+
+    <div class="sprint-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:120px;">Sprint</th>
+            <th>Scope</th>
+            <th style="width:130px;">Duration</th>
+            <th style="width:130px;">Team</th>
+            <th style="width:160px;">Investment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              Foundation
+              <br><span class="table-tag table-tag-foundation">Recommended</span>
+            </td>
+            <td>
+              Bug 1: Offline write queue for clock-in/out (iOS + Android)<br>
+              Bug 2: ServiceForms webhook acknowledgment + background polling<br>
+              Bug 3: Proactive token refresh + job context isolation
+            </td>
+            <td>6–8 weeks</td>
+            <td>2 mobile engineers<br><span class="text-muted">(iOS + Android)</span></td>
+            <td><span class="price-strong">Scoped engagement</span><br><span class="text-muted">Fixed scope</span></td>
+          </tr>
+          <tr>
+            <td>
+              Expand
+              <br><span class="table-tag table-tag-optional">Optional</span>
+            </td>
+            <td>
+              AI feature delivery support: Smart Scan photo pipeline hardening, SmartTranscribe offline buffer, Smart Insights data freshness guarantees. Connectivity resilience for AI-dependent features.
+            </td>
+            <td>Ongoing<br><span class="text-muted">Monthly</span></td>
+            <td>1–2 engineers</td>
+            <td><span class="price-strong">Dedicated team</span><br><span class="text-muted">Monthly engagement</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px 20px; background: var(--white); border: 1px solid var(--border); border-radius: 8px; font-size: 0.85rem; color: var(--text-mid);">
+      <strong style="color: var(--text);">Delivery model:</strong> Code delivered via pull requests to your GitHub repo. Weekly progress calls. All IP transfers to ServiceTrade on completion. No vendor lock-in. Engineers available for handoff documentation and knowledge transfer.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ WHY ELINEXT -->
+<section id="why">
+  <div class="container">
+    <p class="section-label">Why Elinext</p>
+    <h2>Mobile Engineering Capability</h2>
+    <p class="section-intro">
+      We are not a general-purpose agency. We do mobile — specifically, mobile for field-facing workforce platforms where offline resilience, background sync, and session management are the hard problems.
+    </p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-icon">&#128241;</div>
+        <h3>Scale of mobile specialists</h3>
+        <p>Dedicated iOS, Android, and Flutter engineers. English-speaking leads for direct communication. Specialists in native mobile — not web developers doing mobile on the side.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-icon">&#9881;</div>
+        <h3>Field software platform experience</h3>
+        <p>Prior engagements in FSM and workforce management platforms — the domain where offline data queues, compliance form submissions, and long-running session management are standard engineering requirements, not edge cases.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-icon">&#9889;</div>
+        <h3>AI-powered development velocity</h3>
+        <p>Internal AI-assisted development tooling applied to every sprint. Demonstrated productivity gains on defined-scope mobile bug fixes. Fixed sprints stay fixed — scope and cost are agreed upfront, not renegotiated.</p>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-icon">&#128203;</div>
+        <h3>Bounded engagement, not a dependency</h3>
+        <p>The foundation sprint is 6–8 weeks. After delivery, you have full ownership of the code, architecture documentation, and knowledge transfer. We do not build in renewal dependencies. Expand sprint is your choice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ CTA -->
+<div class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Ready to review the technical scope?</h2>
+      <p>A 30-minute technical call with your mobile team is the right next step — we can walk through each fix's implementation approach, integration points, and testing requirements.</p>
+      elinext.com/contacts/
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span>Elinext Mobile Engineering — February 2026</span>
+      <span>Prepared for Engineering Leadership, Co-Founder &amp; CTO, ServiceTrade</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

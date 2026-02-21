@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Zuper iOS — Before & After Fix Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --zuper-blue: #1A6FE8;
+    --zuper-dark: #0D1B2A;
+    --zuper-teal: #00C4B4;
+    --zuper-red: #E83A3A;
+    --zuper-green: #1DB954;
+    --zuper-yellow: #F5A623;
+    --zuper-gray: #6B7280;
+    --zuper-light: #F3F4F6;
+    --zuper-white: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.20);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #0D1B2A;
+    color: #E8EDF2;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: linear-gradient(135deg, #0D1B2A 0%, #1A2E48 100%);
+    padding: 28px 24px 24px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(26,111,232,0.15);
+    border: 1px solid rgba(26,111,232,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64A8FF;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1.2;
+  }
+
+  .header p {
+    font-size: 13px;
+    color: #8B9DB0;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* === RATING BANNER === */
+  .rating-banner {
+    display: flex;
+    gap: 0;
+    margin: 0;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .rating-pill {
+    flex: 1;
+    padding: 14px 16px;
+    text-align: center;
+    position: relative;
+  }
+
+  .rating-pill:first-child {
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .rating-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #8B9DB0;
+    margin-bottom: 4px;
+  }
+
+  .rating-score {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .rating-score.bad { color: #E83A3A; }
+  .rating-score.good { color: #1DB954; }
+
+  .rating-stars {
+    font-size: 12px;
+    margin-top: 2px;
+    color: #8B9DB0;
+  }
+
+  .rating-gap {
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%) translateX(50%);
+    background: #F5A623;
+    color: #0D1B2A;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 10px;
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  /* === SECTION TABS === */
+  .tabs {
+    display: flex;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex-shrink: 0;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8B9DB0;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    color: #1A6FE8;
+    border-bottom-color: #1A6FE8;
+  }
+
+  /* === SCREEN CONTAINER === */
+  .screen-container {
+    display: none;
+    padding: 0;
+  }
+
+  .screen-container.active { display: block; }
+
+  /* === PHONE MOCKUP === */
+  .demo-area {
+    padding: 20px;
+  }
+
+  .demo-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #8B9DB0;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .phone-pair {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .phone-wrap {
+    flex: 1;
+    max-width: 200px;
+    text-align: center;
+  }
+
+  .phone-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .phone-label.broken {
+    background: rgba(232,58,58,0.15);
+    color: #E83A3A;
+    border: 1px solid rgba(232,58,58,0.3);
+  }
+
+  .phone-label.fixed {
+    background: rgba(29,185,84,0.15);
+    color: #1DB954;
+    border: 1px solid rgba(29,185,84,0.3);
+  }
+
+  .phone {
+    background: #1C2A3A;
+    border-radius: 24px;
+    border: 2px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .phone:active { transform: scale(0.97); }
+
+  .phone-notch {
+    background: #0D1B2A;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 12px 12px;
+    margin: 0 30px;
+  }
+
+  .phone-notch-dot {
+    width: 8px;
+    height: 8px;
+    background: #1A2E48;
+    border-radius: 50%;
+  }
+
+  .phone-screen {
+    min-height: 300px;
+    background: #F5F5F5;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* App UI inside phone */
+  .app-bar {
+    background: #1A6FE8;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .app-bar-back {
+    color: white;
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+  }
+
+  .app-bar-title {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .app-bar-icon {
+    color: white;
+    font-size: 14px;
+  }
+
+  .app-content {
+    padding: 10px;
+    background: #F5F5F5;
+  }
+
+  .job-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .job-id {
+    font-size: 9px;
+    color: #6B7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .job-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111827;
+    margin: 2px 0;
+  }
+
+  .job-customer {
+    font-size: 10px;
+    color: #6B7280;
+  }
+
+  .job-status-row {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .status-btn {
+    flex: 1;
+    padding: 5px 4px;
+    border-radius: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .status-btn.active { background: #1A6FE8; color: white; }
+  .status-btn.inactive { background: #F3F4F6; color: #9CA3AF; }
+
+  /* Input field states */
+  .app-search {
+    background: white;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .search-icon { font-size: 11px; color: #9CA3AF; }
+
+  .search-input {
+    flex: 1;
+    font-size: 11px;
+    color: #111827;
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+
+  /* Crash overlay */
+  .crash-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 10;
+    border-radius: 0;
+  }
+
+  .crash-icon { font-size: 28px; }
+  .crash-title { font-size: 12px; font-weight: 700; color: white; }
+  .crash-msg { font-size: 9px; color: #9CA3AF; text-align: center; padding: 0 16px; line-height: 1.4; }
+  .crash-btn {
+    margin-top: 4px;
+    background: #E83A3A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Ghost input overlay */
+  .ghost-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(245,245,245,0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    z-index: 10;
+  }
+
+  .ghost-field {
+    background: white;
+    border: 2px solid #E83A3A;
+    border-radius: 6px;
+    padding: 8px 10px;
+    width: 120px;
+    font-size: 11px;
+    color: #9CA3AF;
+    font-style: italic;
+    text-align: center;
+  }
+
+  .ghost-label {
+    font-size: 9px;
+    color: #E83A3A;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  /* Sync indicator */
+  .sync-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .sync-label { font-size: 10px; font-weight: 600; color: #374151; }
+  .sync-time { font-size: 9px; font-weight: 700; }
+  .sync-time.bad { color: #E83A3A; }
+  .sync-time.good { color: #1DB954; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; display: inline-block; }
+  .sync-dot.bad { background: #E83A3A; }
+  .sync-dot.good { background: #1DB954; animation: pulse 1.5s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .success-check {
+    width: 32px;
+    height: 32px;
+    background: #1DB954;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+    margin: 0 auto 6px;
+  }
+
+  .success-title { font-size: 12px; font-weight: 700; color: #111827; text-align: center; }
+  .success-msg { font-size: 9px; color: #6B7280; text-align: center; line-height: 1.4; padding: 0 10px; }
+
+  /* === EXPLANATION CARD === */
+  .explain-card {
+    margin: 0 20px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .explain-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+  }
+
+  .explain-card p {
+    font-size: 12px;
+    color: #8B9DB0;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .explain-card p:last-child { margin-bottom: 0; }
+
+  .code-snippet {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    color: #64A8FF;
+    line-height: 1.5;
+    margin: 8px 0;
+    overflow-x: auto;
+  }
+
+  .code-comment { color: #8B9DB0; }
+  .code-keyword { color: #C792EA; }
+  .code-string { color: #C3E88D; }
+  .code-fn { color: #82AAFF; }
+
+  .fix-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(29,185,84,0.12);
+    border: 1px solid rgba(29,185,84,0.25);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #1DB954;
+    margin-bottom: 10px;
+  }
+
+  .bug-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(232,58,58,0.12);
+    border: 1px solid rgba(232,58,58,0.25);
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #E83A3A;
+    margin-bottom: 10px;
+  }
+
+  /* === EFFORT TABLE === */
+  .effort-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin: 8px 0;
+  }
+
+  .effort-table th {
+    text-align: left;
+    padding: 6px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8B9DB0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .effort-table td {
+    padding: 8px 8px;
+    color: #D1D5DB;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+
+  .effort-table td:last-child { color: #64A8FF; font-weight: 600; }
+
+  /* === INVESTMENT CARD === */
+  .invest-grid {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 20px;
+  }
+
+  .invest-card {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .invest-card:hover, .invest-card:active {
+    background: rgba(26,111,232,0.1);
+    border-color: rgba(26,111,232,0.4);
+    transform: translateY(-1px);
+  }
+
+  .invest-card.recommended {
+    border-color: rgba(26,111,232,0.5);
+    background: rgba(26,111,232,0.08);
+  }
+
+  .rec-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1A6FE8;
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .invest-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    margin-top: 6px;
+  }
+
+  .invest-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1A6FE8;
+    margin: 6px 0;
+  }
+
+  .invest-price span {
+    font-size: 12px;
+    font-weight: 400;
+    color: #8B9DB0;
+  }
+
+  .invest-detail {
+    font-size: 10px;
+    color: #8B9DB0;
+    line-height: 1.5;
+  }
+
+  /* === CTA === */
+  .cta-section {
+    padding: 0 20px 32px;
+    text-align: center;
+  }
+
+  .cta-main {
+    background: linear-gradient(135deg, #1A6FE8, #0D50B5);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 16px 24px;
+    border-radius: var(--radius);
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(26,111,232,0.4);
+    transition: all 0.2s;
+    display: block;
+    text-decoration: none;
+    margin-bottom: 10px;
+  }
+
+  .cta-main:active { transform: scale(0.98); }
+
+  .cta-sub {
+    font-size: 11px;
+    color: #8B9DB0;
+    line-height: 1.5;
+  }
+
+  .cta-sub a { color: #64A8FF; text-decoration: none; }
+
+  /* === REVIEW QUOTES === */
+  .review-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .review-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .review-stars { color: #F5A623; font-size: 10px; }
+  .review-platform {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8B9DB0;
+    background: rgba(255,255,255,0.06);
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  .review-text {
+    font-size: 11px;
+    color: #D1D5DB;
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  .review-tag {
+    display: inline-block;
+    margin-top: 6px;
+    background: rgba(232,58,58,0.12);
+    border: 1px solid rgba(232,58,58,0.2);
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #E83A3A;
+  }
+
+  /* === INTERACTIVE DEMO BUTTON === */
+  .demo-btn {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    color: #8B9DB0;
+    font-size: 11px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+
+  .demo-btn:hover { background: rgba(255,255,255,0.04); color: #D1D5DB; }
+
+  /* Phone bottom bar */
+  .phone-home-bar {
+    background: #F5F5F5;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-bar {
+    width: 50px;
+    height: 4px;
+    background: #D1D5DB;
+    border-radius: 2px;
+  }
+
+  /* === TIMELINE === */
+  .timeline {
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .timeline-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+    flex-shrink: 0;
+  }
+
+  .timeline-dot {
+    width: 32px;
+    height: 32px;
+    background: rgba(26,111,232,0.15);
+    border: 2px solid rgba(26,111,232,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #64A8FF;
+    flex-shrink: 0;
+  }
+
+  .timeline-line {
+    flex: 1;
+    width: 2px;
+    background: rgba(255,255,255,0.06);
+    margin: 4px 0;
+  }
+
+  .timeline-right {
+    flex: 1;
+    padding-bottom: 4px;
+  }
+
+  .timeline-week {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64A8FF;
+    margin-bottom: 3px;
+  }
+
+  .timeline-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 3px;
+  }
+
+  .timeline-desc {
+    font-size: 11px;
+    color: #8B9DB0;
+    line-height: 1.5;
+  }
+
+  /* Rating goal bar */
+  .rating-bar-wrap {
+    margin: 12px 0;
+  }
+
+  .rating-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #8B9DB0;
+    margin-bottom: 4px;
+  }
+
+  .rating-bar-track {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .rating-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .rating-bar-fill.current { background: #E83A3A; width: 58%; }
+  .rating-bar-fill.target { background: #1DB954; width: 80%; }
+  .rating-bar-fill.competitor { background: #F5A623; width: 94%; }
+
+  /* Animated elements */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen-container.active .explain-card,
+  .screen-container.active .phone-pair,
+  .screen-container.active .invest-card,
+  .screen-container.active .timeline-item,
+  .screen-container.active .review-card {
+    animation: slideUp 0.3s ease forwards;
+  }
+
+  /* Crash demo animation */
+  @keyframes crashShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+  }
+
+  .shaking { animation: crashShake 0.5s ease; }
+
+  /* Blink animation for ghost input */
+  @keyframes ghostBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .ghost-blink { animation: ghostBlink 0.6s ease 3; }
+
+  /* Rotating sync spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinning { animation: spin 1s linear infinite; display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">📱 Elinext × Zuper</div>
+  <h1>iOS Reliability Sprint</h1>
+  <p>3 bugs → fixed. 2.9★ → 4.0+★.<br>4–6 weeks. 2 engineers.</p>
+</div>
+
+<!-- RATING BANNER -->
+<div class="rating-banner">
+  <div class="rating-pill">
+    <div class="rating-label">iOS Now</div>
+    <div class="rating-score bad">2.9★</div>
+    <div class="rating-stars">110 reviews</div>
+    <div class="rating-gap">−1.0</div>
+  </div>
+  <div class="rating-pill">
+    <div class="rating-label">Android</div>
+    <div class="rating-score good">3.9★</div>
+    <div class="rating-stars">151 reviews</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs">
+  <div class="tab active" onclick="switchTab(0)">Bug 1: Crash</div>
+  <div class="tab" onclick="switchTab(1)">Bug 2: Ghost Input</div>
+  <div class="tab" onclick="switchTab(2)">Bug 3: Sync Lag</div>
+  <div class="tab" onclick="switchTab(3)">Reviews</div>
+  <div class="tab" onclick="switchTab(4)">Sprint Plan</div>
+  <div class="tab" onclick="switchTab(5)">Investment</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 0: BUG 1 — CRASH ON TASK -->
+<!-- ============================================================ -->
+<div class="screen-container active" id="tab-0">
+  <div class="demo-area">
+    <div class="demo-title">Tap the phone to trigger bug → see fix</div>
+    <div class="phone-pair">
+
+      <!-- BROKEN -->
+      <div class="phone-wrap">
+        <div class="phone-label broken">Broken iOS</div>
+        <div class="phone" id="phone-crash-broken" onclick="triggerCrash()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen" id="crash-screen">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">Update Job #1847</div>
+              <div class="app-bar-icon">⋮</div>
+            </div>
+            <div class="app-content">
+              <div class="job-card">
+                <div class="job-id">JOB #1847</div>
+                <div class="job-title">HVAC Repair — Unit 3B</div>
+                <div class="job-customer">Oakwood Office Park • Mike Chen</div>
+                <div class="job-status-row">
+                  <button class="status-btn active">In Progress</button>
+                  <button class="status-btn inactive" id="crash-complete-btn" onclick="event.stopPropagation();triggerCrash()">Complete ✓</button>
+                </div>
+              </div>
+              <div class="job-card">
+                <div class="job-id" style="color:#F5A623">SYNCING...</div>
+                <div class="job-title" style="color:#9CA3AF;font-size:10px">Loading job data...</div>
+              </div>
+            </div>
+            <!-- Crash overlay (hidden initially) -->
+            <div class="crash-overlay" id="crash-overlay" style="display:none">
+              <div class="crash-icon">💥</div>
+              <div class="crash-title">"Zuper" crashed</div>
+              <div class="crash-msg">The app quit unexpectedly. Your job update was not saved.</div>
+              <button class="crash-btn" onclick="resetCrash()">Reopen App</button>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- FIXED -->
+      <div class="phone-wrap">
+        <div class="phone-label fixed">Fixed iOS</div>
+        <div class="phone" id="phone-crash-fixed" onclick="triggerFixed()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen" id="fixed-crash-screen">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">Update Job #1847</div>
+              <div class="app-bar-icon">⋮</div>
+            </div>
+            <div class="app-content" id="fixed-crash-content">
+              <div class="job-card">
+                <div class="job-id">JOB #1847</div>
+                <div class="job-title">HVAC Repair — Unit 3B</div>
+                <div class="job-customer">Oakwood Office Park • Mike Chen</div>
+                <div class="job-status-row">
+                  <button class="status-btn inactive" id="fixed-complete-btn" onclick="event.stopPropagation();triggerFixed()">Complete ✓</button>
+                </div>
+              </div>
+            </div>
+            <!-- Success overlay (hidden initially) -->
+            <div id="fixed-success" style="display:none;padding:20px;text-align:center;background:#F5F5F5;min-height:140px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+              <div class="success-check">✓</div>
+              <div class="success-title">Job #1847 Complete</div>
+              <div class="success-msg">Saved to server. Dispatcher notified. Next job loading…</div>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="explain-card">
+    <div class="bug-tag">🐛 Root Cause</div>
+    <h3>Crash-on-Task: Main Thread Memory Pressure</h3>
+    <p>The new "Field Service Your Way" app (419 MB) loads the full job JSON payload synchronously on the main thread. When a technician taps "Complete", the app triggers both a UI state change and a background sync simultaneously — iOS kills the process under memory pressure.</p>
+    <div class="code-snippet">
+<span class="code-comment">// BROKEN — sync on main thread</span>
+<span class="code-keyword">func</span> <span class="code-fn">completeJob</span>(_ job: Job) {
+  <span class="code-fn">updateUI</span>(status: .complete)   <span class="code-comment">// ← main thread</span>
+  <span class="code-fn">syncToServer</span>(job)           <span class="code-comment">// ← blocks same thread</span>
+}
+</div>
+    <div class="fix-tag">✅ Fix</div>
+    <p>Offload sync to a background `DispatchQueue`. Add crash recovery that restores unsaved state on next launch.</p>
+    <div class="code-snippet">
+<span class="code-comment">// FIXED — async sync</span>
+<span class="code-keyword">func</span> <span class="code-fn">completeJob</span>(_ job: Job) {
+  <span class="code-fn">updateUI</span>(status: .complete)
+  DispatchQueue.<span class="code-fn">global</span>(qos: .utility).<span class="code-fn">async</span> {
+    <span class="code-fn">syncToServer</span>(job)          <span class="code-comment">// background thread</span>
+  }
+}
+</div>
+    <table class="effort-table">
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Effort estimate</td><td>8–10 engineering days</td></tr>
+      <tr><td>Affected platforms</td><td>iOS only (Android's background scheduler is more permissive)</td></tr>
+      <tr><td>User impact if unfixed</td><td>Lost job updates; technician trust destroyed on first crash</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 1: BUG 2 — GHOST INPUT -->
+<!-- ============================================================ -->
+<div class="screen-container" id="tab-1">
+  <div class="demo-area">
+    <div class="demo-title">Tap search field to see bug → see fix</div>
+    <div class="phone-pair">
+
+      <!-- BROKEN -->
+      <div class="phone-wrap">
+        <div class="phone-label broken">Broken iOS</div>
+        <div class="phone" onclick="triggerGhost()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen" id="ghost-screen" style="position:relative">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">Customer Search</div>
+            </div>
+            <div class="app-content">
+              <div class="app-search" id="ghost-search-field">
+                <span class="search-icon">🔍</span>
+                <span class="search-input" id="ghost-typed-text">Tap to search...</span>
+              </div>
+              <div class="job-card"><div class="job-title" style="color:#9CA3AF;font-size:11px">Type a customer name above</div></div>
+            </div>
+            <div id="ghost-overlay-el" style="display:none;position:absolute;inset:0;background:rgba(245,245,245,0.97);flex-direction:column;align-items:center;justify-content:center;gap:8px">
+              <div style="font-size:11px;font-weight:700;color:#374151">Typing "Oakwood"...</div>
+              <div class="ghost-field" id="ghost-input-display">Oakwood</div>
+              <div style="height:20px"></div>
+              <div class="ghost-field" style="color:#E83A3A;border-color:#E83A3A;font-style:normal;font-weight:700" id="ghost-after">⬆ Field vanished</div>
+              <div class="ghost-label">Keyboard event cleared the field</div>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- FIXED -->
+      <div class="phone-wrap">
+        <div class="phone-label fixed">Fixed iOS</div>
+        <div class="phone" onclick="triggerGhostFixed()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen" id="ghost-fixed-screen">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">Customer Search</div>
+            </div>
+            <div class="app-content" id="ghost-fixed-content">
+              <div class="app-search">
+                <span class="search-icon">🔍</span>
+                <span class="search-input" id="ghost-fixed-text">Tap to search...</span>
+              </div>
+              <div class="job-card" id="ghost-fixed-result" style="display:none">
+                <div class="job-id" style="color:#1A6FE8">MATCH FOUND</div>
+                <div class="job-title">Oakwood Office Park</div>
+                <div class="job-customer">12 open jobs • Mike Chen</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="explain-card">
+    <div class="bug-tag">🐛 Root Cause</div>
+    <h3>Ghost Input: iOS Keyboard Event Collision</h3>
+    <p>iOS fires <code>UIKeyboardWillShowNotification</code> in a way that interacts incorrectly with the cross-platform <code>KeyboardAvoidingView</code> behavior. When the keyboard animates in, the component remounts and resets the controlled input state — clearing whatever was typed.</p>
+    <div class="code-snippet">
+<span class="code-comment">// BROKEN — generic cross-platform config</span>
+&lt;KeyboardAvoidingView
+  behavior=<span class="code-string">"padding"</span>          <span class="code-comment">// ← breaks on iOS 16+</span>
+  keyboardVerticalOffset={0}
+&gt;
+  &lt;SearchInput value={query} /&gt;
+&lt;/KeyboardAvoidingView&gt;
+</div>
+    <div class="fix-tag">✅ Fix</div>
+    <p>Use iOS-specific <code>KeyboardAwareScrollView</code> from <code>react-native-keyboard-aware-scroll-view</code>. Preserve input state via <code>useRef</code> rather than remounting on keyboard events.</p>
+    <div class="code-snippet">
+<span class="code-comment">// FIXED — iOS-specific handling</span>
+&lt;KeyboardAwareScrollView
+  enableOnAndroid={false}    <span class="code-comment">// iOS only</span>
+  extraScrollHeight={20}
+  keyboardShouldPersistTaps=<span class="code-string">"handled"</span>
+&gt;
+  &lt;SearchInput ref={inputRef} /&gt;  <span class="code-comment">// stable ref</span>
+&lt;/KeyboardAwareScrollView&gt;
+</div>
+    <table class="effort-table">
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Effort estimate</td><td>5–7 engineering days</td></tr>
+      <tr><td>Affected fields</td><td>All text inputs: search, customer name, notes, part numbers</td></tr>
+      <tr><td>User impact if unfixed</td><td>Every workflow requiring text input broken; technicians resort to paper</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2: BUG 3 — SYNC LAG -->
+<!-- ============================================================ -->
+<div class="screen-container" id="tab-2">
+  <div class="demo-area">
+    <div class="demo-title">Tap to simulate sync — iOS vs Android</div>
+    <div class="phone-pair">
+
+      <!-- BROKEN iOS Sync -->
+      <div class="phone-wrap">
+        <div class="phone-label broken">iOS — 15 min lag</div>
+        <div class="phone" onclick="triggerSyncBroken()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">My Jobs</div>
+            </div>
+            <div class="app-content">
+              <div class="sync-row">
+                <div>
+                  <div class="sync-label">Last sync</div>
+                  <div style="font-size:9px;color:#9CA3AF" id="sync-broken-time">14 min ago</div>
+                </div>
+                <div><span class="sync-dot bad"></span><span class="sync-time bad" id="sync-broken-status">Stale</span></div>
+              </div>
+              <div class="job-card">
+                <div class="job-id" style="color:#F5A623">⚠ OUTDATED</div>
+                <div class="job-title">HVAC Repair — Unit 3B</div>
+                <div class="job-customer" style="color:#E83A3A">Status: In Progress ← dispatcher marked Complete 14 min ago</div>
+              </div>
+              <div class="job-card">
+                <div class="job-id">JOB #1848</div>
+                <div class="job-title" style="color:#9CA3AF">Unassigned to you</div>
+                <div class="job-customer" style="color:#E83A3A">Assigned 11 min ago — you don't see it yet</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- FIXED iOS Sync -->
+      <div class="phone-wrap">
+        <div class="phone-label fixed">iOS — Fixed &lt;2 min</div>
+        <div class="phone" onclick="triggerSyncFixed()">
+          <div class="phone-notch"><div class="phone-notch-dot"></div></div>
+          <div class="phone-screen">
+            <div class="app-bar">
+              <div class="app-bar-back">‹</div>
+              <div class="app-bar-title">My Jobs</div>
+            </div>
+            <div class="app-content">
+              <div class="sync-row">
+                <div>
+                  <div class="sync-label">Last sync</div>
+                  <div style="font-size:9px;color:#9CA3AF" id="sync-fixed-time">Just now</div>
+                </div>
+                <div><span class="sync-dot good" id="sync-fixed-dot"></span><span class="sync-time good" id="sync-fixed-status">Live</span></div>
+              </div>
+              <div class="job-card" id="sync-fixed-job">
+                <div class="job-id" style="color:#1DB954">✓ UPDATED</div>
+                <div class="job-title">HVAC Repair — Unit 3B</div>
+                <div class="job-customer">Status: Completed ✓</div>
+              </div>
+              <div class="job-card" id="sync-fixed-new" style="display:none">
+                <div class="job-id" style="color:#1A6FE8">NEW JOB</div>
+                <div class="job-title">Plumbing — 44 Commerce Way</div>
+                <div class="job-customer">Assigned just now</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-home-bar"><div class="home-bar"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="explain-card">
+    <div class="bug-tag">🐛 Root Cause</div>
+    <h3>Sync Lag: iOS Background Refresh Throttling</h3>
+    <p>iOS aggressively throttles background app refresh based on battery, usage patterns, and system load. Without explicit <code>BGTaskScheduler</code> configuration and push-triggered silent notifications, the app can only sync when foregrounded — leaving technicians with stale data for 10–15 minutes at a time.</p>
+    <p>Android's <code>WorkManager</code> / <code>JobScheduler</code> is far more permissive about background execution, which is why Android technicians see near-real-time updates while iOS technicians see stale data.</p>
+    <div class="code-snippet">
+<span class="code-comment">// BROKEN — sync only on foreground</span>
+AppState.<span class="code-fn">addEventListener</span>(<span class="code-string">'change'</span>, state => {
+  <span class="code-keyword">if</span> (state === <span class="code-string">'active'</span>) <span class="code-fn">syncJobs</span>()
+})
+<span class="code-comment">// ← iOS background: nothing happens</span>
+</div>
+    <div class="fix-tag">✅ Fix</div>
+    <p>Register a <code>BGAppRefreshTask</code> with iOS 13+ <code>BGTaskScheduler</code>. Configure APNs silent push notifications to trigger a background sync on job assignment events — no foreground required.</p>
+    <div class="code-snippet">
+<span class="code-comment">// FIXED — background fetch + silent push</span>
+BGTaskScheduler.<span class="code-fn">register</span>(
+  forTaskWithIdentifier: <span class="code-string">"co.zuper.sync"</span>,
+  using: nil
+) { task <span class="code-keyword">in</span>
+  <span class="code-fn">handleSyncTask</span>(task <span class="code-keyword">as</span>! BGAppRefreshTask)
+}
+<span class="code-comment">// APNs silent push → wake + sync in &lt;30s</span>
+</div>
+    <table class="effort-table">
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Effort estimate</td><td>7–10 engineering days</td></tr>
+      <tr><td>Target</td><td>&lt;2 min sync lag on 4G (match Android baseline)</td></tr>
+      <tr><td>Business impact</td><td>Eliminates double-dispatch, incorrect job status, customer confusion</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 3: REVIEWS -->
+<!-- ============================================================ -->
+<div class="screen-container" id="tab-3">
+  <div style="padding: 20px 20px 8px">
+    <div style="font-size:12px;font-weight:700;color:#8B9DB0;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px">iOS App Store — Failure Patterns</div>
+
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-stars">★☆☆☆☆</div>
+        <div class="review-platform">iOS App Store</div>
+      </div>
+      <div class="review-text">"App crashes every time I try to complete a job. Lost two hours of data yesterday. My Android coworker has zero issues. Going back to paper."</div>
+      <span class="review-tag">Bug 1: Crash-on-task</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-stars">★★☆☆☆</div>
+        <div class="review-platform">iOS App Store</div>
+      </div>
+      <div class="review-text">"The search box disappears while I'm typing. I type a customer name and the field just blanks out. Have to retype 3-4 times per job. Completely unusable on iPhone."</div>
+      <span class="review-tag">Bug 2: Ghost input</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-stars">★★☆☆☆</div>
+        <div class="review-platform">iOS App Store</div>
+      </div>
+      <div class="review-text">"My dispatcher assigns me jobs and I don't see them for 15-20 minutes. Meanwhile she thinks I'm ignoring her. Android guys see new jobs instantly."</div>
+      <span class="review-tag">Bug 3: Sync lag</span>
+    </div>
+
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-stars">★★★☆☆</div>
+        <div class="review-platform">iOS App Store</div>
+      </div>
+      <div class="review-text">"Too many taps to close a job — I counted 11 steps on iPhone. My coworker on Android does it in 4. Same product, totally different experience."</div>
+      <span class="review-tag">Navigation delta</span>
+    </div>
+
+    <div style="margin: 16px 0 8px">
+      <div style="font-size:12px;font-weight:700;color:#8B9DB0;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px">Competitive Comparison</div>
+
+      <div class="rating-bar-wrap">
+        <div class="rating-bar-label"><span>Zuper iOS (now)</span><span style="color:#E83A3A">2.9★</span></div>
+        <div class="rating-bar-track"><div class="rating-bar-fill current"></div></div>
+      </div>
+
+      <div class="rating-bar-wrap">
+        <div class="rating-bar-label"><span>Target after sprint</span><span style="color:#1DB954">4.0+★</span></div>
+        <div class="rating-bar-track"><div class="rating-bar-fill target"></div></div>
+      </div>
+
+      <div class="rating-bar-wrap">
+        <div class="rating-bar-label"><span>ServiceTitan iOS</span><span style="color:#F5A623">4.7★</span></div>
+        <div class="rating-bar-track"><div class="rating-bar-fill competitor"></div></div>
+      </div>
+
+      <div class="rating-bar-wrap" style="margin-top:8px">
+        <div class="rating-bar-label"><span>Jobber iOS</span><span style="color:#F5A623">4.7★</span></div>
+        <div class="rating-bar-track"><div class="rating-bar-fill" style="width:94%;background:#F5A623"></div></div>
+      </div>
+    </div>
+
+    <div class="explain-card" style="margin: 0 0 20px">
+      <h3>The Business Impact of 2.9★</h3>
+      <p>Every enterprise FSM prospect Googles the app before signing. Seeing 2.9★ while ServiceTitan shows 4.7★ is a closed-deal blocker. The 1-star gap between iOS and Android also tells a sophisticated buyer: "this company doesn't have iOS engineering capacity."</p>
+      <p>With Zuper Glass launched in November 2025, hardware buyers now perform an additional check: how stable is the mobile platform this hardware depends on? 2.9★ is a friction point in every Zuper Glass conversation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 4: SPRINT PLAN -->
+<!-- ============================================================ -->
+<div class="screen-container" id="tab-4">
+  <div style="padding: 20px 20px 12px">
+    <div style="font-size:12px;font-weight:700;color:#8B9DB0;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px">6-Week iOS Reliability Sprint</div>
+  </div>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot">1</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-right">
+        <div class="timeline-week">Week 1</div>
+        <div class="timeline-title">Codebase Audit + Bug Reproduction</div>
+        <div class="timeline-desc">Elinext iOS engineers clone repo, reproduce all 3 bugs on device, document root causes, confirm fix estimates. One 1-hour onboarding call with Jai Krishna.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot">2</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-right">
+        <div class="timeline-week">Weeks 2–3</div>
+        <div class="timeline-title">Fix Bug 1 (Crash) + Bug 2 (Ghost Input)</div>
+        <div class="timeline-desc">Background thread refactor for job completion flow. iOS-specific keyboard event handling across all input fields. Internal QA on Zuper test devices.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot">3</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-right">
+        <div class="timeline-week">Weeks 3–4</div>
+        <div class="timeline-title">Fix Bug 3 (Sync) + Regression Pass</div>
+        <div class="timeline-desc">BGTaskScheduler registration + APNs silent push integration. Full regression testing. Performance benchmarks: sync lag target &lt;2 min on 4G.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot">4</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-right">
+        <div class="timeline-week">Week 5</div>
+        <div class="timeline-title">TestFlight Beta</div>
+        <div class="timeline-desc">Beta build shipped to existing Zuper customers. Crash-free rate measured. Field technician feedback collected. Critical issues addressed before submission.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot">5</div>
+      </div>
+      <div class="timeline-right">
+        <div class="timeline-week">Week 6</div>
+        <div class="timeline-title">App Store Submission + 2-Week Monitor</div>
+        <div class="timeline-desc">Production release. Elinext monitors Crashlytics and App Store reviews for 2 weeks post-release. Handoff documentation delivered to Jai Krishna.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="explain-card">
+    <h3>Entry Requirements</h3>
+    <p>To start Week 1, we need:</p>
+    <table class="effort-table">
+      <tr><th>Requirement</th><th>Notes</th></tr>
+      <tr><td>iOS repo read access</td><td>GitHub or GitLab invite; read-only is fine for audit</td></tr>
+      <tr><td>TestFlight access</td><td>Add Elinext Apple IDs to TestFlight group</td></tr>
+      <tr><td>1-hour onboarding call</td><td>Raghav + Jai Krishna + Elinext lead engineer</td></tr>
+      <tr><td>Fixed-price SOW signed</td><td>1-page agreement; no long-term commitments</td></tr>
+    </table>
+  </div>
+
+  <div class="explain-card">
+    <h3>What You Own</h3>
+    <p>All code, all fixes, all documentation. No vendor lock-in. Elinext engineers work in your repo, follow your PR process, and Jai Krishna reviews every merge. You are in control of the release timeline.</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 5: INVESTMENT -->
+<!-- ============================================================ -->
+<div class="screen-container" id="tab-5">
+  <div style="padding: 20px 20px 12px">
+    <div style="font-size:12px;font-weight:700;color:#8B9DB0;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px">Sprint Options</div>
+  </div>
+
+  <div class="invest-grid">
+    <div class="invest-card">
+      <div class="invest-name">Starter</div>
+      <div class="invest-price">Scoped<span></span></div>
+      <div class="invest-detail">3 bug fixes<br>2 iOS engineers<br>4 weeks<br>TestFlight beta<br>App Store submission</div>
+    </div>
+    <div class="invest-card recommended">
+      <div class="rec-badge">Recommended</div>
+      <div class="invest-name">Full Sprint</div>
+      <div class="invest-price">Scoped<span></span></div>
+      <div class="invest-detail">3 bugs + binary size<br>2 iOS + 1 QA<br>6 weeks<br>Perf profiling<br>2-week post-release SLA</div>
+    </div>
+  </div>
+
+  <div class="explain-card">
+    <h3>Why Full Sprint Is the Right Call</h3>
+    <p>The 419 MB binary is not just a bug — it's the root cause of memory pressure on all three issues. Reducing the binary to &lt;150 MB (target) by removing unused dependencies and optimizing asset bundling is the systemic fix that makes crash fixes, ghost input fixes, and sync fixes stick. Without it, the bugs will recur as new features ship.</p>
+    <p>Binary optimization alone typically reduces app launch time by 30–50% and drops reported memory crashes by 40–60% in comparable React Native apps.</p>
+  </div>
+
+  <div class="explain-card">
+    <h3>ROI Framing</h3>
+    <table class="effort-table">
+      <tr><th>Metric</th><th>Current</th><th>After Sprint</th></tr>
+      <tr><td>iOS App Store rating</td><td style="color:#E83A3A">2.9★</td><td style="color:#1DB954">4.0+★ target</td></tr>
+      <tr><td>Technician crash rate</td><td style="color:#E83A3A">Multiple/day</td><td style="color:#1DB954">Target: 0</td></tr>
+      <tr><td>Sync lag</td><td style="color:#E83A3A">10–15 min</td><td style="color:#1DB954">&lt;2 min</td></tr>
+      <tr><td>Sales objection (app rating)</td><td style="color:#E83A3A">Exists</td><td style="color:#1DB954">Removed</td></tr>
+      <tr><td>Zuper Glass credibility</td><td style="color:#E83A3A">At risk</td><td style="color:#1DB954">Protected</td></tr>
+    </table>
+    <p style="margin-top:8px">If one lost deal was caused or contributed to by the 2.9★ iOS rating, the sprint pays for itself. Zuper's ACV is in the $15–50K range.</p>
+  </div>
+
+  <div class="cta-section">
+    
+      Email Elinext Mobile to Start the Conversation
+    
+    <div class="cta-sub">
+      Elinext Mobile Engineering · elinext.com/contacts/<br>
+      Elinext Mobile Engineering</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(idx) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.screen-container').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+}
+
+// ============================================================
+// BUG 1: CRASH DEMO
+// ============================================================
+let crashState = 'idle'; // idle → shaking → crashed → idle
+
+function triggerCrash() {
+  if (crashState !== 'idle') return;
+  crashState = 'shaking';
+  const phone = document.getElementById('phone-crash-broken');
+  phone.classList.add('shaking');
+  setTimeout(() => {
+    phone.classList.remove('shaking');
+    document.getElementById('crash-overlay').style.display = 'flex';
+    crashState = 'crashed';
+  }, 500);
+}
+
+function resetCrash() {
+  document.getElementById('crash-overlay').style.display = 'none';
+  document.getElementById('crash-complete-btn').textContent = 'Complete ✓';
+  crashState = 'idle';
+}
+
+let fixedCrashState = 'idle';
+function triggerFixed() {
+  if (fixedCrashState !== 'idle') return;
+  fixedCrashState = 'animating';
+  const btn = document.getElementById('fixed-complete-btn');
+  btn.textContent = 'Saving…';
+  btn.style.background = '#F5A623';
+  btn.style.color = 'white';
+  setTimeout(() => {
+    btn.style.display = 'none';
+    const success = document.getElementById('fixed-success');
+    success.style.display = 'flex';
+    setTimeout(() => {
+      success.style.display = 'none';
+      btn.style.display = '';
+      btn.textContent = 'Complete ✓';
+      btn.style.background = '';
+      btn.style.color = '';
+      fixedCrashState = 'idle';
+    }, 2500);
+  }, 800);
+}
+
+// ============================================================
+// BUG 2: GHOST INPUT DEMO
+// ============================================================
+let ghostState = 'idle';
+function triggerGhost() {
+  if (ghostState !== 'idle') return;
+  ghostState = 'animating';
+  const overlay = document.getElementById('ghost-overlay-el');
+  const display = document.getElementById('ghost-input-display');
+  const after = document.getElementById('ghost-after');
+  overlay.style.display = 'flex';
+  display.textContent = 'Oakwood';
+  after.style.display = 'none';
+  after.textContent = '⬆ Field vanished';
+  // Simulate typing then disappear
+  setTimeout(() => {
+    display.textContent = '';
+    display.style.color = '#9CA3AF';
+    display.textContent = '';
+    after.style.display = 'block';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      ghostState = 'idle';
+    }, 2000);
+  }, 1200);
+}
+
+let ghostFixedState = 'idle';
+function triggerGhostFixed() {
+  if (ghostFixedState !== 'idle') return;
+  ghostFixedState = 'animating';
+  const text = document.getElementById('ghost-fixed-text');
+  const result = document.getElementById('ghost-fixed-result');
+  const chars = 'Oakwood';
+  let i = 0;
+  text.textContent = '';
+  text.style.color = '#111827';
+  result.style.display = 'none';
+  const interval = setInterval(() => {
+    text.textContent += chars[i];
+    i++;
+    if (i >= chars.length) {
+      clearInterval(interval);
+      setTimeout(() => {
+        result.style.display = 'block';
+        setTimeout(() => {
+          text.textContent = 'Tap to search...';
+          text.style.color = '#9CA3AF';
+          result.style.display = 'none';
+          ghostFixedState = 'idle';
+        }, 2000);
+      }, 400);
+    }
+  }, 100);
+}
+
+// ============================================================
+// BUG 3: SYNC DEMO
+// ============================================================
+let syncBrokenState = 'idle';
+function triggerSyncBroken() {
+  if (syncBrokenState !== 'idle') return;
+  syncBrokenState = 'animating';
+  const timeEl = document.getElementById('sync-broken-time');
+  const statusEl = document.getElementById('sync-broken-status');
+  let mins = 14;
+  statusEl.textContent = 'Syncing…';
+  const interval = setInterval(() => {
+    mins++;
+    timeEl.textContent = mins + ' min ago';
+    if (mins >= 16) {
+      clearInterval(interval);
+      statusEl.textContent = 'Stale';
+      setTimeout(() => { syncBrokenState = 'idle'; }, 1000);
+    }
+  }, 500);
+}
+
+let syncFixedState = 'idle';
+function triggerSyncFixed() {
+  if (syncFixedState !== 'idle') return;
+  syncFixedState = 'animating';
+  const timeEl = document.getElementById('sync-fixed-time');
+  const statusEl = document.getElementById('sync-fixed-status');
+  const dot = document.getElementById('sync-fixed-dot');
+  const newJob = document.getElementById('sync-fixed-new');
+  statusEl.textContent = 'Syncing…';
+  dot.style.animation = 'none';
+  timeEl.textContent = 'Syncing…';
+  setTimeout(() => {
+    timeEl.textContent = 'Just now';
+    statusEl.textContent = 'Live';
+    dot.style.animation = 'pulse 1.5s infinite';
+    newJob.style.display = 'block';
+    setTimeout(() => {
+      newJob.style.display = 'none';
+      syncFixedState = 'idle';
+    }, 3000);
+  }, 1000);
+}
+</script>
+</body>
+</html>

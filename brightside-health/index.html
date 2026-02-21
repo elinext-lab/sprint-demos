@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brightside Health — Session Reliability Analysis</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-deep:    #1a4b7a;
+      --blue-mid:     #2563a8;
+      --blue-light:   #4a90c4;
+      --teal:         #2a9d8f;
+      --teal-light:   #52b5a8;
+      --white:        #ffffff;
+      --gray-50:      #f8fafc;
+      --gray-100:     #f1f5f9;
+      --gray-200:     #e2e8f0;
+      --gray-400:     #94a3b8;
+      --gray-600:     #475569;
+      --gray-800:     #1e293b;
+      --red:          #dc2626;
+      --red-light:    #fef2f2;
+      --red-border:   #fca5a5;
+      --green:        #16a34a;
+      --green-light:  #f0fdf4;
+      --green-border: #86efac;
+      --amber:        #d97706;
+      --amber-light:  #fffbeb;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,.08);
+      --shadow-md:    0 4px 12px rgba(0,0,0,.10);
+      --shadow-lg:    0 8px 32px rgba(0,0,0,.12);
+      --radius:       12px;
+      --radius-sm:    8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 60%, var(--teal) 100%);
+      color: var(--white);
+      padding: 56px 24px 48px;
+      text-align: center;
+    }
+
+    .logo-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,.18);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      opacity: .92;
+    }
+
+    header h1 {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    header p.subtitle {
+      font-size: clamp(15px, 2vw, 18px);
+      opacity: .82;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .header-badge {
+      display: inline-block;
+      margin-top: 28px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 24px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .3px;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    section {
+      margin-top: 56px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-deep);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--blue-deep);
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--gray-600);
+      font-size: 15px;
+      margin-bottom: 32px;
+      max-width: 680px;
+    }
+
+    /* ── BEFORE / AFTER COMPARISON ──────────────────────────── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 620px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: .3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-before .panel-header { background: var(--red); color: var(--white); }
+    .panel-after  .panel-header { background: var(--green); color: var(--white); }
+
+    .panel-body {
+      background: var(--white);
+      padding: 20px;
+    }
+
+    /* ── PHONE MOCK ─────────────────────────────────────────── */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 20px;
+    }
+
+    .phone {
+      width: 200px;
+      background: var(--gray-800);
+      border-radius: 24px;
+      padding: 10px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .phone::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 5px;
+      background: var(--gray-600);
+      border-radius: 3px;
+      margin: 0 auto 8px;
+    }
+
+    .phone-screen {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-status {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-size: 9px;
+      padding: 4px 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .screen-body {
+      flex: 1;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* before screen — broken state */
+    .screen-loading {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px 10px;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--blue-mid);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .screen-loading p {
+      font-size: 9px;
+      color: var(--gray-400);
+      text-align: center;
+    }
+
+    /* after screen — working state */
+    .screen-session {
+      background: var(--blue-deep);
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .video-tile {
+      background: var(--blue-mid);
+      border-radius: 6px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 14px;
+    }
+
+    .video-tile.self {
+      background: var(--teal);
+    }
+
+    .session-controls {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding-top: 2px;
+    }
+
+    .ctrl-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .ctrl-btn.mic  { background: rgba(255,255,255,.15); color: var(--white); }
+    .ctrl-btn.cam  { background: rgba(255,255,255,.15); color: var(--white); }
+    .ctrl-btn.end  { background: var(--red); color: var(--white); }
+
+    .session-info {
+      background: rgba(255,255,255,.1);
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 8px;
+      color: rgba(255,255,255,.8);
+      text-align: center;
+    }
+
+    /* ── FLOW STEPS ─────────────────────────────────────────── */
+    .flow-steps {
+      list-style: none;
+    }
+
+    .flow-steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 12.5px;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .flow-steps li:last-child { border-bottom: none; }
+
+    .step-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .step-bad  { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+    .step-good { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+
+    .step-text strong { display: block; color: var(--gray-800); font-size: 12px; margin-bottom: 1px; }
+
+    /* ── REVIEW QUOTE ───────────────────────────────────────── */
+    .quote-box {
+      background: var(--red-light);
+      border-left: 4px solid var(--red);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 18px;
+      margin: 24px 0;
+    }
+
+    .quote-box blockquote {
+      font-style: italic;
+      font-size: 14px;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .quote-meta {
+      font-size: 12px;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stars { color: var(--amber); letter-spacing: 1px; }
+
+    /* ── TECHNICAL SECTION ──────────────────────────────────── */
+    .tech-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-200);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .tech-item {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .tech-item h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue-deep);
+      margin-bottom: 6px;
+    }
+
+    .tech-item p {
+      font-size: 12.5px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    .tech-badge {
+      display: inline-block;
+      background: var(--blue-deep);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    /* ── STAKES SECTION ─────────────────────────────────────── */
+    .stakes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .stake-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+
+    .stake-number {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stake-number.red   { color: var(--red); }
+    .stake-number.amber { color: var(--amber); }
+    .stake-number.blue  { color: var(--blue-mid); }
+
+    .stake-label {
+      font-size: 12.5px;
+      color: var(--gray-600);
+      line-height: 1.4;
+    }
+
+    .stake-sub {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    /* ── CLINICAL WARNING ───────────────────────────────────── */
+    .clinical-warning {
+      background: var(--amber-light);
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-top: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .warning-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .clinical-warning h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+    }
+
+    .clinical-warning p {
+      font-size: 13px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    /* ── CODE SNIPPET ───────────────────────────────────────── */
+    .code-block {
+      background: var(--gray-800);
+      color: #a8dadc;
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #93c5fd; }
+    .code-string  { color: #86efac; }
+    .code-fn      { color: #fbbf24; }
+
+    /* ── CTA ────────────────────────────────────────────────── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--teal) 100%);
+      border-radius: var(--radius);
+      padding: 40px 36px;
+      text-align: center;
+      margin-top: 56px;
+      color: var(--white);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cta-section h2 {
+      color: var(--white);
+      font-size: clamp(20px, 3vw, 26px);
+      margin-bottom: 12px;
+    }
+
+    .cta-section p {
+      opacity: .85;
+      font-size: 15px;
+      max-width: 560px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--white);
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 32px;
+      border-radius: 32px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0,0,0,.2);
+    }
+
+    .cta-contact {
+      margin-top: 20px;
+      font-size: 13px;
+      opacity: .7;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+
+    /* ── DIVIDER ────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--gray-200);
+      margin: 48px 0 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  HEADER                              ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<header>
+  <div class="logo-mark">
+    <div class="logo-icon">&#x2661;</div>
+    <span class="logo-text">Brightside Health — Session Reliability</span>
+  </div>
+  <h1>A patient cannot join their $95 therapy session.<br>The app is loading.</h1>
+  <p class="subtitle">
+    An auth token lifecycle failure on app resume is creating session failures,
+    $95 refund pressures, and churn events — silently, at scale.
+  </p>
+  <div class="header-badge">Technical Analysis for Engineering Leadership</div>
+</header>
+
+<main>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 1: BEFORE / AFTER          ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section>
+  <div class="section-label">Section 1</div>
+  <h2>The Current Failure vs. The Fixed State</h2>
+  <p class="section-desc">
+    The patient's journey 2 minutes before a scheduled session — the highest-stakes moment in the app lifecycle.
+  </p>
+
+  <div class="comparison-grid">
+
+    <!-- BEFORE -->
+    <div class="panel panel-before">
+      <div class="panel-header">
+        &#x2715; BEFORE — Current State
+      </div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-status">
+                <span>9:43</span><span>&#x1F4F6;</span>
+              </div>
+              <div class="screen-loading">
+                <div class="spinner"></div>
+                <p>Loading your session...</p>
+                <p style="font-size:8px; color:#fca5a5; margin-top:4px;">
+                  This is taking longer than expected
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="flow-steps">
+          <li>
+            <div class="step-icon step-bad">1</div>
+            <div class="step-text">
+              <strong>Patient opens app (T-2 min)</strong>
+              Session token expired during background suspension. App does not know this yet.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-bad">2</div>
+            <div class="step-text">
+              <strong>Loading screen appears</strong>
+              App initiates server call with expired token. Server rejects. App enters loading state.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-bad">3</div>
+            <div class="step-text">
+              <strong>Redirect to login (or infinite hang)</strong>
+              Patient sees login screen. Must sign in again — up to 3 attempts before session join.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-bad">4</div>
+            <div class="step-text">
+              <strong>Session window missed</strong>
+              Therapist marks patient as no-show. $95 charge applied or disputed.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-bad">5</div>
+            <div class="step-text">
+              <strong>Support ticket filed. 2-3 day response.</strong>
+              By the time support responds, the appointment is gone.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="panel panel-after">
+      <div class="panel-header">
+        &#x2713; AFTER — Fixed State
+      </div>
+      <div class="panel-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-status">
+                <span>9:43</span><span>&#x1F4F6;</span>
+              </div>
+              <div class="screen-body">
+                <div style="font-size:9px; color:#16a34a; font-weight:600; text-align:center;">
+                  Session ready &#x2713;
+                </div>
+                <div class="screen-session">
+                  <div class="video-grid">
+                    <div class="video-tile">&#x1F9B8;</div>
+                    <div class="video-tile self">&#x1F464;</div>
+                  </div>
+                  <div class="session-info">Dr. Sarah — Therapy Session · 50 min</div>
+                  <div class="session-controls">
+                    <div class="ctrl-btn mic">&#x1F3A4;</div>
+                    <div class="ctrl-btn cam">&#x1F4F7;</div>
+                    <div class="ctrl-btn end">&#x260F;</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="flow-steps">
+          <li>
+            <div class="step-icon step-good">1</div>
+            <div class="step-text">
+              <strong>Patient opens app (T-2 min)</strong>
+              App detects appointment within 30 min. Checks token expiry locally — no network call yet.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-good">2</div>
+            <div class="step-text">
+              <strong>Silent token refresh</strong>
+              Refresh token used to silently obtain new access token. Patient sees nothing. 400ms operation.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-good">3</div>
+            <div class="step-text">
+              <strong>Session join UI presented immediately</strong>
+              Patient taps "Join Session." Video SDK pre-warms camera and mic permissions.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-good">4</div>
+            <div class="step-text">
+              <strong>Session starts on time</strong>
+              Therapist sees patient join. Session is documented. No support ticket needed.
+            </div>
+          </li>
+          <li>
+            <div class="step-icon step-good">5</div>
+            <div class="step-text">
+              <strong>Care continues. Patient retained.</strong>
+              Treatment relationship intact. Subscription renews.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Real review quote -->
+  <div class="quote-box">
+    <blockquote>
+      "I logged on for my appointment and waited 20 minutes, only to receive an email that I did not make my appointment."
+    </blockquote>
+    <div class="quote-meta">
+      <span class="stars">&#9733;&#9733;&#10025;&#10025;&#10025;</span>
+      <span>1-star review — Brightside Health user (confirmed: choosingtherapy.com, 2024). Billed $95.</span>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <blockquote>
+      "The app is incredibly buggy. I can't log in after the first initial log-in — it either gets stuck on a loading screen, or successfully logs me in, then logs me out and takes me back to the login screen."
+    </blockquote>
+    <div class="quote-meta">
+      <span class="stars">&#9733;&#10025;&#10025;&#10025;&#10025;</span>
+      <span>App Store review — Brightside Health (confirmed: multiple review aggregators)</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 2: TECHNICAL SUMMARY       ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section>
+  <div class="section-label">Section 2</div>
+  <h2>What We Fix: The Auth Lifecycle</h2>
+  <p class="section-desc">
+    Three targeted engineering interventions. No architectural overhaul. 6–8 weeks.
+  </p>
+
+  <div class="tech-card">
+    <p style="font-size:14px; color:var(--gray-600); line-height:1.6; margin-bottom:4px;">
+      The root cause is not a slow server. It is a mobile auth lifecycle that was designed for security (HIPAA-compliant token expiry) without a graceful recovery path for the highest-value user action: joining a scheduled therapy session.
+    </p>
+
+    <div class="tech-grid">
+
+      <div class="tech-item">
+        <div class="tech-badge">FIX 1</div>
+        <h4>Pre-Session Token Refresh</h4>
+        <p>
+          When the app is opened or resumed and an appointment exists within 30 minutes, silently attempt a token refresh using the stored refresh token before any UI is rendered. If refresh succeeds, proceed directly to session join. If refresh fails, present a specific, actionable error — not a loading spinner.
+        </p>
+      </div>
+
+      <div class="tech-item">
+        <div class="tech-badge">FIX 2</div>
+        <h4>Video SDK Reconnect with Re-Auth</h4>
+        <p>
+          When a video media track drops during a session, the SDK reconnect logic must re-authenticate to the media server using the current session token. If the token has expired mid-session, the reconnect must trigger a background token refresh before re-establishing the encrypted media channel — preventing permanent video freeze.
+        </p>
+      </div>
+
+      <div class="tech-item">
+        <div class="tech-badge">FIX 3</div>
+        <h4>Session Attempt Logging</h4>
+        <p>
+          Log every session join attempt — successful or not — with a timestamp, auth state, and failure reason (if applicable). This creates a clinical audit trail: "Patient attempted to join at T-2 min; technical failure." The care record reflects reality. Provider sees the attempt. The $95 is not charged. HITRUST controls are satisfied.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Code illustration -->
+    <div class="code-block">
+<span class="code-comment">// Pre-session token refresh — fires on app resume when appointment is imminent</span>
+<span class="code-keyword">async function</span> <span class="code-fn">prepareSessionToken</span>(appointmentStartTime) {
+  <span class="code-keyword">const</span> minutesUntilSession = (appointmentStartTime - Date.now()) / 60000;
+
+  <span class="code-keyword">if</span> (minutesUntilSession &lt;= 30 &amp;&amp; minutesUntilSession &gt; 0) {
+    <span class="code-keyword">const</span> tokenValid = <span class="code-fn">checkTokenExpiry</span>();  <span class="code-comment">// local check, no network</span>
+
+    <span class="code-keyword">if</span> (!tokenValid) {
+      <span class="code-keyword">try</span> {
+        <span class="code-keyword">await</span> <span class="code-fn">silentTokenRefresh</span>();  <span class="code-comment">// ~400ms, no UI disruption</span>
+        <span class="code-fn">logSessionAttempt</span>({ status: <span class="code-string">'token_refreshed'</span>, ts: Date.now() });
+      } <span class="code-keyword">catch</span> (err) {
+        <span class="code-comment">// Do NOT show loading spinner — show specific, actionable recovery UI</span>
+        <span class="code-fn">showSessionRecoveryUI</span>(err);
+        <span class="code-fn">logSessionAttempt</span>({ status: <span class="code-string">'auth_failed'</span>, ts: Date.now(), error: err });
+      }
+    }
+  }
+}
+    </div>
+
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  SECTION 3: THE STAKES              ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section>
+  <div class="section-label">Section 3</div>
+  <h2>The Stakes</h2>
+  <p class="section-desc">
+    Session reliability is not a UX metric for a mental health platform. It is a clinical and financial infrastructure metric.
+  </p>
+
+  <div class="stakes-grid">
+
+    <div class="stake-card">
+      <div class="stake-number red">$95</div>
+      <div class="stake-label">Direct cost per failed session (confirmed out-of-pocket rate)</div>
+      <div class="stake-sub">+ $15–30 support cost per ticket</div>
+    </div>
+
+    <div class="stake-card">
+      <div class="stake-number amber">28%</div>
+      <div class="stake-label">of surveyed Brightside users experienced a technical issue more than once</div>
+      <div class="stake-sub">Source: helpguide.org, 2024 user survey</div>
+    </div>
+
+    <div class="stake-card">
+      <div class="stake-number blue">2–3</div>
+      <div class="stake-label">days average support response time for technical issues</div>
+      <div class="stake-sub">Appointment window: 50 minutes</div>
+    </div>
+
+    <div class="stake-card">
+      <div class="stake-number red">50%</div>
+      <div class="stake-label">of Android app issue reports are login / auth failures</div>
+      <div class="stake-sub">Source: justuseapp.com, Nov 2025</div>
+    </div>
+
+  </div>
+
+  <div class="clinical-warning">
+    <div class="warning-icon">&#9888;</div>
+    <div>
+      <h4>Clinical Risk: Crisis Care Patients</h4>
+      <p>
+        Brightside's Crisis Care program uses the CAMS framework to manage patients at elevated suicide risk. Session continuity is clinically mandated. A technical failure that prevents a high-acuity patient from joining their scheduled session is not a UX issue — it is a care gap event. Under Brightside's HITRUST r2 certification, session management is an evaluated security control. Undocumented session failures accumulate audit risk. The fix closes the gap.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  CTA                                ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div class="cta-section">
+  <h2>Summary</h2>
+  <p>
+    We have closed this exact failure pattern for other HIPAA-compliant telehealth platforms. The fix is scoped and isolated — no architectural overhaul required.
+  </p>
+  <div class="cta-btn" style="pointer-events:none;opacity:0.9;">Prepared by Elinext Mobile Engineering</div>
+  <div class="cta-contact">elinext.com/contacts/</div>
+</div>
+
+</main>
+
+<footer>
+  <p>This analysis is based on publicly available App Store reviews, BBB complaint records, third-party platform testing, and industry research.</p>
+  <p style="margin-top:6px;">Prepared for engineering leadership review. Not for public distribution.</p>
+</footer>
+
+</body>
+</html>

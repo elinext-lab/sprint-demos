@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CompanyCam Photo Upload — Before & After</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF6B35;
+      --orange-light: #FFF0EB;
+      --green: #2ECC71;
+      --green-dark: #27AE60;
+      --green-light: #EAFAF1;
+      --red: #E74C3C;
+      --red-light: #FDEDEC;
+      --gray-100: #F8F9FA;
+      --gray-200: #E9ECEF;
+      --gray-300: #DEE2E6;
+      --gray-500: #ADB5BD;
+      --gray-700: #495057;
+      --gray-900: #212529;
+      --blue: #3498DB;
+      --blue-light: #EBF5FB;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #F0F2F5;
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--gray-900);
+    }
+    .header-logo .cam-icon {
+      width: 32px; height: 32px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 16px;
+    }
+    .header-badge {
+      background: var(--orange-light);
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #FFD5C2;
+    }
+
+    /* ---- Hero ---- */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 48px 32px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--orange);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* ---- Section ---- */
+    .section {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: var(--gray-700);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* ---- Toggle Tabs ---- */
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-300);
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .toggle-btn.before.active {
+      border-color: var(--red);
+      background: var(--red-light);
+      color: var(--red);
+    }
+    .toggle-btn.after.active {
+      border-color: var(--green-dark);
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    /* ---- Phone Mockup ---- */
+    .demo-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .demo-wrapper { grid-template-columns: 1fr; }
+    }
+
+    .demo-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .demo-card-header {
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-card-header.before {
+      background: var(--red-light);
+      color: var(--red);
+      border-bottom: 1px solid #FADBD8;
+    }
+    .demo-card-header.after {
+      background: var(--green-light);
+      color: var(--green-dark);
+      border-bottom: 1px solid #A9DFBF;
+    }
+    .demo-screen {
+      background: #1C1C1E;
+      min-height: 420px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* iOS status bar */
+    .ios-statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px 4px;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .ios-statusbar-right {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    /* App nav bar */
+    .app-navbar {
+      background: #1C1C1E;
+      padding: 8px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .back-btn {
+      color: var(--orange);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .nav-title {
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      flex: 1;
+    }
+    .nav-action {
+      color: var(--orange);
+      font-size: 13px;
+    }
+
+    /* Project header */
+    .project-header {
+      background: #2C2C2E;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .project-title {
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .photo-count-badge {
+      background: var(--orange);
+      color: white;
+      border-radius: 12px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Photo grid */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: #000;
+      flex: 1;
+      padding: 2px;
+    }
+    .photo-tile {
+      aspect-ratio: 1;
+      background: #3A3A3C;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-tile .photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: linear-gradient(135deg, #3A3A3C 0%, #4A4A4C 100%);
+    }
+    .photo-tile .photo-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .photo-tile.missing {
+      background: #2C2C2E;
+      border: 1px dashed #555;
+    }
+    .photo-tile.missing .photo-icon { color: #555; }
+
+    /* Sync overlay */
+    .sync-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sync-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 8px;
+    }
+
+    /* Upload confirmed badge */
+    .confirmed-badge {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: white;
+    }
+    .pending-badge {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: white;
+    }
+
+    /* Warning banner */
+    .warning-banner {
+      background: #3A2A10;
+      border: 1px solid #C0831A;
+      margin: 8px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .warning-banner .warn-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .warning-banner p {
+      color: #F0C060;
+      font-size: 10.5px;
+      line-height: 1.4;
+    }
+    .warning-banner strong { color: #FFDD80; }
+
+    .success-banner {
+      background: #0D2B1A;
+      border: 1px solid #27AE60;
+      margin: 8px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .success-banner .ok-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .success-banner p {
+      color: #7DCEA0;
+      font-size: 10.5px;
+      line-height: 1.4;
+    }
+    .success-banner strong { color: #A9DFBF; }
+
+    /* Form load screen */
+    .form-screen {
+      background: #1C1C1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-item {
+      background: #2C2C2E;
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-item-icon { font-size: 16px; }
+    .form-item-text { flex: 1; }
+    .form-item-label {
+      color: rgba(255,255,255,0.6);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-item-value {
+      color: white;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .form-item-value.placeholder {
+      color: rgba(255,255,255,0.3);
+      font-style: italic;
+    }
+    .form-item-value.loading-shimmer {
+      background: linear-gradient(90deg, #3A3A3C 25%, #4A4A4C 50%, #3A3A3C 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+      height: 16px;
+      width: 80%;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .loading-full {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .loading-full p {
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+    }
+    .loading-timer {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--red);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- Evidence section ---- */
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .evidence-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid transparent;
+    }
+    .evidence-card.source-appstore { border-left-color: #007AFF; }
+    .evidence-card.source-official { border-left-color: var(--red); }
+    .evidence-card.source-capterra { border-left-color: #55B02C; }
+
+    .evidence-source {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+    }
+    .evidence-quote {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--gray-700);
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .evidence-quote strong { color: var(--gray-900); font-style: normal; }
+    .evidence-tag {
+      display: inline-block;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-700);
+      padding: 3px 10px;
+    }
+
+    /* ---- Architecture diagram ---- */
+    .arch-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+    .arch-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flow-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      position: relative;
+    }
+    .flow-node {
+      flex: 1;
+      background: var(--gray-100);
+      border: 2px solid var(--gray-300);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      position: relative;
+    }
+    .flow-node.bad { border-color: var(--red); background: var(--red-light); }
+    .flow-node.good { border-color: var(--green-dark); background: var(--green-light); }
+    .flow-node .fn-label { font-size: 11px; color: var(--gray-500); }
+    .flow-node .fn-title { font-size: 13px; font-weight: 600; }
+    .flow-arrow {
+      font-size: 18px;
+      color: var(--gray-500);
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+    .flow-connector {
+      width: 2px;
+      height: 20px;
+      background: var(--gray-300);
+      margin: 0 auto;
+    }
+    .flow-connector.bad { background: var(--red); }
+    .flow-connector.good { background: var(--green-dark); }
+
+    /* ---- AI impact ---- */
+    .ai-impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .ai-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border-top: 3px solid var(--gray-300);
+    }
+    .ai-card.broken { border-top-color: var(--red); }
+    .ai-card.fixed { border-top-color: var(--green-dark); }
+    .ai-card-icon { font-size: 24px; margin-bottom: 8px; }
+    .ai-card-name { font-size: 12px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .ai-card-status {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .ai-card-status.broken { background: var(--red-light); color: var(--red); }
+    .ai-card-status.fixed { background: var(--green-light); color: var(--green-dark); }
+    .ai-card-desc { font-size: 11px; color: var(--gray-700); margin-top: 6px; line-height: 1.5; }
+
+    /* ---- Proposal ---- */
+    .proposal-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 16px;
+      padding: 28px;
+      color: white;
+      box-shadow: var(--shadow-lg);
+    }
+    .proposal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .proposal-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .proposal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) { .proposal-grid { grid-template-columns: 1fr; } }
+    .proposal-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .pi-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .pi-value { font-size: 20px; font-weight: 700; color: var(--orange); }
+    .pi-desc { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+    .scope-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .scope-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+    }
+    .scope-check { color: var(--green); flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+
+    .cta-block {
+      background: var(--orange);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .cta-text { font-size: 14px; font-weight: 600; color: white; }
+    .cta-email { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 2px; }
+    .cta-arrow { font-size: 22px; color: rgba(255,255,255,0.8); flex-shrink: 0; }
+
+    /* ---- Footer ---- */
+    .footer {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--gray-500);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">
+    <div class="cam-icon">📸</div>
+    CompanyCam — Mobile Reliability Analysis
+  </div>
+  <div class="header-badge">For Engineering Leadership, SVP Engineering</div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Your AI features run on photos.<br/><span>The upload queue doesn't always deliver them.</span></h1>
+  <p>CompanyCam's AI layer — AI Notes, Daily Logs, AI Summary — has one infrastructure dependency: photos must reach the server to be processed. Right now, they don't always make it.</p>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-num">23,067</div>
+      <div class="stat-label">iOS Reviews</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">22</div>
+      <div class="stat-label">Engineers Total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">AI Features Live</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$2B</div>
+      <div class="stat-label">Valuation (Aug 2025)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Issue 1: Photo Upload Failure -->
+<div class="section">
+  <div class="section-label">Issue 1 of 3</div>
+  <div class="section-title">Silent Photo Upload Failure</div>
+  <div class="section-sub">The project header counts 67 photos. The gallery shows 51. 16 photos are invisible — counted locally but never confirmed server-side. The contractor has no error. The AI has no data.</div>
+
+  <div class="toggle-row">
+    <button class="toggle-btn before active" onclick="toggleDemo('upload', 'before', this)">🔴 NOW — How it fails</button>
+    <button class="toggle-btn after" onclick="toggleDemo('upload', 'after', this)">🟢 FIXED — Confirmed delivery</button>
+  </div>
+
+  <div id="upload-demo" class="demo-wrapper">
+    <!-- BEFORE: Left panel -->
+    <div class="demo-card" id="upload-before">
+      <div class="demo-card-header before">⚠️ Current Behavior — Count mismatch, no error</div>
+      <div class="demo-screen">
+        <div class="ios-statusbar">
+          <span>9:41</span>
+          <div class="ios-statusbar-right">
+            <span>●●●</span><span>WiFi</span><span>🔋</span>
+          </div>
+        </div>
+        <div class="app-navbar">
+          <span class="back-btn">‹ Projects</span>
+          <span class="nav-title">Ridge Ave Roof — Job #1847</span>
+        </div>
+        <div class="project-header">
+          <div>
+            <div class="project-title">📁 Ridge Ave Roof</div>
+            <div style="color: rgba(255,255,255,0.5); font-size:11px; margin-top: 2px;">Exterior — Phase 2</div>
+          </div>
+          <!-- MISLEADING count badge -->
+          <div class="photo-count-badge">📷 67 photos</div>
+        </div>
+
+        <!-- Warning banner -->
+        <div class="warning-banner">
+          <span class="warn-icon">⚠️</span>
+          <p><strong>Invisible photos:</strong> Header shows 67. Gallery renders 51. The 16 missing photos were captured, are counted — but were never confirmed by the server. No error was shown.</p>
+        </div>
+
+        <!-- Photo grid — showing 51 real + 16 missing -->
+        <div class="photo-grid">
+          <!-- 51 "visible" photos -->
+          <div class="photo-tile"><div class="photo-icon">🏠</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔨</div></div>
+          <div class="photo-tile"><div class="photo-icon">🪜</div></div>
+          <div class="photo-tile"><div class="photo-icon">🏠</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔩</div></div>
+          <div class="photo-tile"><div class="photo-icon">📐</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔨</div></div>
+          <div class="photo-tile"><div class="photo-icon">🏠</div></div>
+          <div class="photo-tile"><div class="photo-icon">🪜</div></div>
+          <!-- 6 "missing" slots — gray/empty -->
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+          <div class="photo-tile missing"><div class="photo-icon" style="font-size:16px; color:#666">?</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER: Right panel (hidden by default) -->
+    <div class="demo-card" id="upload-after" style="display:none">
+      <div class="demo-card-header after">✅ Fixed Behavior — Server-confirmed, AI-ready</div>
+      <div class="demo-screen">
+        <div class="ios-statusbar">
+          <span>9:41</span>
+          <div class="ios-statusbar-right">
+            <span>●●●</span><span>WiFi</span><span>🔋</span>
+          </div>
+        </div>
+        <div class="app-navbar">
+          <span class="back-btn">‹ Projects</span>
+          <span class="nav-title">Ridge Ave Roof — Job #1847</span>
+        </div>
+        <div class="project-header">
+          <div>
+            <div class="project-title">📁 Ridge Ave Roof</div>
+            <div style="color: rgba(255,255,255,0.5); font-size:11px; margin-top: 2px;">Exterior — Phase 2</div>
+          </div>
+          <!-- ACCURATE count: confirmed vs pending -->
+          <div style="display:flex; gap:6px; align-items:center;">
+            <div style="background:#27AE60; color:white; border-radius:12px; padding:3px 10px; font-size:12px; font-weight:700;">✓ 63 synced</div>
+            <div style="background:#FF6B35; color:white; border-radius:12px; padding:3px 10px; font-size:12px; font-weight:700;">↑ 4 pending</div>
+          </div>
+        </div>
+
+        <!-- Success banner -->
+        <div class="success-banner">
+          <span class="ok-icon">✅</span>
+          <p><strong>Upload queue active:</strong> 63 photos server-confirmed. 4 photos uploading in background. Count reflects server state — not local estimate. AI Summary has access to all 63.</p>
+        </div>
+
+        <!-- Photo grid — all confirmed with badges -->
+        <div class="photo-grid">
+          <div class="photo-tile"><div class="photo-icon">🏠</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔨</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🪜</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🏠</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔩</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">📐</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🔨</div><div class="confirmed-badge">✓</div></div>
+          <div class="photo-tile"><div class="photo-icon">🏠</div><div class="confirmed-badge">✓</div></div>
+          <!-- 1 pending with upload indicator -->
+          <div class="photo-tile"><div class="photo-icon">🪜</div><div class="pending-badge">↑</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Issue 2: Background Upload -->
+<div class="section">
+  <div class="section-label">Issue 2 of 3</div>
+  <div class="section-title">Background Upload Failure — Official Evidence</div>
+  <div class="section-sub">CompanyCam's own Help Center tells users: "Keep the app open while uploading." And: "If you have photos waiting to upload, do not delete the app — they will be lost." This is not a user report. This is CompanyCam's official support guidance.</div>
+
+  <div class="evidence-grid">
+    <div class="evidence-card source-official">
+      <div class="evidence-source">⚠️ CompanyCam Help Center — Official Documentation</div>
+      <div class="evidence-quote">"Some devices can set a limit on the amount of data an app can use when placed in the background."<br/><br/>Troubleshooting Step 1: <strong>"Keep the app open while uploading."</strong></div>
+      <span class="evidence-tag">Foreground-dependent sync</span>
+    </div>
+    <div class="evidence-card source-official">
+      <div class="evidence-source">🚨 CompanyCam Help Center — Critical Warning</div>
+      <div class="evidence-quote"><strong>"If you have photos that are waiting to be uploaded, do not delete the app. They will be lost if they haven't been saved to your device."</strong></div>
+      <span class="evidence-tag">Volatile cache — data loss risk</span>
+    </div>
+    <div class="evidence-card source-appstore">
+      <div class="evidence-source">⭐ App Store Review — Confirmed</div>
+      <div class="evidence-quote">"Attempting to upload a 20-second video that was stuck at 63% completion <strong>for 2 days</strong>."</div>
+      <span class="evidence-tag">No resumable upload</span>
+    </div>
+    <div class="evidence-card source-capterra">
+      <div class="evidence-source">📋 App Store Review — Client Impact</div>
+      <div class="evidence-quote">"Unable to provide photo links to clients and <strong>having to delay delivery.</strong>"</div>
+      <span class="evidence-tag">Payment delays</span>
+    </div>
+  </div>
+</div>
+
+<!-- Issue 3: Form Load / Architecture -->
+<div class="section">
+  <div class="section-label">Issue 3 of 3</div>
+  <div class="section-title">15-Second Form Load — The AI Input Pipeline</div>
+  <div class="section-sub">Every form field tap triggers a full page navigation that takes 15 seconds to load. Field crews skip form entries. AI Notes and Walkthrough Notes get photos without metadata. AI output becomes generic instead of specific.</div>
+
+  <div class="toggle-row">
+    <button class="toggle-btn before active" onclick="toggleDemo('form', 'before', this)">🔴 NOW — 15-sec form load</button>
+    <button class="toggle-btn after" onclick="toggleDemo('form', 'after', this)">🟢 FIXED — Instant inline editing</button>
+  </div>
+
+  <div id="form-demo" class="demo-wrapper">
+    <!-- BEFORE -->
+    <div class="demo-card" id="form-before">
+      <div class="demo-card-header before">⏱ 15 seconds to edit a single field</div>
+      <div class="demo-screen">
+        <div class="ios-statusbar">
+          <span>9:41</span>
+          <div class="ios-statusbar-right"><span>●●●</span><span>LTE</span><span>🔋</span></div>
+        </div>
+        <div class="app-navbar">
+          <span class="back-btn">‹ Back</span>
+          <span class="nav-title">Job Checklist</span>
+        </div>
+
+        <div class="form-list">
+          <div class="form-item">
+            <div class="form-item-icon">📍</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Location</div>
+              <div class="form-item-value">142 Ridge Ave — North slope</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <div class="form-item-icon">📋</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Phase</div>
+              <div class="form-item-value">Shingle installation</div>
+            </div>
+          </div>
+          <!-- Field that triggered the 15-second wait -->
+          <div class="form-item" style="border: 1.5px solid #E74C3C; background:#2C1A1A;">
+            <div class="form-item-icon">📝</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Notes</div>
+              <div class="form-item-value placeholder">Tapped to add note…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="loading-full">
+          <div class="spinner" style="border-color: rgba(231,76,60,0.3); border-top-color: #E74C3C;"></div>
+          <div class="loading-timer" id="load-timer">14</div>
+          <p>Loading edit page…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="demo-card" id="form-after" style="display:none">
+      <div class="demo-card-header after">✅ Instant inline edit — no navigation</div>
+      <div class="demo-screen">
+        <div class="ios-statusbar">
+          <span>9:41</span>
+          <div class="ios-statusbar-right"><span>●●●</span><span>LTE</span><span>🔋</span></div>
+        </div>
+        <div class="app-navbar">
+          <span class="back-btn">‹ Back</span>
+          <span class="nav-title">Job Checklist</span>
+        </div>
+
+        <div class="form-list">
+          <div class="form-item">
+            <div class="form-item-icon">📍</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Location</div>
+              <div class="form-item-value">142 Ridge Ave — North slope</div>
+            </div>
+          </div>
+          <div class="form-item">
+            <div class="form-item-icon">📋</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Phase</div>
+              <div class="form-item-value">Shingle installation</div>
+            </div>
+          </div>
+          <!-- Inline editing field — active -->
+          <div class="form-item" style="border: 1.5px solid #27AE60; background:#0D2B1A;">
+            <div class="form-item-icon">📝</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Notes <span style="color:#27AE60; font-style:italic; font-size:9px;">● auto-saving</span></div>
+              <div class="form-item-value" style="color:#A9DFBF;">Flashing installed on north slope. Sealant check needed at chimney junction.|</div>
+            </div>
+          </div>
+          <!-- Additional field -->
+          <div class="form-item">
+            <div class="form-item-icon">✅</div>
+            <div class="form-item-text">
+              <div class="form-item-label">Checklist status</div>
+              <div class="form-item-value" style="color:#A9DFBF;">3 of 8 items complete</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 8px;">
+          <div class="success-banner">
+            <span class="ok-icon">✅</span>
+            <p><strong>Draft auto-saved locally.</strong> Note will sync when connection restores. AI Notes will process this context alongside the photo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Impact Section -->
+<div class="section">
+  <div class="section-label">Dependency Analysis</div>
+  <div class="section-title">How Upload Failures Break AI Features</div>
+  <div class="section-sub">Every CompanyCam AI feature depends on photos arriving server-side. Silent upload failures silently degrade AI output quality — without anyone knowing until a client points out a missing photo in their report.</div>
+
+  <div class="ai-impact-grid">
+    <div class="ai-card broken">
+      <div class="ai-card-icon">📝</div>
+      <div class="ai-card-name">AI Notes</div>
+      <div class="ai-card-status broken">⚠️ Degraded</div>
+      <div class="ai-card-desc">Processes photo + voice note. If photo is stuck in upload queue, note is orphaned. AI Summary has no image to describe.</div>
+    </div>
+    <div class="ai-card broken">
+      <div class="ai-card-icon">📅</div>
+      <div class="ai-card-name">Daily Logs</div>
+      <div class="ai-card-status broken">⚠️ Incomplete</div>
+      <div class="ai-card-desc">Aggregates all photos from the day. Stalled background uploads mean late-afternoon photos never make the day's log.</div>
+    </div>
+    <div class="ai-card broken">
+      <div class="ai-card-icon">📊</div>
+      <div class="ai-card-name">Progress Recap</div>
+      <div class="ai-card-status broken">⚠️ False completion %</div>
+      <div class="ai-card-desc">Generates completion % from all project photos. Count mismatch (67 vs 51) makes AI report wrong completion state to the client.</div>
+    </div>
+    <div class="ai-card broken">
+      <div class="ai-card-icon">🚶</div>
+      <div class="ai-card-name">Walkthrough Note</div>
+      <div class="ai-card-status broken">⚠️ Missing context</div>
+      <div class="ai-card-desc">Requires real-time photo + form sync. 15-second form loads cause crews to skip fields — AI generates generic output.</div>
+    </div>
+    <div class="ai-card fixed">
+      <div class="ai-card-icon">✨</div>
+      <div class="ai-card-name">With Fixed Upload Queue</div>
+      <div class="ai-card-status fixed">✅ Full fidelity</div>
+      <div class="ai-card-desc">All AI features receive complete, server-confirmed photo sets. Reports reflect actual job state. Client trust preserved.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Architecture -->
+<div class="section">
+  <div class="section-label">Technical Architecture</div>
+  <div class="section-title">Before vs After: Upload Queue Architecture</div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="arch-card">
+      <div class="arch-title" style="color: var(--red);">🔴 Current Architecture (Broken)</div>
+      <div class="flow-diagram">
+        <div class="flow-row">
+          <div class="flow-node bad">
+            <div class="fn-label">Step 1</div>
+            <div class="fn-title">📸 Photo captured</div>
+          </div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-row">
+          <div class="flow-node bad">
+            <div class="fn-label">Step 2</div>
+            <div class="fn-title">📊 Local count +1</div>
+          </div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-row">
+          <div class="flow-node bad">
+            <div class="fn-label">Step 3 — Fails if backgrounded</div>
+            <div class="fn-title">🔄 Upload attempt (foreground only)</div>
+          </div>
+        </div>
+        <div class="flow-connector bad"></div>
+        <div class="flow-row">
+          <div class="flow-node bad">
+            <div class="fn-label">No reconciliation</div>
+            <div class="fn-title">❓ Server state unknown</div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; background: var(--red-light); border-radius: 8px; padding: 10px; font-size: 11px; color: var(--red); font-weight: 600;">
+          Count shows 67. Server has 51. 16 photos in limbo. AI sees 51.
+        </div>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-title" style="color: var(--green-dark);">🟢 Fixed Architecture (Reliable)</div>
+      <div class="flow-diagram">
+        <div class="flow-row">
+          <div class="flow-node good">
+            <div class="fn-label">Step 1</div>
+            <div class="fn-title">📸 Photo captured</div>
+          </div>
+        </div>
+        <div class="flow-connector good"></div>
+        <div class="flow-row">
+          <div class="flow-node good">
+            <div class="fn-label">Step 2 — Crash-safe</div>
+            <div class="fn-title">💾 Written to local DB (SQLite)</div>
+          </div>
+        </div>
+        <div class="flow-connector good"></div>
+        <div class="flow-row">
+          <div class="flow-node good">
+            <div class="fn-label">Step 3 — Background OK</div>
+            <div class="fn-title">☁️ Resumable upload (Background URLSession / WorkManager)</div>
+          </div>
+        </div>
+        <div class="flow-connector good"></div>
+        <div class="flow-row">
+          <div class="flow-node good">
+            <div class="fn-label">Step 4 — Confirmed</div>
+            <div class="fn-title">✅ Server ACK → count updated</div>
+          </div>
+        </div>
+        <div style="margin-top: 10px; background: var(--green-light); border-radius: 8px; padding: 10px; font-size: 11px; color: var(--green-dark); font-weight: 600;">
+          Count shows 67. Server has 67. AI sees 67. Client sees 67.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Proposal -->
+<div class="section">
+  <div class="proposal-card">
+    <div class="proposal-title">Proposed Engagement</div>
+    <div class="proposal-sub">A scoped mobile engineering engagement targeting the three reliability issues above. No architectural changes. No long-term commitment. Targeted fixes with measurable outcomes.</div>
+
+    <div class="proposal-grid">
+      <div class="proposal-item">
+        <div class="pi-label">Duration</div>
+        <div class="pi-value">6–8 wks</div>
+        <div class="pi-desc">Parallel iOS + Android</div>
+      </div>
+      <div class="proposal-item">
+        <div class="pi-label">Scope</div>
+        <div class="pi-value">$15–25K</div>
+        <div class="pi-desc">Fixed price, fixed scope</div>
+      </div>
+      <div class="proposal-item">
+        <div class="pi-label">Engineers</div>
+        <div class="pi-value">2 mobile</div>
+        <div class="pi-desc">iOS + Android specialists</div>
+      </div>
+      <div class="proposal-item">
+        <div class="pi-label">Team</div>
+        <div class="pi-value">Elinext</div>
+        <div class="pi-desc">iOS, Android & Flutter engineering</div>
+      </div>
+    </div>
+
+    <ul class="scope-list" style="margin-bottom: 20px;">
+      <li class="scope-item"><span class="scope-check">✓</span>Crash-safe local photo queue (SQLite/Core Data) — photos survive reinstall</li>
+      <li class="scope-item"><span class="scope-check">✓</span>Background URLSession (iOS) + WorkManager (Android) — upload continues when app is backgrounded</li>
+      <li class="scope-item"><span class="scope-check">✓</span>Resumable upload for large files — video uploads continue from last confirmed byte</li>
+      <li class="scope-item"><span class="scope-check">✓</span>Server confirmation loop — count updated only on server ACK; pending/confirmed UI states</li>
+      <li class="scope-item"><span class="scope-check">✓</span>Inline form editing + local draft autosave — 15-second load eliminated</li>
+    </ul>
+
+    <div class="cta-block">
+      <div>
+        <div class="cta-text">Elinext Mobile Engineering</div>
+        <div class="cta-email">elinext.com/contacts/</div>
+      </div>
+      <div class="cta-arrow">→</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Analysis based on public App Store reviews, CompanyCam Help Center documentation (help.companycam.com), and Capterra/SoftwareAdvice review aggregations.<br/>
+  No CompanyCam systems were accessed. All findings are from public sources.<br/><br/>
+  Prepared by Elinext Mobile Lab — February 2026
+</div>
+
+<script>
+  // Toggle demo panels
+  function toggleDemo(demo, view, btn) {
+    const wrapper = btn.closest('.section');
+    const buttons = wrapper.querySelectorAll('.toggle-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const beforeEl = document.getElementById(demo + '-before');
+    const afterEl = document.getElementById(demo + '-after');
+
+    if (view === 'before') {
+      beforeEl.style.display = 'block';
+      afterEl.style.display = 'none';
+    } else {
+      beforeEl.style.display = 'none';
+      afterEl.style.display = 'block';
+    }
+  }
+
+  // Animate the load timer countdown
+  let timerVal = 14;
+  const timerEl = document.getElementById('load-timer');
+  if (timerEl) {
+    setInterval(() => {
+      timerVal = timerVal > 0 ? timerVal - 1 : 14;
+      timerEl.textContent = timerVal;
+    }, 1000);
+  }
+</script>
+</body>
+</html>

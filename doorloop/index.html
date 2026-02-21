@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DoorLoop — Tenant Payment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #4CAF50;
+      --green-light: #66BB6A;
+      --green-dim: rgba(76, 175, 80, 0.15);
+      --green-glow: rgba(76, 175, 80, 0.35);
+      --navy: #1a1a2e;
+      --navy-mid: #16213e;
+      --navy-light: #0f3460;
+      --card-bg: #ffffff;
+      --surface: #f5f5f7;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6e6e73;
+      --text-tertiary: #aeaeb2;
+      --border: rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 30px;
+    }
+
+    html, body {
+      height: 100%;
+      background: #e8e8ed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Device Shell ──────────────────────────────────────────────────── */
+    .device {
+      width: 240px;
+      height: 844px;
+      background: var(--navy);
+      border-radius: 50px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.15),
+        0 30px 80px rgba(0,0,0,0.45),
+        0 10px 30px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    /* iPhone notch */
+    .device::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 34px;
+      background: var(--navy);
+      border-radius: 0 0 20px 20px;
+      z-index: 100;
+    }
+
+    /* Dynamic Island pill */
+    .device::after {
+      content: '';
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 34px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 101;
+    }
+
+    /* ─── Screen Container ──────────────────────────────────────────────── */
+    .screen-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    /* ─── Screen ────────────────────────────────────────────────────────── */
+    .screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(30px);
+      transition: opacity 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+    }
+
+    .screen.exit-left {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    /* ─── Status Bar ────────────────────────────────────────────────────── */
+    .status-bar {
+      height: 54px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 24px 10px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .status-bar.dark {
+      background: transparent;
+    }
+
+    .status-bar .time {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #fff;
+    }
+
+    .status-bar .icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-bar .icons svg {
+      fill: #fff;
+    }
+
+    .status-bar.light .time { color: var(--text-primary); }
+    .status-bar.light .icons svg { fill: var(--text-primary); }
+
+    /* ─── Scrollable content area ───────────────────────────────────────── */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* ─── Home Indicator ────────────────────────────────────────────────── */
+    .home-indicator {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .home-indicator::before {
+      content: '';
+      width: 134px;
+      height: 5px;
+      background: rgba(0,0,0,0.18);
+      border-radius: 3px;
+    }
+    .home-indicator.light::before { background: rgba(255,255,255,0.4); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SCREEN 1 — BIOMETRIC AUTH
+       ═══════════════════════════════════════════════════════════════════════ */
+    #screen-auth {
+      background: linear-gradient(165deg, var(--navy) 0%, var(--navy-mid) 45%, #0d1b3e 100%);
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 0 0;
+      gap: 10px;
+    }
+
+    .auth-logo .logo-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-logo .logo-mark svg { fill: #fff; }
+
+    .auth-logo .logo-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-logo .logo-text span {
+      color: var(--green);
+    }
+
+    .auth-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 40px;
+      gap: 0;
+    }
+
+    .auth-greeting {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    /* Face ID Ring */
+    .faceid-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 32px;
+    }
+
+    .faceid-ring-outer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(76, 175, 80, 0.2);
+      animation: ring-pulse 3s ease-in-out infinite;
+    }
+
+    .faceid-ring-mid {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 2px dashed rgba(76, 175, 80, 0.35);
+      animation: ring-spin 8s linear infinite;
+    }
+
+    .faceid-ring-scan {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--green);
+      border-right-color: var(--green-light);
+      animation: ring-spin 1.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+      filter: drop-shadow(0 0 6px var(--green-glow));
+    }
+
+    .faceid-inner {
+      width: 108px;
+      height: 108px;
+      border-radius: 50%;
+      background: rgba(76, 175, 80, 0.08);
+      border: 1.5px solid rgba(76, 175, 80, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .faceid-inner:hover {
+      background: rgba(76, 175, 80, 0.15);
+      box-shadow: 0 0 30px rgba(76, 175, 80, 0.25);
+    }
+
+    /* Scan line */
+    .scan-line {
+      position: absolute;
+      width: 68px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      animation: scan-sweep 2.2s ease-in-out infinite;
+      border-radius: 1px;
+    }
+
+    .faceid-face-svg {
+      opacity: 0.85;
+    }
+
+    @keyframes ring-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.06); opacity: 0.8; }
+    }
+
+    @keyframes ring-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes scan-sweep {
+      0% { top: 28px; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: calc(100% - 28px); opacity: 0; }
+    }
+
+    @keyframes success-bounce {
+      0% { transform: scale(0.5); opacity: 0; }
+      60% { transform: scale(1.15); }
+      80% { transform: scale(0.95); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes checkmark-draw {
+      from { stroke-dashoffset: 60; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    .auth-tap-label {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .auth-tap-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-security-badges {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .auth-badge {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SCREEN 2 — DASHBOARD
+       ═══════════════════════════════════════════════════════════════════════ */
+    #screen-dashboard {
+      background: var(--surface);
+    }
+
+    #screen-dashboard .status-bar {
+      background: var(--navy);
+      padding-bottom: 12px;
+    }
+
+    .dashboard-header {
+      background: linear-gradient(170deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 0 20px 28px;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .dash-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .dash-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dash-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), #2e7d32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .dash-user-info .name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .dash-user-info .role {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .dash-notif-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .dash-notif-btn .notif-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      border: 2px solid var(--navy-mid);
+    }
+
+    /* Property card */
+    .property-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .property-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .property-details .address {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .property-details .unit {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* Rent amount hero */
+    .rent-hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .rent-amount-wrap .label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .rent-amount-wrap .amount {
+      font-size: 40px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .rent-amount-wrap .amount .cents {
+      font-size: 22px;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+
+    .due-badge {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.4);
+      border-radius: 20px;
+      padding: 8px 14px;
+      text-align: right;
+    }
+
+    .due-badge .due-date {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green-light);
+      line-height: 1.1;
+    }
+
+    .due-badge .due-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .days-remaining-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 159, 64, 0.15);
+      border: 1px solid rgba(255, 159, 64, 0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ff9f40;
+      margin-top: 10px;
+    }
+
+    .days-remaining-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff9f40;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* Dashboard body */
+    .dashboard-body {
+      padding: 20px 20px 0;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+      letter-spacing: -0.3px;
+    }
+
+    /* Payment history */
+    .payment-history-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-item:last-child { border-bottom: none; }
+
+    .history-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .history-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(76, 175, 80, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .history-info .month {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1px;
+    }
+
+    .history-info .method {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .history-right {
+      text-align: right;
+    }
+
+    .history-right .amount {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .paid-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(76, 175, 80, 0.1);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 0.3px;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .quick-action-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .quick-action-card:active {
+      transform: scale(0.97);
+    }
+
+    .quick-action-card .qa-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quick-action-card .qa-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .quick-action-card .qa-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Pay Now CTA */
+    .pay-now-cta {
+      background: linear-gradient(135deg, var(--green) 0%, #388E3C 100%);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+      margin-bottom: 24px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: none;
+      width: 100%;
+    }
+
+    .pay-now-cta:active {
+      transform: scale(0.98);
+      box-shadow: 0 3px 10px rgba(76, 175, 80, 0.35);
+    }
+
+    .cta-left .cta-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .cta-left .cta-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+
+    .cta-arrow {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 8px 0 0;
+      flex-shrink: 0;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 4px 8px;
+      cursor: pointer;
+    }
+
+    .nav-item .nav-icon {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-item .nav-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    .nav-item.active .nav-label { color: var(--green); }
+    .nav-item.active .nav-icon svg { color: var(--green); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SCREEN 3 — PAYMENT
+       ═══════════════════════════════════════════════════════════════════════ */
+    #screen-payment {
+      background: var(--surface);
+    }
+
+    #screen-payment .status-bar {
+      background: var(--card-bg);
+    }
+
+    .payment-nav-bar {
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .payment-nav-bar .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--green);
+    }
+
+    .payment-nav-bar .nav-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .payment-nav-bar .nav-help {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    /* SECURE badge — THE KEY DIFFERENTIATOR */
+    .secure-badge {
+      background: linear-gradient(135deg, var(--navy) 0%, #0d2137 100%);
+      border-radius: var(--radius-md);
+      margin: 16px 20px 0;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.08), 0 4px 12px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .secure-badge::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), var(--green-light), transparent);
+    }
+
+    .secure-badge .shield-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(76, 175, 80, 0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(76, 175, 80, 0.25);
+    }
+
+    .secure-badge .badge-content .badge-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .secure-badge .badge-content .badge-subtitle {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 2px;
+    }
+
+    .secure-badge .badge-pills {
+      margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .sec-pill {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.35);
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--green-light);
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+
+    /* Method selector tabs */
+    .method-tabs {
+      background: var(--card-bg);
+      margin: 16px 20px 0;
+      border-radius: var(--radius-md);
+      padding: 5px;
+      display: flex;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .method-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      background: transparent;
+    }
+
+    .method-tab.active {
+      background: var(--navy);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .method-tab .tab-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .method-tab .tab-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .method-tab.active .tab-label {
+      color: #fff;
+    }
+
+    .method-tab .tab-sub {
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+
+    .method-tab.active .tab-sub {
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Payment form */
+    .payment-form-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin: 14px 20px 0;
+      overflow: hidden;
+    }
+
+    .form-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-section:last-child { border-bottom: none; }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .amount-display {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .amount-display .currency {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .amount-display .value {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+
+    .amount-display .cents {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      opacity: 0.6;
+    }
+
+    .amount-edit-hint {
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Saved card display */
+    .saved-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .card-brand {
+      width: 44px;
+      height: 28px;
+      background: linear-gradient(135deg, #1565C0, #1976D2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-brand .visa-text {
+      font-size: 12px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1px;
+      font-style: italic;
+    }
+
+    .card-info .card-number {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-info .card-exp {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .card-change {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      cursor: pointer;
+    }
+
+    /* Autopay toggle */
+    .autopay-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .autopay-info {
+      flex: 1;
+    }
+
+    .autopay-info .ap-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .autopay-info .ap-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .autopay-info .ap-sub .highlight {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* iOS-style toggle */
+    .toggle {
+      width: 51px;
+      height: 31px;
+      background: #e5e5ea;
+      border-radius: 100px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+      border: none;
+      padding: 0;
+    }
+
+    .toggle.on {
+      background: var(--green);
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 27px;
+      height: 27px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .toggle.on::after {
+      transform: translateX(20px);
+    }
+
+    /* Fee breakdown */
+    .fee-breakdown {
+      padding: 14px 16px;
+      background: var(--surface);
+      margin: 0 20px;
+      border-radius: var(--radius-md);
+      margin-top: 14px;
+    }
+
+    .fee-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+    }
+
+    .fee-row .fee-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .fee-row .fee-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .fee-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 0;
+    }
+
+    .fee-row.total .fee-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .fee-row.total .fee-value {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* Pay button */
+    .pay-button {
+      background: linear-gradient(135deg, var(--green), #2E7D32);
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin: 16px 20px;
+      width: calc(100% - 40px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.45);
+      transition: transform 0.15s, box-shadow 0.15s;
+      flex-shrink: 0;
+    }
+
+    .pay-button:active {
+      transform: scale(0.98);
+      box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    }
+
+    .pay-button .btn-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pay-button .btn-text {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .pay-button .btn-amount {
+      font-size: 17px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .payment-disclaimer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      padding: 0 20px 4px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SCREEN 4 — SUCCESS
+       ═══════════════════════════════════════════════════════════════════════ */
+    #screen-success {
+      background: linear-gradient(170deg, var(--navy) 0%, var(--navy-mid) 40%, #f5f5f7 40%);
+    }
+
+    #screen-success .status-bar { background: transparent; }
+
+    .success-upper {
+      background: linear-gradient(170deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 0 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .success-check-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 16px 0 20px;
+    }
+
+    .success-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(76, 175, 80, 0.3);
+      animation: ring-expand 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .success-ring-2 {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2px solid rgba(76, 175, 80, 0.15);
+      animation: ring-expand 0.8s 0.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+
+    @keyframes ring-expand {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-check-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), #2E7D32);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(76, 175, 80, 0.5);
+      animation: success-bounce 0.6s 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .success-check-circle svg {
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: checkmark-draw 0.4s 0.7s ease forwards;
+    }
+
+    .success-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .success-subtitle {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+    }
+
+    .success-lower {
+      flex: 1;
+      background: var(--surface);
+      padding: 24px 20px 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Confirmation card */
+    .confirm-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .confirm-header {
+      background: rgba(76, 175, 80, 0.06);
+      border-bottom: 1px solid rgba(76, 175, 80, 0.12);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .confirm-header .conf-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .confirm-header .conf-number {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .confirm-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .confirm-row:last-child { border-bottom: none; }
+
+    .confirm-row .cr-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .confirm-row .cr-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .confirm-row .cr-value.large {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .confirm-row .cr-value.green {
+      color: var(--green);
+    }
+
+    /* Autopay confirmed banner */
+    .autopay-banner {
+      background: rgba(76, 175, 80, 0.08);
+      border: 1px solid rgba(76, 175, 80, 0.2);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .autopay-banner .ap-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .autopay-banner .ap-text .ap-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .autopay-banner .ap-text .ap-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Wallet button */
+    .wallet-button {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background 0.15s;
+    }
+
+    .wallet-button:active { background: var(--surface); }
+
+    .wallet-button .wallet-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Back to dashboard button */
+    .back-dashboard-btn {
+      background: var(--navy);
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-bottom: 24px;
+      transition: opacity 0.15s;
+    }
+
+    .back-dashboard-btn:active { opacity: 0.85; }
+
+    .back-dashboard-btn .btn-text {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       LOADING STATE
+       ═══════════════════════════════════════════════════════════════════════ */
+    .pay-loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 32px 20px;
+    }
+
+    .pay-loading.visible { display: flex; }
+
+    .loading-spinner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 4px solid var(--green-dim);
+      border-top-color: var(--green);
+      animation: ring-spin 0.9s linear infinite;
+    }
+
+    .loading-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .loading-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* ─── Utility ─────────────────────────────────────────────────────────── */
+    .w-full { width: 100%; }
+    .flex-col { display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+
+<div class="device">
+  <div class="screen-container">
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SCREEN 1: BIOMETRIC AUTH
+         ════════════════════════════════════════════════════════════════════ -->
+    <div id="screen-auth" class="screen active">
+      <!-- iOS status bar -->
+      <div class="status-bar dark">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <!-- Signal -->
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <rect x="0" y="6" width="3" height="6" rx="0.5" opacity="0.4"/>
+            <rect x="4.5" y="4" width="3" height="8" rx="0.5" opacity="0.6"/>
+            <rect x="9" y="2" width="3" height="10" rx="0.5" opacity="0.8"/>
+            <rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/>
+          </svg>
+          <!-- Wifi -->
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+            <path d="M3.2 6.3a6.8 6.8 0 019.6 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M0.5 3.5a10.5 10.5 0 0115 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="white" stroke-opacity="0.35" fill="none"/>
+            <rect x="2" y="2" width="15" height="8" rx="1.5" fill="white"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="white" fill-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Logo -->
+      <div class="auth-logo">
+        <div class="logo-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <polyline points="9,22 9,12 15,12 15,22" fill="rgba(255,255,255,0.7)"/>
+          </svg>
+        </div>
+        <span class="logo-text">Door<span>Loop</span></span>
+      </div>
+
+      <!-- Center content -->
+      <div class="auth-center">
+        <p class="auth-greeting">Welcome back,<br>Alex.</p>
+        <p class="auth-sub">Authenticate to access your account</p>
+
+        <!-- Face ID interactive ring -->
+        <div class="faceid-wrapper" id="faceIdBtn" onclick="triggerFaceID()">
+          <div class="faceid-ring-outer"></div>
+          <div class="faceid-ring-mid"></div>
+          <div class="faceid-ring-scan"></div>
+          <div class="faceid-inner">
+            <div class="scan-line"></div>
+            <!-- Face outline SVG -->
+            <svg class="faceid-face-svg" width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <!-- Face oval -->
+              <ellipse cx="28" cy="27" rx="16" ry="19" stroke="rgba(76,175,80,0.9)" stroke-width="1.5"/>
+              <!-- Eyes -->
+              <circle cx="21" cy="23" r="2" fill="rgba(76,175,80,0.8)"/>
+              <circle cx="35" cy="23" r="2" fill="rgba(76,175,80,0.8)"/>
+              <!-- Nose bridge hint -->
+              <path d="M28 25 Q26 30 27 33 Q28 34 29 33 Q30 30 28 25" stroke="rgba(76,175,80,0.5)" stroke-width="1" fill="none"/>
+              <!-- Smile -->
+              <path d="M22 36 Q28 41 34 36" stroke="rgba(76,175,80,0.8)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <!-- Corner brackets -->
+              <path d="M8 18 L8 11 L15 11" stroke="rgba(76,175,80,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <path d="M48 18 L48 11 L41 11" stroke="rgba(76,175,80,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <path d="M8 38 L8 45 L15 45" stroke="rgba(76,175,80,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <path d="M48 38 L48 45 L41 45" stroke="rgba(76,175,80,0.6)" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <p class="auth-tap-label">Tap to use Face ID</p>
+        <p class="auth-tap-sub">Or use your passcode</p>
+
+        <div class="auth-security-badges">
+          <span class="auth-badge">256-BIT SSL</span>
+          <span class="auth-badge">BIOMETRIC</span>
+          <span class="auth-badge">SOC 2</span>
+        </div>
+      </div>
+
+      <div class="home-indicator light"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SCREEN 2: DASHBOARD
+         ════════════════════════════════════════════════════════════════════ -->
+    <div id="screen-dashboard" class="screen">
+      <!-- Status bar (dark bg section) -->
+      <div class="status-bar dark" style="background: var(--navy);">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <rect x="0" y="6" width="3" height="6" rx="0.5" opacity="0.4"/>
+            <rect x="4.5" y="4" width="3" height="8" rx="0.5" opacity="0.6"/>
+            <rect x="9" y="2" width="3" height="10" rx="0.5" opacity="0.8"/>
+            <rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+            <path d="M3.2 6.3a6.8 6.8 0 019.6 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M0.5 3.5a10.5 10.5 0 0115 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="white" stroke-opacity="0.35" fill="none"/>
+            <rect x="2" y="2" width="15" height="8" rx="1.5" fill="white"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="white" fill-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="scroll-area">
+        <!-- Dark header section -->
+        <div class="dashboard-header">
+          <div class="dash-header-top">
+            <div class="dash-user">
+              <div class="dash-avatar">AJ</div>
+              <div class="dash-user-info">
+                <div class="name">Alex Johnson</div>
+                <div class="role">Tenant · Unit 4B</div>
+              </div>
+            </div>
+            <div class="dash-notif-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+              </svg>
+              <div class="notif-dot"></div>
+            </div>
+          </div>
+
+          <!-- Property card -->
+          <div class="property-card">
+            <div class="property-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(76,175,80,0.9)" stroke-width="2" stroke-linecap="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                <polyline points="9,22 9,12 15,12 15,22"/>
+              </svg>
+            </div>
+            <div class="property-details">
+              <div class="address">2847 Maple Street</div>
+              <div class="unit">San Francisco, CA 94102 · Unit 4B</div>
+            </div>
+          </div>
+
+          <!-- Rent hero -->
+          <div class="rent-hero">
+            <div class="rent-amount-wrap">
+              <div class="label">Monthly Rent</div>
+              <div class="amount">$1,850<span class="cents">.00</span></div>
+              <div class="days-remaining-pill">9 days remaining</div>
+            </div>
+            <div class="due-badge">
+              <div class="due-date">Mar 1</div>
+              <div class="due-label">Due date</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body content -->
+        <div class="dashboard-body">
+
+          <!-- Pay Now CTA -->
+          <div style="padding-top: 4px; margin-bottom: 20px;">
+            <button class="pay-now-cta" onclick="navigateTo('payment')">
+              <div class="cta-left">
+                <div class="cta-label">Pay Rent — $1,850.00</div>
+                <div class="cta-sub">Secure · In-app · Instant confirmation</div>
+              </div>
+              <div class="cta-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- Payment History -->
+          <div class="section-title">Payment History</div>
+          <div class="payment-history-card">
+            <!-- Feb -->
+            <div class="history-item">
+              <div class="history-left">
+                <div class="history-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  </svg>
+                </div>
+                <div class="history-info">
+                  <div class="month">February 2026</div>
+                  <div class="method">Visa ···· 4242 · Feb 1</div>
+                </div>
+              </div>
+              <div class="history-right">
+                <div class="amount">$1,850.00</div>
+                <span class="paid-badge">
+                  <svg width="9" height="9" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#4CAF50"/><path d="M3.5 6l1.8 1.8 3.2-3.2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                  PAID
+                </span>
+              </div>
+            </div>
+            <!-- Jan -->
+            <div class="history-item">
+              <div class="history-left">
+                <div class="history-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  </svg>
+                </div>
+                <div class="history-info">
+                  <div class="month">January 2026</div>
+                  <div class="method">ACH · Chase ···· 8901 · Jan 1</div>
+                </div>
+              </div>
+              <div class="history-right">
+                <div class="amount">$1,850.00</div>
+                <span class="paid-badge">
+                  <svg width="9" height="9" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#4CAF50"/><path d="M3.5 6l1.8 1.8 3.2-3.2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                  PAID
+                </span>
+              </div>
+            </div>
+            <!-- Dec -->
+            <div class="history-item">
+              <div class="history-left">
+                <div class="history-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  </svg>
+                </div>
+                <div class="history-info">
+                  <div class="month">December 2025</div>
+                  <div class="method">Visa ···· 4242 · Dec 1</div>
+                </div>
+              </div>
+              <div class="history-right">
+                <div class="amount">$1,850.00</div>
+                <span class="paid-badge">
+                  <svg width="9" height="9" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="#4CAF50"/><path d="M3.5 6l1.8 1.8 3.2-3.2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                  PAID
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="section-title">Quick Actions</div>
+          <div class="quick-actions">
+            <div class="quick-action-card">
+              <div class="qa-icon" style="background: rgba(76,175,80,0.1);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+              </div>
+              <div class="qa-label">Schedule Payment</div>
+              <div class="qa-sub">Auto-pay on Mar 1</div>
+            </div>
+            <div class="quick-action-card">
+              <div class="qa-icon" style="background: rgba(26,26,46,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <div class="qa-label">Lease Documents</div>
+              <div class="qa-sub">2 docs available</div>
+            </div>
+            <div class="quick-action-card">
+              <div class="qa-icon" style="background: rgba(255,159,64,0.1);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff9f40" stroke-width="2" stroke-linecap="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div class="qa-label">Maintenance</div>
+              <div class="qa-sub">Submit a request</div>
+            </div>
+            <div class="quick-action-card">
+              <div class="qa-icon" style="background: rgba(63,81,181,0.08);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f51b5" stroke-width="2" stroke-linecap="round">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+                </svg>
+              </div>
+              <div class="qa-label">Message Manager</div>
+              <div class="qa-sub">1 unread</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom nav -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <div class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            </svg>
+          </div>
+          <span class="nav-label" style="color: #4CAF50;">Home</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aeaeb2" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+          <span class="nav-label">Payments</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aeaeb2" stroke-width="2" stroke-linecap="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <span class="nav-label">Requests</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aeaeb2" stroke-width="2" stroke-linecap="round">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SCREEN 3: PAYMENT
+         ════════════════════════════════════════════════════════════════════ -->
+    <div id="screen-payment" class="screen">
+      <div class="status-bar light">
+        <span class="time" style="color: var(--text-primary);">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <rect x="0" y="6" width="3" height="6" rx="0.5" opacity="0.4" fill="#1a1a1a"/>
+            <rect x="4.5" y="4" width="3" height="8" rx="0.5" opacity="0.6" fill="#1a1a1a"/>
+            <rect x="9" y="2" width="3" height="10" rx="0.5" opacity="0.8" fill="#1a1a1a"/>
+            <rect x="13.5" y="0" width="2.5" height="12" rx="0.5" fill="#1a1a1a"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" fill="#1a1a1a"/>
+            <path d="M3.2 6.3a6.8 6.8 0 019.6 0" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M0.5 3.5a10.5 10.5 0 0115 0" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="#1a1a1a" stroke-opacity="0.35" fill="none"/>
+            <rect x="2" y="2" width="15" height="8" rx="1.5" fill="#1a1a1a"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="#1a1a1a" fill-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Nav bar -->
+      <div class="payment-nav-bar">
+        <div class="nav-back" onclick="navigateTo('dashboard')">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round">
+            <path d="M9 1L1 8.5 9 16"/>
+          </svg>
+          Dashboard
+        </div>
+        <div class="nav-title">Pay Rent</div>
+        <div class="nav-help">?</div>
+      </div>
+
+      <div class="scroll-area" id="paymentScrollArea">
+
+        <!-- SECURE BADGE — KEY DIFFERENTIATOR -->
+        <div class="secure-badge">
+          <div class="shield-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4" stroke="#4CAF50" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="badge-content">
+            <div class="badge-title">Secure · In-App · No Redirect</div>
+            <div class="badge-subtitle">Payment processed entirely in-app.<br>No browser switch. No session loss.</div>
+          </div>
+          <div class="badge-pills">
+            <span class="sec-pill">256-BIT SSL</span>
+            <span class="sec-pill">PCI DSS</span>
+          </div>
+        </div>
+
+        <!-- Payment method tabs -->
+        <div class="method-tabs">
+          <button class="method-tab active" id="tab-card" onclick="selectTab('card')">
+            <div class="tab-icon">💳</div>
+            <div class="tab-label">Card</div>
+            <div class="tab-sub">Visa, MC, Amex</div>
+          </button>
+          <button class="method-tab" id="tab-ach" onclick="selectTab('ach')">
+            <div class="tab-icon">🏦</div>
+            <div class="tab-label">Bank / ACH</div>
+            <div class="tab-sub">Free transfer</div>
+          </button>
+          <button class="method-tab" id="tab-wallet" onclick="selectTab('wallet')">
+            <div class="tab-icon" style="font-size:14px;">Apple<br>Pay</div>
+            <div class="tab-label">Wallet</div>
+            <div class="tab-sub">Touch ID</div>
+          </button>
+        </div>
+
+        <!-- Payment form -->
+        <div class="payment-form-card">
+          <!-- Amount -->
+          <div class="form-section">
+            <div class="form-label">Amount Due</div>
+            <div class="amount-display">
+              <span class="currency">$</span>
+              <span class="value">1,850</span>
+              <span class="cents">.00</span>
+            </div>
+            <div class="amount-edit-hint">March 2026 Rent · Tap to adjust</div>
+          </div>
+
+          <!-- Saved card -->
+          <div class="form-section" id="cardSection">
+            <div class="form-label">Payment Method</div>
+            <div class="saved-card">
+              <div class="card-brand">
+                <span class="visa-text">VISA</span>
+              </div>
+              <div class="card-info">
+                <div class="card-number">···· ···· ···· 4242</div>
+                <div class="card-exp">Expires 09/28 · Sarah J.</div>
+              </div>
+              <div class="card-change">Change</div>
+            </div>
+          </div>
+
+          <!-- Autopay toggle -->
+          <div class="autopay-row">
+            <div class="autopay-info">
+              <div class="ap-title">Enable Autopay</div>
+              <div class="ap-sub">
+                Automatically pay on the 1st each month.<br>
+                <span class="highlight">Prevents duplicate payments.</span>
+              </div>
+            </div>
+            <button class="toggle on" id="autopayToggle" onclick="toggleAutopay()"></button>
+          </div>
+        </div>
+
+        <!-- Fee breakdown -->
+        <div class="fee-breakdown">
+          <div class="fee-row">
+            <span class="fee-label">March Rent</span>
+            <span class="fee-value">$1,850.00</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Processing fee (ACH: free)</span>
+            <span class="fee-value" style="color: var(--green);">$0.00</span>
+          </div>
+          <div class="fee-divider"></div>
+          <div class="fee-row total">
+            <span class="fee-label">Total charged</span>
+            <span class="fee-value">$1,850.00</span>
+          </div>
+        </div>
+
+        <!-- Processing state (hidden by default) -->
+        <div class="pay-loading" id="payLoading">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Processing payment...</div>
+          <div class="loading-sub">Securely processing your payment.<br>Please do not close the app.</div>
+        </div>
+
+        <!-- Pay button -->
+        <button class="pay-button" id="payButton" onclick="processPayment()">
+          <div class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4"/>
+            </svg>
+          </div>
+          <span class="btn-text">Pay Now</span>
+          <span class="btn-amount">$1,850.00</span>
+        </button>
+
+        <p class="payment-disclaimer">
+          Payments are processed securely in-app via Stripe.<br>
+          No redirects. Your session stays active.
+        </p>
+
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SCREEN 4: SUCCESS
+         ════════════════════════════════════════════════════════════════════ -->
+    <div id="screen-success" class="screen">
+      <!-- Status bar -->
+      <div class="status-bar dark" style="background: transparent;">
+        <span class="time">9:41</span>
+        <div class="icons">
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <rect x="0" y="6" width="3" height="6" rx="0.5" opacity="0.4"/>
+            <rect x="4.5" y="4" width="3" height="8" rx="0.5" opacity="0.6"/>
+            <rect x="9" y="2" width="3" height="10" rx="0.5" opacity="0.8"/>
+            <rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+            <path d="M3.2 6.3a6.8 6.8 0 019.6 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M0.5 3.5a10.5 10.5 0 0115 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="white" stroke-opacity="0.35" fill="none"/>
+            <rect x="2" y="2" width="15" height="8" rx="1.5" fill="white"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="white" fill-opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Upper dark section -->
+      <div class="success-upper">
+        <!-- Animated checkmark -->
+        <div class="success-check-wrapper">
+          <div class="success-ring"></div>
+          <div class="success-ring-2"></div>
+          <div class="success-check-circle">
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+              <path d="M12 22l7 7 13-14" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" stroke-dashoffset="60" id="checkPath"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="success-title">Payment Confirmed</div>
+        <div class="success-subtitle">Your March rent has been paid</div>
+      </div>
+
+      <!-- Lower light section -->
+      <div class="success-lower">
+        <div class="scroll-area">
+
+          <!-- Confirmation card -->
+          <div class="confirm-card">
+            <div class="confirm-header">
+              <span class="conf-label">Confirmation</span>
+              <span class="conf-number">DL-2026-0394827</span>
+            </div>
+            <div class="confirm-row">
+              <span class="cr-label">Amount paid</span>
+              <span class="cr-value large">$1,850.00</span>
+            </div>
+            <div class="confirm-row">
+              <span class="cr-label">Payment method</span>
+              <span class="cr-value">Visa ···· 4242</span>
+            </div>
+            <div class="confirm-row">
+              <span class="cr-label">Date &amp; time</span>
+              <span class="cr-value">Feb 20, 2026 · 9:41 AM</span>
+            </div>
+            <div class="confirm-row">
+              <span class="cr-label">Property</span>
+              <span class="cr-value">2847 Maple St · Unit 4B</span>
+            </div>
+            <div class="confirm-row">
+              <span class="cr-label">Status</span>
+              <span class="cr-value green">Confirmed — no redirect</span>
+            </div>
+          </div>
+
+          <!-- Autopay confirmed -->
+          <div class="autopay-banner">
+            <div class="ap-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+                <path d="M20 12V22H4V12"/>
+                <path d="M22 7H2v5h20V7z"/>
+                <path d="M12 22V7"/>
+                <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+                <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+              </svg>
+            </div>
+            <div class="ap-text">
+              <div class="ap-title">Autopay Activated</div>
+              <div class="ap-sub">Next payment: March 1, 2026. No duplicate risk — single payment guarantee.</div>
+            </div>
+          </div>
+
+          <!-- Add to Wallet -->
+          <button class="wallet-button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="5" width="20" height="14" rx="2" stroke="#1a1a1a" stroke-width="1.5"/>
+              <path d="M2 10h20" stroke="#1a1a1a" stroke-width="1.5"/>
+              <path d="M15 15h3" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span class="wallet-text">Add Receipt to Apple Wallet</span>
+          </button>
+
+          <!-- Back to dashboard -->
+          <button class="back-dashboard-btn" onclick="navigateTo('dashboard')">
+            <span class="btn-text">Back to Dashboard</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+
+      <div class="home-indicator"></div>
+    </div>
+
+  </div><!-- /screen-container -->
+</div><!-- /device -->
+
+<script>
+  // ─── State ──────────────────────────────────────────────────────────────
+  let currentScreen = 'auth';
+  let autopayEnabled = true;
+
+  // ─── Navigation ─────────────────────────────────────────────────────────
+  function navigateTo(screenId) {
+    const current = document.getElementById('screen-' + currentScreen);
+    const next = document.getElementById('screen-' + screenId);
+    if (!current || !next || currentScreen === screenId) return;
+
+    current.classList.add('exit-left');
+    current.classList.remove('active');
+
+    next.style.transform = 'translateX(30px)';
+    next.style.opacity = '0';
+
+    // Trigger reflow for clean animation start
+    next.offsetHeight;
+
+    next.classList.add('active');
+
+    setTimeout(() => {
+      current.classList.remove('exit-left');
+    }, 380);
+
+    // Animate check on success screen
+    if (screenId === 'success') {
+      setTimeout(() => {
+        const checkPath = document.getElementById('checkPath');
+        if (checkPath) {
+          checkPath.style.strokeDashoffset = '0';
+          checkPath.style.transition = 'stroke-dashoffset 0.45s 0.65s ease forwards';
+        }
+      }, 50);
+    }
+
+    currentScreen = screenId;
+  }
+
+  // ─── Face ID ─────────────────────────────────────────────────────────────
+  function triggerFaceID() {
+    const btn = document.getElementById('faceIdBtn');
+    const inner = btn.querySelector('.faceid-inner');
+
+    // Flash green glow
+    inner.style.background = 'rgba(76, 175, 80, 0.3)';
+    inner.style.boxShadow = '0 0 40px rgba(76, 175, 80, 0.5)';
+
+    setTimeout(() => {
+      inner.style.background = '';
+      inner.style.boxShadow = '';
+    }, 400);
+
+    setTimeout(() => {
+      navigateTo('dashboard');
+    }, 700);
+  }
+
+  // ─── Payment tab selector ────────────────────────────────────────────────
+  function selectTab(tabId) {
+    document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+
+    // Update fee display for ACH (free)
+    const feeValue = document.querySelector('.fee-row:nth-child(2) .fee-value');
+    if (tabId === 'ach') {
+      if (feeValue) feeValue.textContent = '$0.00';
+    } else if (tabId === 'card') {
+      if (feeValue) feeValue.textContent = '$0.00';
+    } else if (tabId === 'wallet') {
+      if (feeValue) feeValue.textContent = '$0.00';
+    }
+  }
+
+  // ─── Autopay toggle ──────────────────────────────────────────────────────
+  function toggleAutopay() {
+    autopayEnabled = !autopayEnabled;
+    const toggle = document.getElementById('autopayToggle');
+    toggle.classList.toggle('on', autopayEnabled);
+  }
+
+  // ─── Process Payment ─────────────────────────────────────────────────────
+  function processPayment() {
+    const payBtn = document.getElementById('payButton');
+    const payLoading = document.getElementById('payLoading');
+    const disclaimer = document.querySelector('.payment-disclaimer');
+
+    // Hide button, show loader
+    payBtn.style.display = 'none';
+    if (disclaimer) disclaimer.style.display = 'none';
+    payLoading.classList.add('visible');
+
+    // Simulate in-app processing (no redirect!)
+    setTimeout(() => {
+      payLoading.classList.remove('visible');
+      payBtn.style.display = 'flex';
+      if (disclaimer) disclaimer.style.display = '';
+      navigateTo('success');
+    }, 2200);
+  }
+
+  // ─── Auto-start Face ID ring on load ────────────────────────────────────
+  // The CSS animations handle the continuous ring motion automatically.
+  // Add subtle auto-tap hint after 2s
+  setTimeout(() => {
+    const tapLabel = document.querySelector('.auth-tap-label');
+    if (tapLabel && currentScreen === 'auth') {
+      tapLabel.style.opacity = '0.6';
+      setTimeout(() => { tapLabel.style.opacity = '1'; }, 600);
+    }
+  }, 2000);
+</script>
+
+</body>
+</html>

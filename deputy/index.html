@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deputy Mobile Reliability — Engineering Analysis | Elinext</title>
+  <style>
+    :root {
+      --deputy-orange: #FF5A35;
+      --deputy-orange-dark: #E04A28;
+      --deputy-orange-dim: rgba(255, 90, 53, 0.15);
+      --deputy-orange-border: rgba(255, 90, 53, 0.35);
+      --navy: #1A1A2E;
+      --navy-card: #22223A;
+      --navy-border: #2E2E4A;
+      --navy-surface: #2A2A44;
+      --text-primary: #F2F2F8;
+      --text-secondary: #9090B0;
+      --text-muted: #60607A;
+      --red: #EF4444;
+      --red-bg: rgba(239, 68, 68, 0.12);
+      --red-border: rgba(239, 68, 68, 0.3);
+      --green: #22C55E;
+      --green-bg: rgba(34, 197, 94, 0.12);
+      --green-border: rgba(34, 197, 94, 0.3);
+      --amber: #F59E0B;
+      --amber-bg: #FFFBEB;
+      --amber-border: #FDE68A;
+      --amber-text: #92400E;
+      --white: #FFFFFF;
+      --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--navy);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ========================
+       NAV
+    ======================== */
+    .nav {
+      background: var(--navy-card);
+      border-bottom: 1px solid var(--navy-border);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+    .nav-logo .mark {
+      width: 30px; height: 30px;
+      background: var(--deputy-orange);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: white;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-badge {
+      font-size: 11px;
+      background: var(--navy-surface);
+      border: 1px solid var(--navy-border);
+      padding: 3px 12px;
+      border-radius: 20px;
+      color: var(--text-secondary);
+    }
+    .nav-cta {
+      font-size: 12px;
+      background: var(--deputy-orange);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ========================
+       HERO
+    ======================== */
+    .hero {
+      background: linear-gradient(135deg, #0E0E20 0%, #1A1A2E 50%, #1E1830 100%);
+      border-bottom: 1px solid var(--navy-border);
+      padding: 64px 40px 56px;
+      text-align: center;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--deputy-orange);
+      background: var(--deputy-orange-dim);
+      border: 1px solid var(--deputy-orange-border);
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .hero h1 span { color: var(--deputy-orange); }
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 36px;
+      line-height: 1.55;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .val {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--deputy-orange);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat .label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-divider { width: 1px; background: var(--navy-border); }
+
+    /* ========================
+       EVIDENCE BANNER
+    ======================== */
+    .evidence-banner {
+      max-width: 800px;
+      margin: 40px auto 0;
+      padding: 0 24px;
+    }
+    .evidence-banner-inner {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid var(--amber);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .evidence-banner-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+    .evidence-banner blockquote {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--amber-text);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .evidence-banner cite {
+      font-size: 11px;
+      color: #B45309;
+      font-style: normal;
+      font-weight: 600;
+    }
+    .evidence-banner cite a {
+      color: #B45309;
+      text-decoration: underline;
+    }
+
+    /* ========================
+       SECTION WRAPPER
+    ======================== */
+    .section-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px 24px 0;
+    }
+    .section-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .section-eyebrow.before { color: var(--red); }
+    .section-eyebrow.after { color: var(--green); }
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      letter-spacing: -0.3px;
+    }
+
+    /* ========================
+       BEFORE/AFTER CARD
+    ======================== */
+    .ba-card {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .ba-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .ba-col {
+      padding: 28px 24px;
+    }
+    .ba-col.before-col { border-right: 1px solid var(--navy-border); }
+    .ba-label {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 5px;
+      padding: 3px 10px;
+      margin-bottom: 20px;
+    }
+    .before-label {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid var(--red-border);
+    }
+    .after-label {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+
+    /* ========================
+       ANDROID PHONE MOCKUP
+    ======================== */
+    .android-phone {
+      width: 200px;
+      margin: 0 auto 20px;
+      background: #0A0A12;
+      border: 2px solid #3A3A50;
+      border-radius: 24px;
+      padding: 10px 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .android-camera {
+      width: 8px; height: 8px;
+      background: #2A2A3A;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      border: 1px solid #3A3A50;
+    }
+    .android-screen {
+      background: #FFFFFF;
+      border-radius: 14px;
+      overflow: hidden;
+      min-height: 300px;
+    }
+
+    /* iPhone Mockup */
+    .iphone {
+      width: 200px;
+      margin: 0 auto 20px;
+      background: #0A0A12;
+      border: 2px solid #3A3A50;
+      border-radius: 28px;
+      padding: 10px 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+    .iphone-notch {
+      width: 50px; height: 8px;
+      background: #0A0A12;
+      border-radius: 0 0 6px 6px;
+      margin: 0 auto 8px;
+      border: 1px solid #2A2A3A;
+    }
+    .iphone-screen {
+      background: #FFFFFF;
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 300px;
+    }
+
+    /* ========================
+       ANDROID TIME CLOCK — BEFORE
+    ======================== */
+    .atc-before {
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+      background: #F5F5F5;
+    }
+    .atc-status-bar {
+      background: #CC3300;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .atc-status-bar .dot { width: 5px; height: 5px; background: white; border-radius: 50%; opacity: 0.9; }
+    .atc-status-bar .msg { font-size: 7px; color: white; font-weight: 700; flex: 1; }
+    .atc-status-bar .time-txt { font-size: 6px; color: rgba(255,255,255,0.8); }
+    .atc-header {
+      background: #1A1A1A;
+      padding: 10px 10px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .atc-logo {
+      width: 18px; height: 18px;
+      background: #FF5A35;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 900; color: white;
+    }
+    .atc-app-name { font-size: 9px; font-weight: 700; color: white; }
+    .atc-body { flex: 1; padding: 8px; }
+    .atc-worker-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .atc-avatar {
+      width: 22px; height: 22px;
+      background: #E5E5E5;
+      border-radius: 50%;
+      border: 1px solid #CCC;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; color: #666; font-weight: 700;
+    }
+    .atc-worker-info { flex: 1; }
+    .atc-worker-name { font-size: 8px; font-weight: 700; color: #1A1A1A; }
+    .atc-location { font-size: 6.5px; color: #888; }
+    .atc-shift-card {
+      background: white;
+      border: 1px solid #E0E0E0;
+      border-radius: 6px;
+      padding: 7px 8px;
+      margin-bottom: 8px;
+    }
+    .atc-shift-label { font-size: 6px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .atc-shift-time { font-size: 10px; font-weight: 700; color: #1A1A1A; }
+    .atc-shift-role { font-size: 6.5px; color: #666; margin-top: 1px; }
+    .atc-btn-disabled {
+      background: #E0E0E0;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+      margin-bottom: 7px;
+    }
+    .atc-btn-disabled span { font-size: 9px; font-weight: 700; color: #AAAAAA; }
+    .atc-error-badge {
+      background: #FEE2E2;
+      border: 1px solid #FCA5A5;
+      border-radius: 5px;
+      padding: 5px 7px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .atc-error-dot { width: 6px; height: 6px; background: #EF4444; border-radius: 50%; flex-shrink: 0; }
+    .atc-error-txt { font-size: 7px; color: #DC2626; font-weight: 600; }
+
+    /* ========================
+       ANDROID TIME CLOCK — AFTER
+    ======================== */
+    .atc-after {
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+      background: #F5F5F5;
+    }
+    .atc-success-bar {
+      background: #16A34A;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .atc-success-bar .check { font-size: 7px; color: white; }
+    .atc-success-bar .msg { font-size: 7px; color: white; font-weight: 700; flex: 1; }
+    .atc-btn-active {
+      background: #FF5A35;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+      margin-bottom: 7px;
+    }
+    .atc-btn-active span { font-size: 9px; font-weight: 700; color: white; }
+    .atc-sync-badge {
+      background: #F0FDF4;
+      border: 1px solid #86EFAC;
+      border-radius: 5px;
+      padding: 5px 7px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+    .atc-sync-icon { font-size: 8px; }
+    .atc-sync-txt { font-size: 6.5px; color: #15803D; font-weight: 600; }
+    .atc-saved-badge {
+      background: #ECFDF5;
+      border: 1px solid #6EE7B7;
+      border-radius: 5px;
+      padding: 5px 7px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .atc-saved-dot { width: 6px; height: 6px; background: #22C55E; border-radius: 50%; flex-shrink: 0; }
+    .atc-saved-txt { font-size: 7px; color: #15803D; font-weight: 600; }
+
+    /* ========================
+       iPHONE — AUTO CLOCK-OUT BEFORE
+    ======================== */
+    .ios-before {
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+      background: #1C1C1E;
+    }
+    .ios-status {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 10px;
+    }
+    .ios-status span { font-size: 6.5px; color: rgba(255,255,255,0.7); font-weight: 600; }
+    .ios-notif-banner {
+      background: #2C2C2E;
+      border-radius: 12px;
+      margin: 6px 6px 0;
+      padding: 8px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+    .ios-notif-icon {
+      width: 22px; height: 22px;
+      background: #FF5A35;
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 900; color: white;
+    }
+    .ios-notif-content { flex: 1; }
+    .ios-notif-app { font-size: 6px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .ios-notif-title { font-size: 8px; font-weight: 700; color: white; margin-bottom: 1px; }
+    .ios-notif-body { font-size: 7px; color: rgba(255,255,255,0.7); line-height: 1.4; }
+    .ios-notif-time { font-size: 6px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .ios-timeline {
+      margin: 10px 8px 0;
+      background: #2C2C2E;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .ios-tl-label { font-size: 6.5px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .ios-tl-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+    .ios-tl-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tl-green { background: #22C55E; }
+    .tl-red { background: #EF4444; }
+    .tl-line {
+      width: 1px; height: 12px;
+      background: #3A3A3C;
+      margin-left: 3px;
+      margin-bottom: 2px;
+    }
+    .ios-tl-time { font-size: 7px; font-weight: 700; color: white; }
+    .ios-tl-desc { font-size: 6.5px; color: rgba(255,255,255,0.6); }
+    .ios-tl-badge {
+      margin-left: auto;
+      font-size: 6px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .badge-red { background: rgba(239,68,68,0.2); color: #F87171; }
+    .ios-warning-bar {
+      margin: 8px 8px 0;
+      background: #3A1515;
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+    .ios-warning-txt { font-size: 6.5px; color: #F87171; font-weight: 600; }
+
+    /* ========================
+       iPHONE — SESSION STABLE AFTER
+    ======================== */
+    .ios-after {
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+      background: #1C1C1E;
+    }
+    .ios-active-bar {
+      background: #166534;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ios-active-dot { width: 6px; height: 6px; background: #4ADE80; border-radius: 50%; }
+    .ios-active-txt { font-size: 7px; color: white; font-weight: 700; }
+    .ios-clockin-card {
+      margin: 8px 8px 0;
+      background: #2C2C2E;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .ios-ci-label { font-size: 6.5px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .ios-ci-time { font-size: 16px; font-weight: 800; color: #4ADE80; margin-bottom: 2px; }
+    .ios-ci-since { font-size: 6.5px; color: rgba(255,255,255,0.5); }
+    .ios-bg-badge {
+      margin: 6px 8px 0;
+      background: #1A2C1F;
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 6px;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .ios-bg-icon { font-size: 9px; }
+    .ios-bg-txt { font-size: 6.5px; color: #4ADE80; font-weight: 600; }
+    .ios-tl-after {
+      margin: 6px 8px 0;
+      background: #2C2C2E;
+      border-radius: 8px;
+      padding: 7px 10px;
+    }
+    .ios-tl-row-after {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+    .ios-stable-badge {
+      margin: 6px 8px 0;
+      background: #1A2C1F;
+      border: 1px solid rgba(74,222,128,0.4);
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+    .ios-stable-txt { font-size: 7px; color: #4ADE80; font-weight: 700; text-align: center; }
+
+    /* ========================
+       EVIDENCE BLOCK
+    ======================== */
+    .evidence-block {
+      background: var(--navy-surface);
+      border-top: 1px solid var(--navy-border);
+      padding: 20px 24px;
+    }
+    .evidence-block-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .evidence-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .evidence-icon {
+      width: 18px; height: 18px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .evidence-icon.amber { background: rgba(245,158,11,0.15); }
+    .evidence-icon.blue { background: rgba(59,130,246,0.15); }
+    .evidence-icon.red { background: var(--red-bg); }
+    .evidence-item p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .evidence-item p strong { color: var(--text-primary); }
+    .evidence-item a {
+      color: var(--deputy-orange);
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .impact-row {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid var(--red-border);
+      border-radius: 7px;
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .impact-label { font-size: 10px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .impact-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* TECH NOTE */
+    .tech-note {
+      background: var(--navy-surface);
+      border-top: 1px solid var(--navy-border);
+      padding: 20px 24px;
+    }
+    .tech-note-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 14px;
+    }
+    .tech-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      align-items: flex-start;
+    }
+    .tech-item .bullet {
+      width: 5px; height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .tech-item p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-family: var(--font-mono);
+    }
+    .tech-item p strong { color: var(--text-primary); font-family: inherit; }
+
+    /* ========================
+       AI IMPACT SECTION
+    ======================== */
+    .ai-section {
+      background: linear-gradient(135deg, #0E0E20 0%, #1A1A2E 100%);
+      border-top: 1px solid var(--navy-border);
+      border-bottom: 1px solid var(--navy-border);
+      padding: 56px 24px;
+      margin-top: 48px;
+    }
+    .ai-inner { max-width: 800px; margin: 0 auto; }
+    .ai-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--deputy-orange);
+      margin-bottom: 8px;
+    }
+    .ai-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+      letter-spacing: -0.3px;
+    }
+    .ai-diagram {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: center;
+    }
+    .ai-side {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 24px 20px;
+    }
+    .ai-side-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .ai-side-label.bad { color: var(--red); }
+    .ai-side-label.good { color: var(--green); }
+    .ai-data-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .ai-data-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+    .ai-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 20px;
+    }
+    .ai-db-box {
+      margin-top: 16px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+      border: 1px solid;
+    }
+    .ai-db-box.bad {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+    }
+    .ai-db-box.good {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+    }
+    .ai-db-name {
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .ai-db-name.bad { color: var(--red); }
+    .ai-db-name.good { color: var(--green); }
+    .ai-db-sub { font-size: 10px; color: var(--text-muted); }
+    .ai-db-icon { font-size: 18px; margin-bottom: 4px; }
+    .ai-quote-box {
+      margin-top: 32px;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-left: 3px solid var(--deputy-orange);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .ai-quote-text {
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .ai-quote-source {
+      font-size: 11px;
+      color: var(--deputy-orange);
+      font-weight: 600;
+    }
+
+    /* ========================
+       SCOPE / CTA SECTION
+    ======================== */
+    .scope-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+    .scope-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--deputy-orange);
+      margin-bottom: 8px;
+    }
+    .scope-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+      letter-spacing: -0.3px;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .tl-card {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 22px 20px;
+    }
+    .tl-card-month {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--deputy-orange);
+      margin-bottom: 6px;
+    }
+    .tl-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .tl-card-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .tl-bullet {
+      width: 4px; height: 4px;
+      background: var(--deputy-orange);
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .tech-stack-card {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .tech-stack-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .tech-stack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .tech-platform-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .tech-platform-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      font-family: var(--font-mono);
+      line-height: 1.4;
+    }
+    .tp-bullet {
+      width: 4px; height: 4px;
+      background: var(--navy-border);
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .no-change-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--navy-border);
+    }
+    .cta-card {
+      background: linear-gradient(135deg, #1A0E0A 0%, #1A1A2E 100%);
+      border: 1px solid var(--deputy-orange-border);
+      border-radius: 14px;
+      padding: 32px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .cta-left h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .cta-left p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 420px;
+      line-height: 1.5;
+    }
+    .cta-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 200px;
+    }
+    .cta-contact-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .cta-contact-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .cta-email {
+      display: inline-block;
+      background: var(--deputy-orange);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .cta-tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ========================
+       FOOTER
+    ======================== */
+    footer {
+      background: var(--navy-card);
+      border-top: 1px solid var(--navy-border);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .footer-mark {
+      width: 24px; height: 24px;
+      background: var(--deputy-orange);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: white;
+    }
+    .footer-right {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .footer-right a {
+      color: var(--deputy-orange);
+      text-decoration: none;
+    }
+
+    /* ========================
+       RESPONSIVE
+    ======================== */
+    @media (max-width: 640px) {
+      .nav { padding: 12px 16px; }
+      .nav-cta { display: none; }
+      .hero { padding: 48px 20px 40px; }
+      .hero h1 { font-size: 28px; }
+      .hero-divider { display: none; }
+      .hero-meta { gap: 24px; }
+      .evidence-banner { padding: 0 16px; }
+      .section-wrap { padding: 40px 16px 0; }
+      .ba-grid { grid-template-columns: 1fr; }
+      .ba-col.before-col { border-right: none; border-bottom: 1px solid var(--navy-border); }
+      .ai-diagram { grid-template-columns: 1fr; }
+      .ai-arrow { display: none; }
+      .timeline-grid { grid-template-columns: 1fr; }
+      .tech-stack-grid { grid-template-columns: 1fr; }
+      .cta-card { flex-direction: column; }
+      footer { padding: 20px 16px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========================
+     NAV
+======================== -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="mark">D</div>
+    Deputy Mobile — Engineering Analysis
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge">Prepared for Engineering Leadership, CTO</span>
+    elinext.com/contacts/
+  </div>
+</nav>
+
+<!-- ========================
+     HERO
+======================== -->
+<section class="hero">
+  <div class="hero-pill">Mobile Engineering Analysis</div>
+  <h1>Deputy's <span>Time Clock Reliability</span><br>Has Two Fixable Gaps</h1>
+  <p class="hero-sub">
+    Android offline failures and iOS spontaneous clock-outs are producing corrupted shift records —
+    directly degrading the 20B+ record dataset that Deputy AI trains on.
+  </p>
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <div class="val">380K+</div>
+      <div class="label">Workplaces affected</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="val">2</div>
+      <div class="label">Root causes identified</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="val">90</div>
+      <div class="label">Day fix estimate</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="val">0</div>
+      <div class="label">Backend changes required</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================
+     EVIDENCE BANNER
+======================== -->
+<div class="evidence-banner" style="margin-top: 40px;">
+  <div class="evidence-banner-inner">
+    <div class="evidence-banner-label">Deputy's own documentation confirms the constraint</div>
+    <blockquote>
+      "The Time Clock does not support offline mode, so a constant internet connection is required
+      to use the Time Clock."
+    </blockquote>
+    <cite>
+      — Deputy Help Center, Android Time Clock FAQs &nbsp;·&nbsp;
+      <a href="https://support.deputy.com/hc/en-au/articles/360057413752-Android-Time-Clock-FAQs" target="_blank">
+        support.deputy.com &rarr;
+      </a>
+    </cite>
+  </div>
+</div>
+
+<!-- ========================
+     SECTION 1: BEFORE — Android Offline
+======================== -->
+<div class="section-wrap">
+  <div class="section-eyebrow before">Issue 01 — Android Time Clock</div>
+  <h2 class="section-title">Clock-in drops without WiFi</h2>
+
+  <div class="ba-card">
+    <div class="ba-grid">
+
+      <!-- BEFORE -->
+      <div class="ba-col before-col">
+        <span class="ba-label before-label">Before</span>
+        <div class="android-phone">
+          <div class="android-camera"></div>
+          <div class="android-screen">
+            <div class="atc-before">
+              <div class="atc-status-bar">
+                <div class="dot"></div>
+                <span class="msg">No internet connection</span>
+                <span class="time-txt">9:03 AM</span>
+              </div>
+              <div class="atc-header">
+                <div class="atc-logo">D</div>
+                <span class="atc-app-name">Deputy Time Clock</span>
+              </div>
+              <div class="atc-body">
+                <div class="atc-worker-row">
+                  <div class="atc-avatar">MJ</div>
+                  <div class="atc-worker-info">
+                    <div class="atc-worker-name">Marcus J.</div>
+                    <div class="atc-location">Site B — Warehouse Floor</div>
+                  </div>
+                </div>
+                <div class="atc-shift-card">
+                  <div class="atc-shift-label">Current Shift</div>
+                  <div class="atc-shift-time">9:00 AM – 5:00 PM</div>
+                  <div class="atc-shift-role">Warehouse Associate</div>
+                </div>
+                <div class="atc-btn-disabled">
+                  <span>Clock In</span>
+                </div>
+                <div class="atc-error-badge">
+                  <div class="atc-error-dot"></div>
+                  <span class="atc-error-txt">Clock-in failed — no connection</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 4px;">
+          Button disabled. Shift goes unrecorded.
+        </p>
+      </div>
+
+      <!-- AFTER -->
+      <div class="ba-col">
+        <span class="ba-label after-label">After</span>
+        <div class="android-phone">
+          <div class="android-camera"></div>
+          <div class="android-screen">
+            <div class="atc-after">
+              <div class="atc-success-bar">
+                <span class="check">✓</span>
+                <span class="msg">Clocked in — syncing when connection restores</span>
+              </div>
+              <div class="atc-header">
+                <div class="atc-logo">D</div>
+                <span class="atc-app-name">Deputy Time Clock</span>
+              </div>
+              <div class="atc-body">
+                <div class="atc-worker-row">
+                  <div class="atc-avatar">MJ</div>
+                  <div class="atc-worker-info">
+                    <div class="atc-worker-name">Marcus J.</div>
+                    <div class="atc-location">Site B — Warehouse Floor</div>
+                  </div>
+                </div>
+                <div class="atc-shift-card">
+                  <div class="atc-shift-label">Current Shift</div>
+                  <div class="atc-shift-time">9:00 AM – 5:00 PM</div>
+                  <div class="atc-shift-role">Warehouse Associate</div>
+                </div>
+                <div class="atc-btn-active">
+                  <span>Clocked In</span>
+                </div>
+                <div class="atc-sync-badge">
+                  <span class="atc-sync-icon">&#8635;</span>
+                  <span class="atc-sync-txt">1 event queued — will sync automatically</span>
+                </div>
+                <div class="atc-saved-badge">
+                  <div class="atc-saved-dot"></div>
+                  <span class="atc-saved-txt">Session saved locally</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 4px;">
+          Queue writes locally. Syncs when online.
+        </p>
+      </div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="evidence-block">
+      <div class="evidence-block-title">Evidence</div>
+      <div class="evidence-item">
+        <div class="evidence-icon amber">&#9888;</div>
+        <p>
+          <strong>Deputy Help Center:</strong> "The Time Clock does not support offline mode, so a
+          constant internet connection is required to use the Time Clock."
+          <br><a href="https://support.deputy.com/hc/en-au/articles/360057413752-Android-Time-Clock-FAQs" target="_blank">support.deputy.com — Android Time Clock FAQs &rarr;</a>
+        </p>
+      </div>
+      <div class="evidence-item">
+        <div class="evidence-icon blue">&#34;</div>
+        <p>
+          <strong>G2 reviewer:</strong> "Unable to clock into a shift without an internet connection —
+          workers on job sites lose signal and their start time is simply not recorded."
+        </p>
+      </div>
+      <div class="impact-row">
+        <div class="impact-label">Business Impact</div>
+        <div class="impact-text">
+          Construction sites, warehouse floors, rural hospitality venues — connectivity drops are not
+          edge cases. When clock-in fails silently, the shift goes unrecorded entirely. This is not a
+          null value in your dataset; it is an absent record — far harder for Deputy AI to detect and
+          compensate for than a visible error state.
+        </div>
+      </div>
+    </div>
+
+    <!-- TECH NOTE -->
+    <div class="tech-note">
+      <div class="tech-note-title">Technical Approach</div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Room database write queue</strong> — clock events written locally before any network call</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>WorkManager background sync</strong> — queued events flushed when connectivity restores, with exponential backoff</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Same API endpoints</strong> — no backend schema changes required; payload structure unchanged</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Matches iPad Kiosk behavior</strong> — the offline model is already proven inside the Deputy product family</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     SECTION 2: BEFORE — iOS Auto Clock-Out
+======================== -->
+<div class="section-wrap">
+  <div class="section-eyebrow before">Issue 02 — iOS App</div>
+  <h2 class="section-title">Spontaneous clock-outs mid-shift</h2>
+
+  <div class="ba-card">
+    <div class="ba-grid">
+
+      <!-- BEFORE -->
+      <div class="ba-col before-col">
+        <span class="ba-label before-label">Before</span>
+        <div class="iphone">
+          <div class="iphone-notch"></div>
+          <div class="iphone-screen">
+            <div class="ios-before">
+              <div class="ios-status">
+                <span>9:41 AM</span>
+                <span>&#9679; &#9679; &#9679;</span>
+              </div>
+              <div class="ios-notif-banner">
+                <div class="ios-notif-icon">D</div>
+                <div class="ios-notif-content">
+                  <div class="ios-notif-app">Deputy</div>
+                  <div class="ios-notif-title">You have been clocked out</div>
+                  <div class="ios-notif-body">Your timesheet has been updated.</div>
+                  <div class="ios-notif-time">2:13 PM</div>
+                </div>
+              </div>
+              <div class="ios-timeline">
+                <div class="ios-tl-label">Today's Shift</div>
+                <div class="ios-tl-row">
+                  <div class="ios-tl-dot tl-green"></div>
+                  <span class="ios-tl-time">9:00 AM</span>
+                  <span class="ios-tl-desc">Clocked in</span>
+                </div>
+                <div class="tl-line" style="margin-left: 3px;"></div>
+                <div class="ios-tl-row">
+                  <div class="ios-tl-dot tl-red"></div>
+                  <span class="ios-tl-time">2:13 PM</span>
+                  <span class="ios-tl-desc">Clocked out</span>
+                  <span class="ios-tl-badge badge-red">Unexpected</span>
+                </div>
+                <div style="margin-top: 4px; font-size: 6.5px; color: rgba(255,255,255,0.4);">
+                  Expected end: 5:00 PM
+                </div>
+              </div>
+              <div class="ios-warning-bar">
+                <div class="ios-warning-txt">Employer correction required — again</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 4px;">
+          Session terminated mid-shift without action.
+        </p>
+      </div>
+
+      <!-- AFTER -->
+      <div class="ba-col">
+        <span class="ba-label after-label">After</span>
+        <div class="iphone">
+          <div class="iphone-notch"></div>
+          <div class="iphone-screen">
+            <div class="ios-after">
+              <div class="ios-status">
+                <span>9:41 AM</span>
+                <span>&#9679; &#9679; &#9679;</span>
+              </div>
+              <div class="ios-active-bar">
+                <div class="ios-active-dot"></div>
+                <span class="ios-active-txt">Deputy is monitoring your shift in background</span>
+              </div>
+              <div class="ios-clockin-card">
+                <div class="ios-ci-label">Active Clock-In</div>
+                <div class="ios-ci-time">5:13:42</div>
+                <div class="ios-ci-since">Since 9:00 AM &nbsp;·&nbsp; Ends 5:00 PM</div>
+              </div>
+              <div class="ios-bg-badge">
+                <span class="ios-bg-icon">&#9684;</span>
+                <span class="ios-bg-txt">Background URLSession active — session maintained</span>
+              </div>
+              <div class="ios-tl-after">
+                <div class="ios-tl-label" style="color: rgba(255,255,255,0.5);">Today's Shift</div>
+                <div class="ios-tl-row-after">
+                  <div class="ios-tl-dot tl-green"></div>
+                  <span class="ios-tl-time">9:00 AM</span>
+                  <span class="ios-tl-desc">Clocked in</span>
+                </div>
+                <div class="tl-line" style="margin-left: 3px;"></div>
+                <div class="ios-tl-row-after">
+                  <div class="ios-tl-dot tl-green"></div>
+                  <span class="ios-tl-time" style="color: #4ADE80;">2:13 PM</span>
+                  <span class="ios-tl-desc" style="color: rgba(74,222,128,0.8);">Still active</span>
+                </div>
+              </div>
+              <div class="ios-stable-badge">
+                <div class="ios-stable-txt">Session stable — explicit action required to clock out</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 4px;">
+          Session persists through foreground interruptions.
+        </p>
+      </div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="evidence-block">
+      <div class="evidence-block-title">Evidence</div>
+      <div class="evidence-item">
+        <div class="evidence-icon red">&#34;</div>
+        <p>
+          <strong>App Store review, May 2025 — user "Angaleena71":</strong><br>
+          "The app automatically clocks me out... I'm forced to have my employer fix my time almost
+          weekly. This app is COMPLETELY UNRELIABLE."
+        </p>
+      </div>
+      <div class="evidence-item">
+        <div class="evidence-icon blue">&#9432;</div>
+        <p>
+          <strong>Deputy developer response:</strong> Acknowledged the report and directed the user
+          to mobile-ios@deputy.com — confirming this is a known, unresolved issue at the time of
+          writing.
+        </p>
+      </div>
+      <div class="impact-row">
+        <div class="impact-label">Business Impact</div>
+        <div class="impact-text">
+          Incorrect mid-shift clock-outs require manual employer corrections on a weekly cadence.
+          In Australia, this creates Fair Work Act exposure on disputed timesheet records.
+          In the US, FLSA requires accurate time records — systematic errors during litigation
+          are a material liability. More directly: every auto clock-out injects a false
+          shift-end event into the dataset Deputy AI learns from.
+        </div>
+      </div>
+    </div>
+
+    <!-- TECH NOTE -->
+    <div class="tech-note">
+      <div class="tech-note-title">Technical Approach</div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Background URLSession</strong> — keeps session heartbeat active when app moves to background or screen locks during shift</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Grace period before clock-out</strong> — foreground interruption triggers grace window, not immediate termination; clock-out requires explicit worker confirmation</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>CLLocationManager background mode</strong> — significant-location-change monitoring keeps process alive without battery penalty</p>
+      </div>
+      <div class="tech-item">
+        <div class="bullet"></div>
+        <p><strong>Local session token persistence</strong> — session state written to Keychain; survives iOS process termination events</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     AI DATA QUALITY
+======================== -->
+<div class="ai-section">
+  <div class="ai-inner">
+    <div class="ai-eyebrow">Deputy AI — Data Quality Impact</div>
+    <h2 class="ai-title">Mobile reliability is AI infrastructure</h2>
+
+    <div class="ai-diagram">
+      <!-- LEFT: BEFORE -->
+      <div class="ai-side">
+        <div class="ai-side-label bad">Corrupted inputs</div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#9888;</span>
+          Auto clock-outs &rarr; false shift-end events
+        </div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#9888;</span>
+          Offline failures &rarr; missing records (absent, not null)
+        </div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#9888;</span>
+          GPS delay &rarr; incorrect location records at clock-in
+        </div>
+        <div class="ai-db-box bad">
+          <div class="ai-db-icon">&#9888;</div>
+          <div class="ai-db-name bad">Deputy AI</div>
+          <div class="ai-db-sub">20B+ shift records<br>with systematic noise</div>
+        </div>
+      </div>
+
+      <!-- ARROW -->
+      <div class="ai-arrow">
+        <span>&rarr;</span>
+        <span style="font-size: 11px; color: var(--deputy-orange); font-weight: 700; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 1px;">FIX</span>
+      </div>
+
+      <!-- RIGHT: AFTER -->
+      <div class="ai-side">
+        <div class="ai-side-label good">Clean inputs</div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#10003;</span>
+          Accurate clock-in/out &rarr; verified shift records
+        </div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#10003;</span>
+          Offline queue &rarr; complete data sync, no gaps
+        </div>
+        <div class="ai-data-item">
+          <span class="ai-data-icon">&#10003;</span>
+          High-accuracy GPS &rarr; reliable location records
+        </div>
+        <div class="ai-db-box good">
+          <div class="ai-db-icon">&#10003;</div>
+          <div class="ai-db-name good">Deputy AI</div>
+          <div class="ai-db-sub">20B+ shift records<br>with clean signal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-quote-box">
+      <div class="ai-quote-text">
+        "Amazon Bedrock gives us secure, compliant access to leading AI models... we are using
+        over 20 billion historical shift records to understand patterns in scheduling, time and
+        attendance, and workforce behaviour."
+      </div>
+      <div class="ai-quote-source">
+        — Engineering Leadership, CTO, Deputy &nbsp;·&nbsp; Deputy AI Launch, November 2025
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; padding: 16px 20px; background: var(--navy-card); border: 1px solid var(--navy-border); border-radius: 10px;">
+      <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+        Every auto clock-out injects a false shift-end event into that 20B-record dataset.
+        Every offline failure removes a record entirely — which is harder for a model to detect
+        than an explicit error marker. Mobile reliability is not a UX problem.
+        It is a data integrity problem at the foundation of Deputy AI.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     SCOPE & CTA
+======================== -->
+<div class="scope-section">
+  <div class="scope-eyebrow">Proposed Engagement</div>
+  <h2 class="scope-title">The Fix: 90 Days, Native Stack</h2>
+
+  <div class="timeline-grid">
+    <div class="tl-card">
+      <div class="tl-card-month">Month 1</div>
+      <div class="tl-card-title">Session Stability + Offline Queue</div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        iOS background URLSession implementation
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        Grace period logic for foreground interruptions
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        Android Room write queue for clock events
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        WorkManager sync with exponential backoff
+      </div>
+    </div>
+    <div class="tl-card">
+      <div class="tl-card-month">Month 2</div>
+      <div class="tl-card-title">Location Accuracy + Push Reliability</div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        CLLocationManager high-accuracy mode at clock-in
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        FusedLocationProvider on Android for geofence events
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        FCM push notification reliability audit
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        APNs background push for shift reminders
+      </div>
+    </div>
+    <div class="tl-card">
+      <div class="tl-card-month">Month 3</div>
+      <div class="tl-card-title">Break Attestation + Integration Testing</div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        Android break attestation parity with iOS
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        Offline break event queue and reconciliation
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        End-to-end integration test suite (Espresso / XCTest)
+      </div>
+      <div class="tl-card-item">
+        <div class="tl-bullet"></div>
+        Pre-release reliability metrics baseline
+      </div>
+    </div>
+  </div>
+
+  <div class="tech-stack-card">
+    <div class="tech-stack-title">Technical Specification</div>
+    <div class="tech-stack-grid">
+      <div>
+        <div class="tech-platform-title">iOS — Swift (UIKit / SwiftUI)</div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          Background URLSession for session heartbeat
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          CLLocationManager high-accuracy mode
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          Keychain session token persistence
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          APNs silent push for background wakeup
+        </div>
+      </div>
+      <div>
+        <div class="tech-platform-title">Android — Kotlin</div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          Room database for local event queue
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          WorkManager for background sync
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          FusedLocationProvider for geofence accuracy
+        </div>
+        <div class="tech-platform-item">
+          <div class="tp-bullet"></div>
+          FCM for push notification reliability
+        </div>
+      </div>
+    </div>
+    <div class="no-change-note">
+      No architectural changes. Works within existing API contract. No backend schema modifications
+      required. This is native mobile engineering, not a platform rebuild.
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <div class="cta-left">
+      <h3>20 minutes to show what we've seen</h3>
+      <p>
+        We've audited mobile reliability across several workforce management apps in
+        the Deputy category. Happy to share patterns we've observed and what the fix
+        looks like in practice — no pitch deck, just engineering specifics.
+      </p>
+    </div>
+    <div class="cta-right">
+      <div>
+        <div class="cta-contact-name">Elinext Mobile Engineering</div>
+        <div class="cta-contact-title">Elinext Mobile Engineering</div>
+      </div>
+      
+        elinext.com/contacts/
+      
+      <div class="cta-tagline">20-minute conversation, engineering-to-engineering</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     FOOTER
+======================== -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-mark">E</div>
+    Elinext Mobile Engineering
+  </div>
+  <div class="footer-right">
+    Analysis prepared for Engineering Leadership, CTO, Deputy &nbsp;·&nbsp;
+    elinext.com/contacts/
+    &nbsp;·&nbsp; February 2026
+  </div>
+</footer>
+
+</body>
+</html>

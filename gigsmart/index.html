@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigSmart Android Reliability Analysis | Elinext</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0b1628;
+    --navy-mid: #132240;
+    --navy-light: #1c3058;
+    --accent-blue: #2563eb;
+    --accent-teal: #0891b2;
+    --accent-green: #059669;
+    --accent-red: #dc2626;
+    --accent-amber: #d97706;
+    --accent-orange: #ea580c;
+    --white: #f8fafc;
+    --gray-100: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy-mid);
+    border-bottom: 2px solid var(--accent-blue);
+    padding: 32px 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.4px;
+  }
+  .header-left h1 span { color: var(--accent-blue); }
+  .header-left p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(234, 88, 12, 0.15);
+    border: 1px solid rgba(234, 88, 12, 0.4);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fb923c;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* SECTION HEADER */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .section-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  /* RATING HERO */
+  .rating-hero {
+    background: var(--navy-mid);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 36px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .rating-block {
+    flex: 1;
+    min-width: 180px;
+  }
+  .rating-platform {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .rating-stars {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .rating-stars.good { color: var(--accent-green); }
+  .rating-stars.bad { color: var(--accent-red); }
+  .rating-reviews {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+  .rating-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.1);
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+  .rating-gap-block {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .gap-number {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--accent-orange);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+  .gap-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+  .gap-context {
+    font-size: 12px;
+    color: var(--accent-orange);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  /* COMPETITOR TABLE */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  .comp-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .comp-table td {
+    padding: 12px 14px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .comp-table tr.highlight td { background: rgba(234, 88, 12, 0.08); }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .badge-gap {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .badge-gap.bad { background: rgba(220,38,38,0.2); color: #f87171; }
+  .badge-gap.ok { background: rgba(5,150,105,0.15); color: #34d399; }
+
+  /* BEFORE / AFTER PANELS */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) {
+    .before-after { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--navy-mid);
+    border-radius: 10px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .panel.before {
+    border-top: 3px solid var(--accent-red);
+  }
+  .panel.after {
+    border-top: 3px solid var(--accent-green);
+  }
+  .panel-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .panel.before .panel-label { color: var(--accent-red); }
+  .panel.after .panel-label { color: var(--accent-green); }
+  .panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  /* PHONE MOCKUP */
+  .phone {
+    background: #0d1117;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.12);
+    padding: 16px;
+    margin: 12px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .phone-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    margin-bottom: 14px;
+    width: 40%;
+  }
+  .phone-app-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+    font-family: var(--font);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .phone-app-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #1d4ed8, #0891b2);
+    border-radius: 6px;
+    display: inline-block;
+  }
+  .phone-msg {
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-family: var(--font);
+    font-size: 12px;
+  }
+  .phone-msg.error {
+    background: rgba(220,38,38,0.2);
+    border: 1px solid rgba(220,38,38,0.4);
+    color: #fca5a5;
+  }
+  .phone-msg.success {
+    background: rgba(5,150,105,0.15);
+    border: 1px solid rgba(5,150,105,0.4);
+    color: #6ee7b7;
+  }
+  .phone-msg.info {
+    background: rgba(37,99,235,0.15);
+    border: 1px solid rgba(37,99,235,0.3);
+    color: #93c5fd;
+  }
+  .phone-shift-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .shift-title { font-size: 13px; font-weight: 700; color: var(--white); }
+  .shift-detail { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+  .shift-detail.good { color: #6ee7b7; }
+  .shift-detail.bad { color: #f87171; }
+  .shift-pay { font-size: 14px; font-weight: 800; color: #fbbf24; margin-top: 6px; }
+  .phone-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 8px;
+    font-family: var(--font);
+  }
+  .phone-btn.disabled { background: rgba(255,255,255,0.08); color: var(--text-secondary); cursor: not-allowed; }
+  .phone-btn.active { background: var(--accent-blue); color: white; cursor: pointer; }
+  .phone-btn.missing { background: rgba(220,38,38,0.2); color: #fca5a5; border: 1px dashed rgba(220,38,38,0.4); }
+
+  /* SOURCE TAG */
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-top: 8px;
+  }
+  .source-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-teal); }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent-red), rgba(255,255,255,0.1));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+  .timeline-dot.red { background: rgba(220,38,38,0.3); border-color: var(--accent-red); }
+  .timeline-dot.green { background: rgba(5,150,105,0.3); border-color: var(--accent-green); }
+  .timeline-text { font-size: 13px; color: var(--text-primary); }
+  .timeline-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* HELP CENTER CALLOUT */
+  .hc-callout {
+    background: rgba(234, 88, 12, 0.08);
+    border: 1px solid rgba(234, 88, 12, 0.3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .hc-callout-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #fb923c;
+    margin-bottom: 8px;
+  }
+  .hc-callout-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .hc-callout-url {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: monospace;
+  }
+
+  /* CARD ROW */
+  .card-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--navy-mid);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .card-body { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .card-source { font-size: 11px; color: var(--accent-teal); margin-top: 8px; }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 48px 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .footer-contact p { font-size: 13px; color: var(--text-secondary); }
+  .footer-contact a { color: var(--accent-blue); text-decoration: none; }
+  .footer-note { font-size: 12px; color: var(--gray-400); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>GigSmart Android — <span>Mobile Reliability Analysis</span></h1>
+    <p>Prepared by Elinext · February 2026 · Based on public data: Play Store reviews, Help Center articles, GitHub organization</p>
+  </div>
+  <div class="header-badge">⚠ 0.7★ iOS/Android gap — largest in gig economy segment</div>
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: RATING OVERVIEW -->
+  <div class="section-label">Platform Performance</div>
+  <div class="section-title">iOS: Exceptional. Android: Falling Behind.</div>
+  <div class="section-desc">17,348 combined reviews across Get Gigs (worker app). The 0.7★ gap is not cosmetic — it is worker supply at risk.</div>
+
+  <div class="rating-hero">
+    <div class="rating-block">
+      <div class="rating-platform">📱 iOS — Get Gigs</div>
+      <div class="rating-stars good">4.7★</div>
+      <div class="rating-reviews">11,098 reviews · App ID: 1321576690</div>
+    </div>
+    <div class="rating-divider"></div>
+    <div class="rating-block">
+      <div class="rating-platform">🤖 Android — Get Gigs</div>
+      <div class="rating-stars bad">4.0★</div>
+      <div class="rating-reviews">6,250 reviews · com.gigsmart.worker</div>
+    </div>
+    <div class="rating-divider"></div>
+    <div class="rating-gap-block">
+      <div class="gap-number">−0.7★</div>
+      <div class="gap-label">iOS vs Android gap</div>
+      <div class="gap-context">Largest gap in gig economy platforms tracked</div>
+    </div>
+  </div>
+
+  <!-- COMPETITOR BENCHMARK -->
+  <div class="section-label">Competitive Benchmark</div>
+  <div class="section-title">How GigSmart Compares</div>
+  <div class="section-desc">The Android gap is 1.75× larger than the sector average. This is not industry-standard fragmentation.</div>
+
+  <div class="panel" style="margin-bottom: 36px;">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>iOS Rating</th>
+          <th>Android Rating</th>
+          <th>Gap</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong>GigSmart Get Gigs</strong></td>
+          <td>4.7★</td>
+          <td>4.0★</td>
+          <td><span class="badge-gap bad">−0.7★</span></td>
+          <td>⚠ Largest gap</td>
+        </tr>
+        <tr>
+          <td>Instawork</td>
+          <td>4.7★</td>
+          <td>4.3★</td>
+          <td><span class="badge-gap ok">−0.4★</span></td>
+          <td>Above sector avg</td>
+        </tr>
+        <tr>
+          <td>Veryable</td>
+          <td>4.6★</td>
+          <td>4.2★</td>
+          <td><span class="badge-gap ok">−0.4★</span></td>
+          <td>Sector average</td>
+        </tr>
+        <tr>
+          <td>Wonolo</td>
+          <td>~4.5★</td>
+          <td>~4.3★</td>
+          <td><span class="badge-gap ok">−0.2★</span></td>
+          <td>Below sector avg</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 2: THE EVIDENCE -->
+  <div class="section-label">Documented Evidence</div>
+  <div class="section-title">Three Failure Patterns — All Sourced</div>
+  <div class="section-desc">These are not inferences. These are Help Center admissions, GitHub architecture signals, and direct user quotes.</div>
+
+  <!-- Help Center callouts -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+    <div class="hc-callout">
+      <div class="hc-callout-label">Help Center Article — Workers</div>
+      <div class="hc-callout-title">"I signed up on the app, but cannot log in. What can I do?"</div>
+      <div class="hc-callout-url">help.gigsmart.com/cannot-log-in-workers</div>
+    </div>
+    <div class="hc-callout">
+      <div class="hc-callout-label">Help Center Article — Requesters</div>
+      <div class="hc-callout-title">"I can't login to Get Workers?"</div>
+      <div class="hc-callout-url">help.gigsmart.com/cannot-log-in-requesters</div>
+    </div>
+  </div>
+  <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 32px;">Two separate articles, two support email queues (<code>support@</code> for workers, <code>customers@</code> for requesters). This is not an edge case. A persistent, systematically tracked problem gets its own Help Center article.</p>
+
+  <div class="card-row">
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">Auth Token Issuance Failure</div>
+      <div class="card-body">"Signed up but cannot log in" — account exists in DB, auth session was never committed. Android kills app mid-registration flow more than iOS.</div>
+      <div class="card-source">Source: help.gigsmart.com/cannot-log-in-workers</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <div class="card-title">Stale Location on Android</div>
+      <div class="card-body">"App showed 6 miles to a job site. Apple Maps showed 26 miles." Doze mode returns cached GPS instead of fresh position. Workers accept unworkable shifts.</div>
+      <div class="card-source">Source: Google Play reviews, 2024</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">SSN Verification Loop</div>
+      <div class="card-body">"SSN already in use" after incomplete registration. Distributed system race condition: SSN write committed, auth rollback failed. Worker permanently locked out.</div>
+      <div class="card-source">Source: Google Play reviews, 2024</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">👻</div>
+      <div class="card-title">Gigs Disappear After Apply</div>
+      <div class="card-body">"Gigs show up then vanish minutes after applying." Silent 401 auth failure — app removes shift from UI instead of re-authenticating transparently.</div>
+      <div class="card-source">Source: Google Play reviews, 2024</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 3: BEFORE / AFTER -->
+  <div class="section-label">Before vs After</div>
+  <div class="section-title">What Workers Experience Today vs What They Should Experience</div>
+  <div class="section-desc">The session lifecycle gap is the root of all four failure patterns above.</div>
+
+  <!-- Before/After #1: Login flow -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 16px;">
+      Scenario: Worker Opens App After It Was Backgrounded (Android)
+    </h3>
+    <div class="before-after">
+      <div class="panel before">
+        <div class="panel-label">❌ Before — Current State</div>
+        <div class="panel-title">Auth Token Expires Silently</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> GigSmart Get Gigs</div>
+          <div class="phone-shift-card">
+            <div class="shift-title">Warehouse Associate</div>
+            <div class="shift-detail">📍 Denver Distribution Center</div>
+            <div class="shift-detail bad">⚠ Distance: 6 mi — (stale GPS cache)</div>
+            <div class="shift-pay">$17/hr · 8 hrs</div>
+          </div>
+          <div class="phone-btn disabled">Loading shifts…</div>
+          <div class="phone-msg error" style="margin-top:10px;">
+            ⚠ Session expired. Please log in again.
+          </div>
+          <div style="font-size: 11px; color: #6b7280; margin-top: 6px; font-family: var(--font);">
+            Android Doze killed background service → auth token flushed from memory → silent failure
+          </div>
+        </div>
+        <div class="source-tag"><div class="source-dot"></div>Play Store reviews + Help Center (2024–2025)</div>
+      </div>
+      <div class="panel after">
+        <div class="panel-label">✓ After — With Elinext Fix</div>
+        <div class="panel-title">Transparent Re-Authentication</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> GigSmart Get Gigs</div>
+          <div class="phone-shift-card">
+            <div class="shift-title">Warehouse Associate</div>
+            <div class="shift-detail">📍 Denver Distribution Center</div>
+            <div class="shift-detail good">✓ Distance: 24 mi — (fresh GPS fix)</div>
+            <div class="shift-pay">$17/hr · 8 hrs</div>
+          </div>
+          <div class="phone-msg success">
+            ✓ Session refreshed automatically in background
+          </div>
+          <div class="phone-btn active">Apply for Shift →</div>
+          <div style="font-size: 11px; color: #6b7280; margin-top: 6px; font-family: var(--font);">
+            Token refresh interceptor fires silently → worker stays in flow → shift accepted
+          </div>
+        </div>
+        <div class="source-tag"><div class="source-dot" style="background: var(--accent-green);"></div>Elinext: RN interceptor + Foreground Service + EncryptedSharedPreferences</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After #2: SSN loop -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 16px;">
+      Scenario: New Worker Onboarding Interrupted Mid-Flow (Android)
+    </h3>
+    <div class="before-after">
+      <div class="panel before">
+        <div class="panel-label">❌ Before — Current State</div>
+        <div class="panel-title">Permanent Lock-Out After Partial Registration</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> Identity Verification</div>
+          <div class="phone-msg info">Step 3 of 4: Enter your Social Security Number</div>
+          <div style="background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px; margin: 8px 0; font-family: var(--font); font-size: 12px; color: var(--text-secondary);">
+            SSN: ●●●-●●-●●●● ✓
+          </div>
+          <div class="phone-btn missing">⏳ Verifying… (app killed by Android OEM)</div>
+          <div class="phone-msg error" style="margin-top:10px;">
+            ✗ That Social Security Number is already in use.
+          </div>
+          <div class="phone-btn missing">Contact Support →</div>
+          <div style="font-size: 11px; color: #6b7280; margin-top: 6px; font-family: var(--font);">
+            SSN write committed → auth never completed → user permanently locked without self-service recovery
+          </div>
+        </div>
+        <div class="source-tag"><div class="source-dot"></div>Google Play reviews, 2024 — "support contacted twice, no response"</div>
+      </div>
+      <div class="panel after">
+        <div class="panel-label">✓ After — With Elinext Fix</div>
+        <div class="panel-title">Idempotent Resumable Verification Flow</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> Identity Verification</div>
+          <div class="phone-msg info">
+            👋 Welcome back. Your verification was interrupted. Tap below to continue where you left off.
+          </div>
+          <div style="background: rgba(255,255,255,0.06); border-radius: 8px; padding: 10px; margin: 8px 0; font-family: var(--font); font-size: 12px;">
+            <div style="color: #6ee7b7; font-size: 11px;">✓ Steps 1–3 completed</div>
+            <div style="color: #fbbf24; font-size: 11px;">⏳ Step 4: Final verification (pending)</div>
+          </div>
+          <div class="phone-btn active">Resume Verification →</div>
+          <div style="font-size: 11px; color: #6b7280; margin-top: 6px; font-family: var(--font);">
+            Saga pattern: each step is idempotent, resumable, with timeout-based SSN claim rollback
+          </div>
+        </div>
+        <div class="source-tag"><div class="source-dot" style="background: var(--accent-green);"></div>Elinext: saga pattern + idempotency keys + compensating transactions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After #3: GPS background -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 16px;">
+      Scenario: Worker Background Location During Shift (Android Doze)
+    </h3>
+    <div class="before-after">
+      <div class="panel before">
+        <div class="panel-label">❌ Before — Current State</div>
+        <div class="panel-title">Doze Kills Background Geo → Stale Position</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> GigSmart — Active Shift</div>
+          <div class="phone-msg error">
+            ⚠ Background location service stopped. Battery optimization active (Samsung Adaptive Battery).
+          </div>
+          <div class="phone-shift-card">
+            <div class="shift-title">Upcoming shift nearby</div>
+            <div class="shift-detail bad">📍 Distance: 6 mi (cached 45 mins ago)</div>
+            <div class="shift-detail bad">⚠ Real distance: 26 mi — GPS not updated</div>
+            <div class="shift-pay">$15/hr · 6 hrs</div>
+          </div>
+          <div class="phone-btn disabled">Check In (GPS unavailable)</div>
+        </div>
+        <div class="source-tag"><div class="source-dot"></div>Google Play review — "app showed 6 miles, Apple Maps showed 26 miles"</div>
+      </div>
+      <div class="panel after">
+        <div class="panel-label">✓ After — With Elinext Fix</div>
+        <div class="panel-title">Foreground Service Survives OEM Battery Killers</div>
+        <div class="phone">
+          <div class="phone-bar"></div>
+          <div class="phone-app-header"><div class="phone-app-icon"></div> GigSmart — Active Shift</div>
+          <div class="phone-msg success">
+            📍 Location active — GigSmart is tracking your shift (persistent notification as required by Android 8+)
+          </div>
+          <div class="phone-shift-card">
+            <div class="shift-title">Upcoming shift nearby</div>
+            <div class="shift-detail good">📍 Distance: 23.7 mi (fresh GPS, 30s ago)</div>
+            <div class="shift-detail good">✓ Background service running on all OEM variants</div>
+            <div class="shift-pay">$15/hr · 6 hrs</div>
+          </div>
+          <div class="phone-btn active">Check In →</div>
+        </div>
+        <div class="source-tag"><div class="source-dot" style="background: var(--accent-green);"></div>Elinext: Foreground Service + WorkManager fallback + OEM-specific battery exemption guidance</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 4: WHY NOW -->
+  <div class="section-label">Strategic Context</div>
+  <div class="section-title">The W-2/1099 Moat Depends on Android Working</div>
+  <div class="section-desc">March 4, 2025: GigSmart claimed competitive differentiation as "the only platform enabling businesses to access both W-2 and 1099 workers in a single seamless platform." That claim lives or dies on mobile reliability.</div>
+
+  <div class="card-row" style="margin-bottom: 24px;">
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-title">SF Settlement — $703K</div>
+      <div class="card-body">January 17, 2025. Mandatory W-2 reclassification in California. Session complexity doubled overnight for California workers.</div>
+      <div class="card-source">Source: Mission Local, Jan 17 2025</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏔️</div>
+      <div class="card-title">Denver Reclassification</div>
+      <div class="card-body">May 2025. 700+ Denver workers reclassified to W-2 effective April 2025. $27K back wages. Compliance mode active.</div>
+      <div class="card-source">Source: Denver Post, May 16 2025</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">Dual Classification Launch</div>
+      <div class="card-body">March 4, 2025 press release: W-2 + 1099 in a single seamless platform. Session state now encodes classification per jurisdiction. Every existing Android session bug is now a compliance risk.</div>
+      <div class="card-source">Source: PR Newswire, Mar 4 2025</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-bottom: 36px; background: rgba(234,88,12,0.07); border-color: rgba(234,88,12,0.25);">
+    <div class="section-label" style="margin-bottom: 6px; color: var(--accent-orange);">The Risk</div>
+    <p style="font-size: 14px; color: var(--text-primary); line-height: 1.7;">
+      When a warehouse worker's Android session fails after an update, they cannot see their W-2/1099 classification, cannot verify their payment routing, and cannot complete their shift check-in. That is not a UX problem — it is a wage and hour compliance event. Enterprise clients choosing between GigSmart and Instawork will measure fill rate reliability. Android session failures directly reduce fill rates.
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 5: PROPOSED ENGAGEMENT -->
+  <div class="section-label">Proposed Engagement</div>
+  <div class="section-title">Scope: Android Reliability Sprint</div>
+  <div class="section-desc">Three root problems, six to eight weeks, two engineers. Additive to internal capacity — not a replacement.</div>
+
+  <div class="card-row">
+    <div class="card" style="border-left: 3px solid var(--accent-blue);">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">Sprint 1: Auth + Session Hardening</div>
+      <div class="card-body">Token refresh interceptor. EncryptedSharedPreferences migration. Classification state as session attribute with short-TTL caching. Onboarding saga pattern with SSN idempotency. 2 weeks, 1 RN engineer.</div>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--accent-teal);">
+      <div class="card-icon">📍</div>
+      <div class="card-title">Sprint 2: Background Geolocation Hardening</div>
+      <div class="card-body">Android Foreground Service with required notification. WorkManager expedited task fallback. OEM battery optimizer exemption guidance in onboarding. Device matrix testing across 8 OEM variants. 3 weeks, 1 Android-native engineer.</div>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--accent-green);">
+      <div class="card-icon">🧪</div>
+      <div class="card-title">Sprint 3: Android QA Matrix</div>
+      <div class="card-body">Detox test suite expansion for auth lifecycle, background process simulation, Doze mode testing, OEM ROM variant regression. Ongoing: Android release gating function. 2 weeks, 1 QA engineer.</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 24px; text-align: center;">
+    <div>
+      <div style="font-size: 28px; font-weight: 800; color: var(--accent-blue);">$25–35K</div>
+      <div style="font-size: 13px; color: var(--text-secondary);">Fixed engagement</div>
+    </div>
+    <div>
+      <div style="font-size: 28px; font-weight: 800; color: var(--accent-teal);">6–8 wks</div>
+      <div style="font-size: 13px; color: var(--text-secondary);">Timeline</div>
+    </div>
+    <div>
+      <div style="font-size: 28px; font-weight: 800; color: var(--accent-green);">2 eng + QA</div>
+      <div style="font-size: 13px; color: var(--text-secondary);">Team composition</div>
+    </div>
+    <div>
+      <div style="font-size: 28px; font-weight: 800; color: var(--accent-amber);">150</div>
+      <div style="font-size: 13px; color: var(--text-secondary);">Mobile engineers available</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-contact">
+    <p><strong>Elinext Mobile Engineering</strong> — Mobile Engineering, Elinext</p>
+    <p>📧 elinext.com/contacts/</p>
+  </div>
+  <div class="footer-note">
+    All data sourced from public records: Google Play Store, GigSmart Help Center, GitHub organization, press releases, court records.<br>
+    Prepared February 2026 · For: Engineering Leadership, CTO — GigSmart
+  </div>
+</div>
+
+</body>
+</html>

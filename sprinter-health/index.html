@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sprinter Copilot — Enhanced Field Visit</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green: #00C897;
+    --green-dark: #00A37A;
+    --green-bg: #E8FFF8;
+    --blue: #1A6CF6;
+    --blue-light: #EBF2FF;
+    --red: #FF4D4D;
+    --red-light: #FFF0F0;
+    --yellow: #FFB800;
+    --yellow-light: #FFF8E6;
+    --gray-50: #F8FAFB;
+    --gray-100: #F0F2F5;
+    --gray-200: #E2E6EA;
+    --gray-400: #9AA3AF;
+    --gray-600: #5A6575;
+    --gray-800: #1C2333;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+    background: #1A1A2E;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .phone-shell {
+    width: 240px;
+    background: var(--gray-50);
+    border-radius: 48px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 2px rgba(255,255,255,0.08);
+    position: relative;
+  }
+
+  .status-bar {
+    background: var(--gray-800);
+    padding: 14px 24px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .status-time { color: white; font-size: 15px; font-weight: 600; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+  .status-icons span { color: white; font-size: 12px; opacity: 0.9; }
+
+  /* Offline banner */
+  .offline-banner {
+    background: var(--yellow);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6B4000;
+  }
+  .offline-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #6B4000;
+    animation: pulse-yellow 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse-yellow {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .offline-label { flex: 1; }
+  .sync-badge { background: rgba(0,0,0,0.12); border-radius: 6px; padding: 2px 8px; font-size: 11px; }
+
+  /* Header */
+  .visit-header {
+    background: var(--gray-800);
+    padding: 16px 20px 20px;
+  }
+  .visit-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .back-btn { color: var(--green); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .visit-number { color: var(--gray-400); font-size: 12px; font-weight: 500; }
+  .patient-name { color: white; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .patient-meta { color: var(--gray-400); font-size: 13px; display: flex; gap: 8px; align-items: center; }
+  .patient-meta-dot { color: var(--gray-600); }
+  .visit-tags { display: flex; gap: 6px; margin-top: 12px; }
+  .tag {
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .tag-gap { background: rgba(0,200,151,0.2); color: var(--green); }
+  .tag-htn { background: rgba(26,108,246,0.2); color: #5B9EFF; }
+  .tag-diab { background: rgba(255,184,0,0.18); color: #FFB800; }
+
+  /* Content */
+  .content { padding: 0 0 24px; overflow-y: auto; max-height: 680px; }
+
+  /* Ambient AI card */
+  .ai-card {
+    margin: 16px;
+    background: var(--gray-800);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .ai-card-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ai-orb-container { position: relative; }
+  .ai-orb {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), #00A0FF);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .ai-orb-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--green);
+    opacity: 0.4;
+    animation: ring-pulse 2s ease-in-out infinite;
+  }
+  @keyframes ring-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.15); opacity: 0.1; }
+  }
+  .ai-header-info { flex: 1; }
+  .ai-header-title { color: white; font-size: 14px; font-weight: 600; }
+  .ai-header-sub { color: var(--green); font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .ai-status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse-green 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .ai-on-device-badge {
+    background: rgba(0,200,151,0.15);
+    border: 1px solid rgba(0,200,151,0.3);
+    border-radius: 8px;
+    padding: 3px 8px;
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .ai-insights {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ai-insight {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+  }
+  .ai-insight-icon { font-size: 16px; margin-top: 1px; }
+  .ai-insight-text { flex: 1; }
+  .ai-insight-label { color: var(--gray-400); font-size: 11px; font-weight: 500; margin-bottom: 2px; letter-spacing: 0.3px; text-transform: uppercase; }
+  .ai-insight-value { color: white; font-size: 13px; line-height: 1.4; }
+  .ai-insight-value strong { color: var(--yellow); }
+  .ai-insight-value .good { color: var(--green); }
+  .ai-insight-value .alert { color: #FF8C69; }
+  .ai-transcript-preview {
+    padding: 0 16px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .waveform {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    height: 20px;
+    margin-top: 2px;
+  }
+  .waveform-bar {
+    width: 3px;
+    border-radius: 2px;
+    background: var(--green);
+    opacity: 0.7;
+    animation: wave-anim 0.8s ease-in-out infinite alternate;
+  }
+  .waveform-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .waveform-bar:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+  .waveform-bar:nth-child(3) { height: 18px; animation-delay: 0.2s; }
+  .waveform-bar:nth-child(4) { height: 10px; animation-delay: 0.3s; }
+  .waveform-bar:nth-child(5) { height: 16px; animation-delay: 0.15s; }
+  .waveform-bar:nth-child(6) { height: 12px; animation-delay: 0.25s; }
+  @keyframes wave-anim {
+    from { transform: scaleY(0.4); }
+    to { transform: scaleY(1); }
+  }
+  .transcript-text {
+    font-size: 12px;
+    color: var(--gray-400);
+    line-height: 1.5;
+    font-style: italic;
+    flex: 1;
+  }
+  .transcript-text span { color: var(--gray-400); }
+  .transcript-text .patient-speech { color: rgba(255,255,255,0.7); }
+
+  /* BLE Devices */
+  .section { margin: 0 16px 16px; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .section-title { font-size: 11px; font-weight: 700; color: var(--gray-400); letter-spacing: 0.8px; text-transform: uppercase; }
+  .section-action { font-size: 12px; color: var(--blue); font-weight: 500; }
+
+  .ble-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ble-device {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .ble-device.connected { border-color: rgba(0,200,151,0.25); background: var(--green-bg); }
+  .ble-device.pairing { border-color: rgba(255,184,0,0.3); background: var(--yellow-light); }
+  .ble-device-icon { font-size: 22px; margin-bottom: 6px; }
+  .ble-device-name { font-size: 12px; font-weight: 600; color: var(--gray-800); margin-bottom: 3px; }
+  .ble-device-status {
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .ble-status-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .connected .ble-status-dot { background: var(--green); }
+  .pairing .ble-status-dot { background: var(--yellow); animation: pulse-yellow 1.2s infinite; }
+  .connected .ble-device-status { color: var(--green-dark); }
+  .pairing .ble-device-status { color: #8B5E00; }
+  .ble-reading { font-size: 16px; font-weight: 700; color: var(--gray-800); margin-top: 6px; }
+  .ble-reading-unit { font-size: 11px; font-weight: 500; color: var(--gray-400); }
+  .ble-reading-trend { font-size: 11px; font-weight: 600; color: var(--red); }
+
+  /* Checklist */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+  }
+  .checklist-item.done { opacity: 0.6; }
+  .checklist-item.active { border-color: var(--blue); border-width: 1.5px; }
+  .checklist-item.ai-flagged { border-color: rgba(255,184,0,0.5); background: var(--yellow-light); }
+  .check-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 12px;
+  }
+  .done .check-circle { background: var(--green); border-color: var(--green); color: white; }
+  .active .check-circle { border-color: var(--blue); }
+  .checklist-content { flex: 1; }
+  .checklist-step { font-size: 13px; font-weight: 600; color: var(--gray-800); margin-bottom: 2px; }
+  .done .checklist-step { text-decoration: line-through; color: var(--gray-400); }
+  .checklist-detail { font-size: 12px; color: var(--gray-600); line-height: 1.4; }
+  .ai-flag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #8B5E00;
+    background: rgba(255,184,0,0.2);
+    border-radius: 6px;
+    padding: 2px 7px;
+    margin-top: 5px;
+  }
+  .checklist-item.active .check-circle::after {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--blue);
+    opacity: 0.4;
+  }
+
+  /* Local save indicator */
+  .local-save-bar {
+    margin: 0 16px 16px;
+    background: var(--yellow-light);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .local-save-icon { font-size: 16px; }
+  .local-save-text { flex: 1; }
+  .local-save-title { font-size: 12px; font-weight: 600; color: #6B4000; }
+  .local-save-sub { font-size: 11px; color: #8B5E00; }
+  .local-save-count {
+    background: rgba(255,184,0,0.2);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6B4000;
+  }
+
+  /* Bottom action */
+  .bottom-bar {
+    padding: 12px 16px 20px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--white);
+    display: flex;
+    gap: 10px;
+  }
+  .btn-secondary {
+    flex: 0;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--gray-100);
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    flex: 1;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,200,151,0.3);
+  }
+
+  /* Callout box */
+  .callout {
+    margin: 0 0 24px;
+    background: #1A1A2E;
+    border-radius: 16px;
+    padding: 20px 24px;
+    max-width: 390px;
+  }
+  .callout-title { color: var(--green); font-size: 13px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .callout-text { color: rgba(255,255,255,0.75); font-size: 13px; line-height: 1.6; }
+  .callout-text strong { color: white; }
+
+  .page-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .page-label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    max-width: 390px;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="callout">
+    <div class="callout-title">Elinext × Sprinter Health</div>
+    <div class="callout-text">
+      What <strong>Sprinter Copilot</strong> looks like with three Elinext engineering workstreams active:
+      <strong>on-device ambient AI</strong>, <strong>BLE diagnostic devices</strong>, and <strong>offline-first visit completion</strong>.
+      Built with the same team that shipped <strong>Voize</strong> — 100k nurses, HIPAA-grade mobile AI.
+    </div>
+  </div>
+
+  <div class="phone-shell">
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <span>✦</span>
+        <span>📶</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- Offline banner -->
+    <div class="offline-banner">
+      <div class="offline-dot"></div>
+      <span class="offline-label">Offline — data saved locally</span>
+      <span class="sync-badge">7 items queued</span>
+    </div>
+
+    <!-- Visit header -->
+    <div class="visit-header">
+      <div class="visit-header-top">
+        <div class="back-btn">← Today</div>
+        <div class="visit-number">Visit 4 of 11</div>
+      </div>
+      <div class="patient-name">Margaret T., 71</div>
+      <div class="patient-meta">
+        <span>Congestive Heart Failure</span>
+        <span class="patient-meta-dot">·</span>
+        <span>12 Oak Ln, Apt 3B</span>
+      </div>
+      <div class="visit-tags">
+        <span class="tag tag-gap">Annual Wellness</span>
+        <span class="tag tag-htn">Hypertension</span>
+        <span class="tag tag-diab">Diabetes T2</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Ambient AI -->
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <div class="ai-orb-container">
+            <div class="ai-orb">🎙️</div>
+            <div class="ai-orb-ring"></div>
+          </div>
+          <div class="ai-header-info">
+            <div class="ai-header-title">Ambient AI Active</div>
+            <div class="ai-header-sub">
+              <div class="ai-status-dot"></div>
+              Listening · On-device inference
+            </div>
+          </div>
+          <div class="ai-on-device-badge">PHI Local</div>
+        </div>
+
+        <div class="ai-insights">
+          <div class="ai-insight">
+            <div class="ai-insight-icon">💊</div>
+            <div class="ai-insight-text">
+              <div class="ai-insight-label">Detected Mention</div>
+              <div class="ai-insight-value">Patient reports <strong>missed metformin doses</strong> for "about a week" — pre-fills HbA1c flag in checklist</div>
+            </div>
+          </div>
+          <div class="ai-insight">
+            <div class="ai-insight-icon">📋</div>
+            <div class="ai-insight-text">
+              <div class="ai-insight-label">Chart Cross-Reference</div>
+              <div class="ai-insight-value">Last BP reading <span class="alert">158/94</span> (30d ago) — <span class="alert">above protocol threshold</span>, escalation pathway available</div>
+            </div>
+          </div>
+          <div class="ai-insight">
+            <div class="ai-insight-icon">✅</div>
+            <div class="ai-insight-text">
+              <div class="ai-insight-label">Auto-Completed</div>
+              <div class="ai-insight-value"><span class="good">3 checklist items</span> filled from conversation — tap to confirm</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-transcript-preview">
+          <div class="waveform">
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+            <div class="waveform-bar"></div>
+          </div>
+          <div class="transcript-text">
+            <span class="patient-speech">"...I forgot to take the little white pill the last few days, my back's been bothering me and I can't always get up to..."</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLE Devices -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Bluetooth Devices</span>
+          <span class="section-action">Manage</span>
+        </div>
+        <div class="ble-grid">
+          <div class="ble-device connected">
+            <div class="ble-device-icon">🩺</div>
+            <div class="ble-device-name">Eko Core 500</div>
+            <div class="ble-device-status">
+              <div class="ble-status-dot"></div>
+              Connected
+            </div>
+            <div class="ble-reading">72 <span class="ble-reading-unit">BPM</span></div>
+          </div>
+          <div class="ble-device connected">
+            <div class="ble-device-icon">🩸</div>
+            <div class="ble-device-name">Contour Plus</div>
+            <div class="ble-device-status">
+              <div class="ble-status-dot"></div>
+              Reading ready
+            </div>
+            <div class="ble-reading">186 <span class="ble-reading-unit">mg/dL</span> <span class="ble-reading-trend">↑</span></div>
+          </div>
+          <div class="ble-device connected">
+            <div class="ble-device-icon">🫀</div>
+            <div class="ble-device-name">KardiaMobile 6L</div>
+            <div class="ble-device-status">
+              <div class="ble-status-dot"></div>
+              Connected
+            </div>
+            <div class="ble-reading">NSR <span class="ble-reading-unit">ECG</span></div>
+          </div>
+          <div class="ble-device pairing">
+            <div class="ble-device-icon">📊</div>
+            <div class="ble-device-name">Omron BP7250</div>
+            <div class="ble-device-status">
+              <div class="ble-status-dot"></div>
+              Pairing...
+            </div>
+            <div class="ble-reading" style="color: var(--gray-400);">— <span class="ble-reading-unit">mmHg</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offline save indicator -->
+      <div class="local-save-bar">
+        <div class="local-save-icon">💾</div>
+        <div class="local-save-text">
+          <div class="local-save-title">All data saved locally</div>
+          <div class="local-save-sub">Will sync when connection restored</div>
+        </div>
+        <div class="local-save-count">7</div>
+      </div>
+
+      <!-- Checklist -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Visit Checklist</span>
+          <span class="section-action">2 / 5</span>
+        </div>
+        <div class="checklist">
+          <div class="checklist-item done">
+            <div class="check-circle">✓</div>
+            <div class="checklist-content">
+              <div class="checklist-step">Patient identification confirmed</div>
+              <div class="checklist-detail">DOB, address, insurance verified</div>
+            </div>
+          </div>
+          <div class="checklist-item done">
+            <div class="check-circle">✓</div>
+            <div class="checklist-content">
+              <div class="checklist-step">Consent obtained</div>
+              <div class="checklist-detail">eSignature captured — stored locally</div>
+            </div>
+          </div>
+          <div class="checklist-item active">
+            <div class="check-circle"></div>
+            <div class="checklist-content">
+              <div class="checklist-step">Vitals — Blood pressure</div>
+              <div class="checklist-detail">BP cuff pairing in progress — Omron BP7250</div>
+            </div>
+          </div>
+          <div class="checklist-item ai-flagged">
+            <div class="check-circle"></div>
+            <div class="checklist-content">
+              <div class="checklist-step">Medication adherence review</div>
+              <div class="checklist-detail">Review current medications and adherence</div>
+              <div class="ai-flag-badge">🎙️ AI: Metformin gap detected</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle"></div>
+            <div class="checklist-content">
+              <div class="checklist-step">Lab draw — HbA1c + lipid panel</div>
+              <div class="checklist-detail">2 tubes required · Biohazard bag #3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <button class="btn-secondary">⚠️ Escalate</button>
+      <button class="btn-primary">
+        Next Step →
+      </button>
+    </div>
+  </div>
+
+  <div class="page-label">
+    Prototype by Elinext Mobile Engineering<br>
+    React Native · On-Device AI · BLE · Offline-First
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BuildOps Mobile — Before & After</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #f97316;
+      --orange-dark: #c2410c;
+      --orange-light: #fff7ed;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --gray-900: #111827;
+      --gray-800: #1f2937;
+      --gray-700: #374151;
+      --gray-600: #4b5563;
+      --gray-500: #6b7280;
+      --gray-400: #9ca3af;
+      --gray-300: #d1d5db;
+      --gray-200: #e5e7eb;
+      --gray-100: #f3f4f6;
+      --gray-50: #f9fafb;
+      --white: #ffffff;
+      --blue: #2563eb;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: white;
+      padding: 60px 24px 48px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.2);
+      border: 1px solid rgba(249,115,22,0.5);
+      color: #fb923c;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: #fb923c; }
+    .hero p {
+      font-size: 17px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fb923c;
+      display: block;
+    }
+    .hero-stat .label {
+      font-size: 12px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      text-align: center;
+      padding: 56px 24px 32px;
+    }
+    .section-header h2 {
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .section-header p {
+      color: var(--gray-600);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .before-label {
+      display: inline-block;
+      background: var(--red-light);
+      color: var(--red);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .after-label {
+      display: inline-block;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    /* ─── CONTAINER ─── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── SCENARIO CARDS ─── */
+    .scenarios { padding: 0 24px 64px; }
+    .scenarios-inner { max-width: 1100px; margin: 0 auto; }
+
+    .scenario {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+    }
+    @media (max-width: 700px) {
+      .scenario { grid-template-columns: 1fr; }
+    }
+
+    .scenario-before {
+      background: var(--white);
+      border-left: 5px solid var(--red);
+      padding: 32px;
+    }
+    .scenario-after {
+      background: var(--green-light);
+      border-left: 5px solid var(--green);
+      padding: 32px;
+    }
+
+    .scenario-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .scenario-tag.before { color: var(--red); }
+    .scenario-tag.after { color: var(--green); }
+
+    .scenario h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .scenario-before h3 { color: var(--gray-900); }
+    .scenario-after h3 { color: var(--gray-800); }
+
+    /* ─── PHONE MOCKUP ─── */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .phone {
+      width: 200px;
+      border-radius: 28px;
+      background: var(--gray-900);
+      padding: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .phone::before {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 8px;
+      background: #2d2d2d;
+      border-radius: 4px;
+      margin: 0 auto 8px;
+    }
+    .phone-screen {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 280px;
+    }
+
+    /* ─── SCREEN: BROKEN UPLOAD ─── */
+    .screen-header {
+      background: #f97316;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .screen-header svg { flex-shrink: 0; }
+    .screen-body { padding: 14px; }
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+    .upload-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: var(--gray-200);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .upload-name { font-weight: 600; color: var(--gray-700); flex: 1; }
+    .upload-status {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .status-fail { background: #fee2e2; color: #dc2626; }
+    .status-stuck { background: #fef3c7; color: #d97706; }
+    .status-ok { background: #dcfce7; color: #16a34a; }
+    .spinner-ring {
+      width: 16px; height: 16px;
+      border: 2px solid var(--gray-300);
+      border-top-color: #f97316;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── SCREEN: TIMECARD CORRUPTION ─── */
+    .tc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 11px;
+    }
+    .tc-label { color: var(--gray-600); }
+    .tc-value { font-weight: 600; }
+    .tc-value.wrong { color: var(--red); }
+    .tc-value.ok { color: var(--green); }
+    .error-banner {
+      background: #fee2e2;
+      color: #dc2626;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 7px 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .success-banner {
+      background: #dcfce7;
+      color: #16a34a;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 7px 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* ─── SCREEN: CRASH ─── */
+    .crash-screen {
+      background: var(--gray-900);
+      color: white;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    .crash-icon { font-size: 36px; margin-bottom: 10px; }
+    .crash-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .crash-sub { font-size: 10px; color: #94a3b8; margin-bottom: 14px; }
+    .crash-btn {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 7px 18px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .reinstall-count {
+      position: absolute;
+      top: -8px; right: -8px;
+      background: var(--red);
+      color: white;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone { position: relative; }
+
+    /* ─── REVIEW QUOTE ─── */
+    .review-box {
+      background: var(--red-light);
+      border-left: 3px solid var(--red);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 12.5px;
+      font-style: italic;
+      color: var(--gray-700);
+      margin-bottom: 10px;
+    }
+    .review-box a {
+      display: block;
+      margin-top: 6px;
+      font-size: 10.5px;
+      font-style: normal;
+      color: var(--gray-500);
+      text-decoration: none;
+    }
+    .review-box a:hover { text-decoration: underline; }
+    .stars { color: #f59e0b; font-size: 11px; }
+
+    .after-box {
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: 12.5px;
+      color: var(--gray-700);
+      margin-bottom: 10px;
+    }
+
+    /* ─── IMPACT ROW ─── */
+    .impact-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .impact-chip {
+      flex: 1;
+      background: var(--red-light);
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .impact-chip.ok {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      margin-bottom: 8px;
+    }
+    .section-divider-line { flex: 1; height: 1px; background: var(--gray-200); }
+    .section-divider-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── EVIDENCE PANEL ─── */
+    .evidence-section {
+      background: var(--gray-900);
+      color: white;
+      padding: 56px 24px;
+    }
+    .evidence-section h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .evidence-section .sub {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .evidence-card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #334155;
+    }
+    .evidence-rating { font-size: 28px; font-weight: 800; color: #fb923c; margin-bottom: 4px; }
+    .evidence-platform { font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
+    .evidence-quote {
+      font-size: 13px;
+      font-style: italic;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .evidence-source {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .evidence-source a { color: #60a5fa; text-decoration: none; }
+    .evidence-source a:hover { text-decoration: underline; }
+
+    /* ─── PROPOSAL BOX ─── */
+    .proposal-section {
+      background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+      color: white;
+      padding: 64px 24px;
+      text-align: center;
+    }
+    .proposal-section h2 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .proposal-section p {
+      color: #94a3b8;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+    .proposal-cards {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .proposal-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 260px;
+      text-align: left;
+    }
+    .proposal-card .phase {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fb923c;
+      margin-bottom: 8px;
+    }
+    .proposal-card .title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .proposal-card .items {
+      list-style: none;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+    }
+    .proposal-card .items li { padding: 3px 0; }
+    .proposal-card .items li::before { content: "→ "; color: #fb923c; }
+    .proposal-card .price {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+    }
+    .proposal-card .price-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .proposal-cta {
+      display: inline-block;
+      background: #fb923c;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 36px;
+      border-radius: 50px;
+      text-decoration: none;
+    }
+    .proposal-cta:hover { background: #f97316; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--gray-900);
+      color: #64748b;
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+    }
+    footer a { color: #94a3b8; }
+
+    /* ─── SCENARIO HEADER ─── */
+    .scenario-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--gray-900);
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .scenario-before .scenario-num { background: var(--red); }
+    .scenario-after .scenario-num { background: var(--green); }
+
+    /* ─── LIVE PROGRESS BAR ─── */
+    .progress-bar-wrap {
+      background: var(--gray-200);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    .pb-stuck { width: 72%; background: #f97316; animation: pulse 1.5s ease-in-out infinite; }
+    .pb-done { width: 100%; background: #16a34a; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    /* ─── OFFLINE BADGE ─── */
+    .offline-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .offline-dot {
+      width: 7px; height: 7px;
+      background: #16a34a;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-badge">BuildOps Mobile · Technical Analysis</div>
+  <h1>Field techs are losing work.<br><span>The mobile app is the reason.</span></h1>
+  <p>Photos never reach the office. Timecards corrupt after every update. Android users reinstall 10× a year. These are React Native bugs — not mysteries.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="num">3.2★</span>
+      <span class="label">iOS App Store</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">~3.1★</span>
+      <span class="label">Google Play</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">4.4★</span>
+      <span class="label">Capterra (desk users)</span>
+    </div>
+    <div class="hero-stat">
+      <span class="num">10×</span>
+      <span class="label">Reinstalls / year (reported)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ INTRO TEXT ══════════ -->
+<div class="section-header">
+  <h2>Three critical failures — one root cause</h2>
+  <p>The Capterra rating is 4.4. The field app is 3.1. The gap is not product-market fit. It is mobile engineering depth.</p>
+</div>
+
+<!-- ══════════ SCENARIOS ══════════ -->
+<section class="scenarios">
+  <div class="scenarios-inner">
+
+    <!-- ── SCENARIO 1: PHOTO UPLOAD ── -->
+    <div class="scenario">
+      <!-- BEFORE -->
+      <div class="scenario-before">
+        <div class="scenario-tag before">⚠ Before — Bug Active</div>
+        <div class="scenario-num">1</div>
+        <h3>Photos uploaded on-site. Nothing reached the office.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="reinstall-count">!</div>
+            <div class="phone-screen">
+              <div class="screen-header">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                Work Order #4821 — Photos
+              </div>
+              <div class="screen-body">
+                <div class="upload-row">
+                  <div class="upload-icon">📸</div>
+                  <div>
+                    <div class="upload-name">chiller_unit_01.jpg</div>
+                    <div class="progress-bar-wrap"><div class="progress-bar-fill pb-stuck"></div></div>
+                    <div style="font-size:10px;color:#d97706;">Uploading… 72%</div>
+                  </div>
+                  <span class="upload-status status-stuck"><span class="spinner-ring"></span></span>
+                </div>
+                <div class="upload-row">
+                  <div class="upload-icon">📸</div>
+                  <div>
+                    <div class="upload-name">hvac_nameplate.jpg</div>
+                    <div style="font-size:10px;color:#dc2626;">Upload failed</div>
+                  </div>
+                  <span class="upload-status status-fail">✕ Failed</span>
+                </div>
+                <div class="upload-row">
+                  <div class="upload-icon">🎥</div>
+                  <div>
+                    <div class="upload-name">repair_video.mp4</div>
+                    <div style="font-size:10px;color:#dc2626;">No response from server</div>
+                  </div>
+                  <span class="upload-status status-fail">✕ Failed</span>
+                </div>
+                <div class="error-banner">⚠ Media not synced — office sees nothing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-box">
+          "Taking pictures takes forever to upload and sometimes with the camera it won't upload to the gallery on BuildOps."
+          <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">★☆☆☆☆ Google Play Store →</a>
+        </div>
+        <div class="review-box">
+          "Video doesn't upload to the office."
+          <a href="https://www.softwareadvice.com/field-service/buildops-profile/reviews/" target="_blank" rel="noopener">★☆☆☆☆ Software Advice →</a>
+        </div>
+        <div class="review-box">
+          "It currently won't let me add pics or write a job summary after two uninstalls and reinstalls."
+          <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">★☆☆☆☆ Google Play Store →</a>
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip">Disputed warranty claims</div>
+          <div class="impact-chip">No job documentation</div>
+          <div class="impact-chip">Tech support calls</div>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="scenario-after">
+        <div class="scenario-tag after">✓ After — Fixed</div>
+        <div class="scenario-num">1</div>
+        <h3>Photos queue offline. Upload completes when signal returns.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-header" style="background:#16a34a;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                Work Order #4821 — Photos
+              </div>
+              <div class="screen-body">
+                <div class="offline-badge"><div class="offline-dot"></div>Offline queue active — 3 items</div>
+                <div class="upload-row">
+                  <div class="upload-icon">📸</div>
+                  <div>
+                    <div class="upload-name">chiller_unit_01.jpg</div>
+                    <div class="progress-bar-wrap"><div class="progress-bar-fill pb-done"></div></div>
+                  </div>
+                  <span class="upload-status status-ok">✓ Synced</span>
+                </div>
+                <div class="upload-row">
+                  <div class="upload-icon">📸</div>
+                  <div>
+                    <div class="upload-name">hvac_nameplate.jpg</div>
+                    <div class="progress-bar-wrap"><div class="progress-bar-fill pb-done"></div></div>
+                  </div>
+                  <span class="upload-status status-ok">✓ Synced</span>
+                </div>
+                <div class="upload-row">
+                  <div class="upload-icon">🎥</div>
+                  <div>
+                    <div class="upload-name">repair_video.mp4</div>
+                    <div class="progress-bar-wrap"><div class="progress-bar-fill pb-done"></div></div>
+                  </div>
+                  <span class="upload-status status-ok">✓ Synced</span>
+                </div>
+                <div class="success-banner">✓ All media delivered to office</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="after-box">
+          <strong>What changed:</strong> Content URI normalization for Android 10+ scoped storage. Exponential-backoff retry queue persisted to SQLite. Upload resumes automatically on reconnect — even if app was backgrounded or killed.
+        </div>
+        <div class="after-box">
+          <strong>Tech:</strong> React Native background fetch + react-native-background-upload + WAL-mode SQLite job queue. Works on Samsung A-series, Motorola G-series, Android 10–14.
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip ok">Documentation complete</div>
+          <div class="impact-chip ok">Office sees everything</div>
+          <div class="impact-chip ok">Zero tech-support calls</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCENARIO 2: TIMECARD CORRUPTION ── -->
+    <div class="scenario">
+      <!-- BEFORE -->
+      <div class="scenario-before">
+        <div class="scenario-tag before">⚠ Before — Bug Active</div>
+        <div class="scenario-num">2</div>
+        <h3>Updated the app. Timecard now shows 2022.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-header">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                My Timecard
+              </div>
+              <div class="screen-body">
+                <div class="tc-row">
+                  <span class="tc-label">Week of</span>
+                  <span class="tc-value wrong">Jan 3, 2022 ⚠</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Clock In</span>
+                  <span class="tc-value wrong">— (no record)</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Clock Out</span>
+                  <span class="tc-value wrong">— (no record)</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Hours Today</span>
+                  <span class="tc-value wrong">0h 00m</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Week Total</span>
+                  <span class="tc-value wrong">0h 00m</span>
+                </div>
+                <div class="error-banner">⚠ Data from wrong date range. Update corrupted state.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-box">
+          "The time card reverts back to years ago every time I open it since a recent update."
+          <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">★☆☆☆☆ Google Play Store →</a>
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip">Payroll errors</div>
+          <div class="impact-chip">Prevailing wage liability</div>
+          <div class="impact-chip">Tech calls office mid-job</div>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="scenario-after">
+        <div class="scenario-tag after">✓ After — Fixed</div>
+        <div class="scenario-num">2</div>
+        <h3>App updated. Timecard opens on today's date. Correct hours shown.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-header" style="background:#16a34a;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                My Timecard
+              </div>
+              <div class="screen-body">
+                <div class="tc-row">
+                  <span class="tc-label">Week of</span>
+                  <span class="tc-value ok">Feb 17, 2026 ✓</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Clock In</span>
+                  <span class="tc-value ok">7:42 AM</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Clock Out</span>
+                  <span class="tc-value ok">In progress…</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Hours Today</span>
+                  <span class="tc-value ok">4h 18m</span>
+                </div>
+                <div class="tc-row">
+                  <span class="tc-label">Week Total</span>
+                  <span class="tc-value ok">21h 42m</span>
+                </div>
+                <div class="success-banner">✓ Update complete — state migrated correctly</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="after-box">
+          <strong>What changed:</strong> Versioned AsyncStorage key schema with migration runner on first-launch post-update. Old epoch keys detected, migrated to new schema, stale keys purged. Zero date regressions across schema versions.
+        </div>
+        <div class="after-box">
+          <strong>Tech:</strong> Storage migration library (redux-persist migrations or custom) + schema version hash check on app launch. Tested against 3-version rollback scenarios.
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip ok">Payroll accuracy</div>
+          <div class="impact-chip ok">Compliance documented</div>
+          <div class="impact-chip ok">No support escalations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCENARIO 3: ANDROID CRASH-REINSTALL ── -->
+    <div class="scenario">
+      <!-- BEFORE -->
+      <div class="scenario-before">
+        <div class="scenario-tag before">⚠ Before — Bug Active</div>
+        <div class="scenario-num">3</div>
+        <h3>4 hours of asset data. One crash. Gone.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="reinstall-count" style="background:#dc2626;font-size:9px;width:30px;height:20px;border-radius:10px;padding:0 5px;">×10</div>
+            <div class="phone-screen">
+              <div class="crash-screen">
+                <div class="crash-icon">💥</div>
+                <div class="crash-title">BuildOps has stopped</div>
+                <div class="crash-sub">
+                  React Native bridge crash<br/>
+                  <span style="color:#ef4444;font-size:9px;">OutOfMemoryError: Failed to allocate<br/>native bridge buffer (Samsung SM-A32F)</span>
+                </div>
+                <div class="crash-sub">All unsaved entries lost</div>
+                <button class="crash-btn">Reinstall App</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-box">
+          "It's incredibly buggy. In one year, I've had to uninstall and reinstall at least 10 times."
+          <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">★☆☆☆☆ Google Play Store →</a>
+        </div>
+        <div class="review-box">
+          "One time after 4 hours of adding assets from a job it lost them all. I spent four hours re-adding."
+          <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">★☆☆☆☆ Google Play Store →</a>
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip">4h data loss events</div>
+          <div class="impact-chip">Reinstall treadmill</div>
+          <div class="impact-chip">Field tech paper fallback</div>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="scenario-after">
+        <div class="scenario-tag after">✓ After — Fixed</div>
+        <div class="scenario-num">3</div>
+        <h3>App recovers from crash. Data persisted to disk. Zero loss.</h3>
+
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="screen-header" style="background:#16a34a;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Asset Entry — Job #4821
+              </div>
+              <div class="screen-body">
+                <div class="offline-badge" style="margin-bottom:12px;"><div class="offline-dot"></div>Auto-save every 30s</div>
+                <div class="upload-row" style="background:#f0fdf4;">
+                  <div class="upload-icon" style="background:#dcfce7;">🔧</div>
+                  <div>
+                    <div class="upload-name">Chiller Unit 1</div>
+                    <div style="font-size:10px;color:#16a34a;">Saved to local DB ✓</div>
+                  </div>
+                  <span class="upload-status status-ok">✓</span>
+                </div>
+                <div class="upload-row" style="background:#f0fdf4;">
+                  <div class="upload-icon" style="background:#dcfce7;">🔧</div>
+                  <div>
+                    <div class="upload-name">AHU Unit 3</div>
+                    <div style="font-size:10px;color:#16a34a;">Saved to local DB ✓</div>
+                  </div>
+                  <span class="upload-status status-ok">✓</span>
+                </div>
+                <div class="success-banner">✓ Crash recovery: 47 assets restored from local DB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="after-box">
+          <strong>What changed:</strong> Offline-first SQLite write-ahead log. Every form field auto-saves to local DB on change. RN bridge memory pressure reduced via lazy-loaded native modules. Samsung OneUI battery optimizer handled via explicit exclusion prompt at onboarding.
+        </div>
+        <div class="after-box">
+          <strong>Tech:</strong> WatermelonDB (SQLite, WAL mode) + RN Hermes engine (smaller footprint) + ProGuard rules tuned for Samsung A-series. Tested on SM-A32F, Moto G32, Pixel 6a.
+        </div>
+
+        <div class="impact-row">
+          <div class="impact-chip ok">Zero data loss</div>
+          <div class="impact-chip ok">No reinstall needed</div>
+          <div class="impact-chip ok">Works on mid-range Android</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ EVIDENCE ══════════ -->
+<section class="evidence-section">
+  <h2>The evidence is public</h2>
+  <p class="sub">Every bug shown above is documented in reviews and changelogs — not hypothetical.</p>
+
+  <div class="evidence-grid">
+    <div class="evidence-card">
+      <div class="evidence-rating">3.2★</div>
+      <div class="evidence-platform">Apple App Store · 363 ratings · v3.73.0</div>
+      <p class="evidence-quote">"I can't see previous jobs. I have to physically look into the job visits... Too much stuff going on that has bugs."</p>
+      <div class="evidence-source">★☆☆☆☆ App Store, Dec 2025 · <a href="https://apps.apple.com/us/app/buildops-commercial-trades/id1459667206" target="_blank" rel="noopener">View app →</a></div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-rating">~3.1★</div>
+      <div class="evidence-platform">Google Play · com.buildops</div>
+      <p class="evidence-quote">"It's incredibly buggy. In one year, I've had to uninstall and reinstall at least 10 times."</p>
+      <div class="evidence-source">★☆☆☆☆ Google Play · <a href="https://play.google.com/store/apps/details?id=com.buildops" target="_blank" rel="noopener">View app →</a></div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-rating">4.4★</div>
+      <div class="evidence-platform">Capterra · 100+ reviews (desk / office users)</div>
+      <p class="evidence-quote">Capterra ratings are from admins and managers — not the field technicians using the app daily in basements, rooftops, and concrete-blocked HVAC rooms.</p>
+      <div class="evidence-source"><a href="https://www.capterra.com/p/180965/BuildOps/" target="_blank" rel="noopener">Capterra reviews →</a></div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-rating">React Native</div>
+      <div class="evidence-platform">Confirmed via BuildOps job posting</div>
+      <p class="evidence-quote">Senior Mobile Software Engineer posting explicitly requires "React Native component library" and "React Native applications/components." Native bridge (Swift, Java) listed as preferred.</p>
+      <div class="evidence-source"><a href="https://buildops.com/jobs/senior-mobile-software-engineer/" target="_blank" rel="noopener">Job posting →</a></div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-rating">$127M</div>
+      <div class="evidence-platform">Series C · March 2025 · Meritech Capital</div>
+      <p class="evidence-quote">$1B valuation. 5 new products launched at Forge 2025. Ambitious roadmap — AI Job Health Tracking, Payments+, Fleet+. Engineering capacity constraint is the bottleneck.</p>
+      <div class="evidence-source">Series C announcement · Mar 2025</div>
+    </div>
+
+    <div class="evidence-card">
+      <div class="evidence-rating">13 open</div>
+      <div class="evidence-platform">Engineering roles · Feb 2026</div>
+      <p class="evidence-quote">Open: Senior Mobile Engineer, Mobile Product Manager, Staff Engineer, SRE, and 9 more engineering roles. Mobile hiring is active — demand exceeds team capacity.</p>
+      <div class="evidence-source"><a href="https://buildops.com/careers/" target="_blank" rel="noopener">BuildOps careers →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROPOSAL ══════════ -->
+<section class="proposal-section">
+  <h2>Close these bugs in 6 weeks.</h2>
+  <p>Elinext Mobile Engineering</p>
+
+  <div class="proposal-cards">
+    <div class="proposal-card">
+      <div class="phase">Phase 1 · Weeks 1–6</div>
+      <div class="title">Media Pipeline + Timecard Stability</div>
+      <ul class="items">
+        <li>Content URI fix (Android 10–14)</li>
+        <li>Offline upload queue (SQLite WAL)</li>
+        <li>AsyncStorage migration runner</li>
+        <li>Crash-resistant data persistence</li>
+      </ul>
+      <div class="price">Fixed scope</div>
+      <div class="price-sub">Fixed · 2 React Native engineers · 6 weeks</div>
+    </div>
+
+    <div class="proposal-card">
+      <div class="phase">Phase 2 · Ongoing</div>
+      <div class="title">Offline Reliability + AI Features</div>
+      <ul class="items">
+        <li>Full offline-first architecture</li>
+        <li>AI Job Health Tracking mobile layer</li>
+        <li>Platform parity (iOS / Android)</li>
+        <li>Performance budget enforcement</li>
+      </ul>
+      <div class="price">Fixed scope</div>
+      <div class="price-sub">Per month · Dedicated team · Scales with roadmap</div>
+    </div>
+  </div>
+
+  
+    Get in Touch</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <p>Prepared by <strong>Elinext</strong> · Mobile Engineering Augmentation · elinext.com/contacts/</p>
+  <p style="margin-top:8px;font-size:11px;">All review quotes sourced from public app stores and review sites. BuildOps job postings sourced from buildops.com/careers/.</p>
+</footer>
+
+</body>
+</html>

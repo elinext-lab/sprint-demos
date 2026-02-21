@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FieldPulse Mobile — Android Issues & Fix Proposal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --fp-blue: #1E6CF0;
+    --fp-dark: #0F1A2E;
+    --fp-red: #E53E3E;
+    --fp-green: #38A169;
+    --fp-orange: #DD6B20;
+    --fp-gray: #718096;
+    --fp-light: #F7FAFC;
+    --fp-border: #E2E8F0;
+    --fp-card: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #F0F4F8;
+    color: var(--fp-dark);
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--fp-dark) 0%, #1a2744 100%);
+    padding: 48px 24px 40px;
+    text-align: center;
+    color: white;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(30,108,240,0.25);
+    border: 1px solid rgba(30,108,240,0.5);
+    color: #90CDF4;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .header h1 span { color: #63B3ED; }
+  .header p {
+    font-size: 16px;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    margin: 0 auto 24px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .header-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  .header-meta-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #68D391;
+  }
+
+  /* SECTION */
+  .section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .section-label h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--fp-dark);
+  }
+  .section-label .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--fp-blue);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* IMPACT BANNER */
+  .impact-banner {
+    background: linear-gradient(135deg, #FFF5F5 0%, #FFF0E0 100%);
+    border: 1px solid #FED7D7;
+    border-left: 4px solid var(--fp-red);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 32px;
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -8px;
+  }
+  .impact-banner p {
+    font-size: 14px;
+    color: #742A2A;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .impact-banner strong { color: #C53030; }
+
+  /* BEFORE/AFTER PAIR */
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 640px) {
+    .ba-grid { grid-template-columns: 1fr; }
+  }
+
+  .ba-card {
+    background: var(--fp-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    border: 1px solid var(--fp-border);
+  }
+  .ba-card-header {
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--fp-border);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ba-card.before .ba-card-header { background: #FFF5F5; color: var(--fp-red); }
+  .ba-card.after .ba-card-header { background: #F0FFF4; color: var(--fp-green); }
+  .ba-card-header .icon { font-size: 16px; }
+  .ba-card-body { padding: 18px; }
+
+  /* PHONE MOCKUP */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 4px;
+  }
+  .phone {
+    width: 200px;
+    height: 296px;
+    background: #1A1A2E;
+    border-radius: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.08);
+    overflow: hidden;
+    position: relative;
+    border: 4px solid #2D2D4E;
+  }
+  .phone-notch {
+    width: 60px; height: 10px;
+    background: #1A1A2E;
+    border-radius: 0 0 8px 8px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .phone-screen {
+    background: #F7FAFC;
+    height: calc(100% - 10px);
+    padding: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* BEFORE SCREENS */
+  .before-screen-photo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bs-header {
+    background: var(--fp-blue);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .bs-photo-area {
+    flex: 1;
+    background: #E2E8F0;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: 2px dashed #CBD5E0;
+  }
+  .bs-photo-area .camera-icon { font-size: 20px; }
+  .bs-photo-area .uploading-text {
+    font-size: 7px;
+    color: var(--fp-gray);
+    font-weight: 600;
+  }
+  .bs-error-badge {
+    background: var(--fp-red);
+    color: white;
+    font-size: 6px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .bs-spinner {
+    width: 14px; height: 14px;
+    border: 2px solid #CBD5E0;
+    border-top-color: var(--fp-red);
+    border-radius: 50%;
+    animation: spin 1.2s linear infinite;
+    margin: 4px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* AFTER SCREENS */
+  .after-screen-photo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .as-header {
+    background: var(--fp-blue);
+    color: white;
+    font-size: 8px;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .as-photo-thumb {
+    background: linear-gradient(135deg, #2D3748, #4A5568);
+    border-radius: 6px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 22px;
+  }
+  .as-success-banner {
+    background: #F0FFF4;
+    border: 1px solid #9AE6B4;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 6px;
+    font-weight: 700;
+    color: #276749;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .as-action-btn {
+    background: var(--fp-green);
+    color: white;
+    font-size: 7px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* OFFLINE SCREENS */
+  .offline-status {
+    background: #FFF5F5;
+    border: 1px solid #FED7D7;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 6px;
+    font-weight: 700;
+    color: var(--fp-red);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .offline-form {
+    background: white;
+    border: 1px solid var(--fp-border);
+    border-radius: 6px;
+    padding: 6px;
+    flex: 1;
+  }
+  .form-field {
+    background: #EDF2F7;
+    height: 16px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-field::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 60%;
+    background: #CBD5E0;
+    border-radius: 3px;
+  }
+  .form-field.filled::after { width: 80%; background: #A0AEC0; }
+  .lost-data-overlay {
+    background: rgba(229,62,62,0.9);
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .lost-data-overlay .icon { font-size: 14px; }
+  .lost-data-overlay p { font-size: 6px; color: white; font-weight: 700; margin-top: 2px; }
+
+  .online-status {
+    background: #F0FFF4;
+    border: 1px solid #9AE6B4;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 6px;
+    font-weight: 700;
+    color: #276749;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .sync-indicator {
+    background: #EBF8FF;
+    border: 1px solid #90CDF4;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 6px;
+    color: #2B6CB0;
+    font-weight: 700;
+    text-align: center;
+  }
+  .saved-badge {
+    background: var(--fp-green);
+    color: white;
+    font-size: 6px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* NOTIFICATION SCREENS */
+  .notif-list { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+  .notif-item {
+    background: white;
+    border: 1px solid var(--fp-border);
+    border-radius: 5px;
+    padding: 5px 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .notif-item .ni-icon { font-size: 10px; flex-shrink: 0; }
+  .notif-item .ni-text { font-size: 6px; line-height: 1.3; flex: 1; }
+  .notif-item .ni-time { font-size: 5px; color: var(--fp-gray); flex-shrink: 0; }
+  .notif-item.delayed { opacity: 0.4; }
+  .notif-item.missing { opacity: 0.2; text-decoration: line-through; }
+  .delay-badge {
+    background: var(--fp-orange);
+    color: white;
+    font-size: 5px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-top: 1px;
+    display: inline-block;
+  }
+  .doze-overlay {
+    background: rgba(45,55,72,0.85);
+    border-radius: 6px;
+    padding: 6px;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .doze-overlay p { font-size: 6px; color: rgba(255,255,255,0.8); font-weight: 600; }
+  .doze-overlay .doze-icon { font-size: 16px; margin-bottom: 2px; }
+
+  .notif-item.realtime { border-color: var(--fp-green); background: #F0FFF4; }
+  .realtime-badge {
+    background: var(--fp-green);
+    color: white;
+    font-size: 5px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-top: 1px;
+    display: inline-block;
+  }
+
+  /* DESCRIPTION BOX */
+  .desc-box { padding: 14px 0 0; }
+  .desc-box .desc-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fp-dark);
+    margin-bottom: 6px;
+  }
+  .desc-box p { font-size: 12px; color: var(--fp-gray); line-height: 1.5; }
+  .evidence-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--fp-blue);
+    font-weight: 600;
+    background: #EBF8FF;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .evidence-quote {
+    margin-top: 8px;
+    background: #FFF5F5;
+    border-left: 3px solid var(--fp-red);
+    padding: 6px 10px;
+    border-radius: 0 6px 6px 0;
+    font-size: 11px;
+    color: #744210;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .evidence-quote.green {
+    background: #F0FFF4;
+    border-left-color: var(--fp-green);
+    color: #276749;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* IMPACT GRID */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 8px 0 0;
+  }
+  @media (max-width: 600px) {
+    .impact-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .impact-card {
+    background: var(--fp-card);
+    border: 1px solid var(--fp-border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+  }
+  .impact-card .ic-icon { font-size: 22px; margin-bottom: 8px; }
+  .impact-card .ic-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--fp-blue);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .impact-card .ic-label {
+    font-size: 11px;
+    color: var(--fp-gray);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* SPRINT TABLE */
+  .sprint-section {
+    background: linear-gradient(135deg, var(--fp-dark) 0%, #1a2744 100%);
+    border-radius: 14px;
+    padding: 28px 24px;
+    color: white;
+    max-width: 960px;
+    margin: 0 auto 40px;
+  }
+  .sprint-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .sprint-section .sprint-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 20px;
+  }
+  .sprint-table { width: 100%; border-collapse: collapse; }
+  .sprint-table th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.45);
+    padding: 0 0 10px;
+    text-align: left;
+  }
+  .sprint-table td {
+    font-size: 13px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .sprint-table .p0 {
+    background: rgba(229,62,62,0.15);
+    color: #FC8181;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .sprint-table .p1 {
+    background: rgba(237,137,54,0.15);
+    color: #F6AD55;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .sprint-total {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+  .sprint-total .total-label { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .sprint-total .total-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #68D391;
+  }
+  .sprint-total .total-sub { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+  /* CTA */
+  .cta-section {
+    background: var(--fp-card);
+    border: 1px solid var(--fp-border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    max-width: 960px;
+    margin: 0 auto 40px;
+    box-shadow: var(--shadow-sm);
+  }
+  .cta-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--fp-dark);
+  }
+  .cta-section p {
+    font-size: 14px;
+    color: var(--fp-gray);
+    margin-bottom: 20px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-button {
+    display: inline-block;
+    background: var(--fp-blue);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(30,108,240,0.3);
+  }
+  .cta-sub {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--fp-gray);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--fp-border);
+    margin: 8px 0 32px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Elinext · Confidential Analysis</div>
+  <h1>FieldPulse Android<br><span>Has 3 Broken Workflows</span></h1>
+  <p>Photos don't upload on Android 16. Offline data disappears. Notifications arrive 15 minutes late. Each one blocks a field tech from doing their job — and one blocks your flagship AI feature.</p>
+  <div class="header-meta">
+    <div class="header-meta-item"><span class="dot"></span> React Native stack (confirmed)</div>
+    <div class="header-meta-item"><span class="dot"></span> $50M Series C · August 2025</div>
+    <div class="header-meta-item"><span class="dot"></span> Estimate AI depends on photo upload</div>
+  </div>
+</div>
+
+<!-- IMPACT BANNER -->
+<div style="max-width:960px;margin:24px auto 0;padding:0 20px;">
+  <div class="impact-banner">
+    <p>Android 16 launched Q4 2025. Every new Android device sold today runs Android 16. <strong>Photo upload is broken on all of them.</strong> Your Estimate AI feature — the headline from your $50M raise — cannot generate quotes from field photos taken on Android 16 devices. This is a P0 for your AI roadmap, not just a UX issue.</p>
+  </div>
+</div>
+
+<!-- IMPACT METRICS -->
+<div class="section" style="padding-top:16px;padding-bottom:16px;">
+  <div class="impact-grid">
+    <div class="impact-card">
+      <div class="ic-icon">📱</div>
+      <div class="ic-value">~150M</div>
+      <div class="ic-label">Android 16 devices in field (Q4 2025, growing)</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-icon">🤖</div>
+      <div class="ic-value">0%</div>
+      <div class="ic-label">Estimate AI success rate on Android 16 (photo upload fails)</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-icon">📵</div>
+      <div class="ic-value">15 min</div>
+      <div class="ic-label">Avg notification delay on Samsung OneUI with Doze mode</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-icon">💾</div>
+      <div class="ic-value">Lost</div>
+      <div class="ic-label">Job data when offline sync conflict fails on reconnect</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-icon">🔧</div>
+      <div class="ic-value">6 wks</div>
+      <div class="ic-label">Fixed-scope sprint to close all three bugs</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-icon">✅</div>
+      <div class="ic-value">2 eng</div>
+      <div class="ic-label">React Native engineers from Elinext Mobile Engineering</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUG 1: PHOTO UPLOAD -->
+<div class="section" style="padding-bottom:16px;">
+  <div class="section-label">
+    <div class="num">1</div>
+    <h2>Android 16: Photo Upload Broken → Estimate AI Fails</h2>
+  </div>
+
+  <div class="ba-grid">
+    <!-- BEFORE -->
+    <div class="ba-card before">
+      <div class="ba-card-header"><span class="icon">❌</span> NOW — Android 16 Devices</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="before-screen-photo">
+                <div class="bs-header">📷 Add Job Photos</div>
+                <div class="bs-photo-area">
+                  <div class="camera-icon">📷</div>
+                  <div class="bs-spinner"></div>
+                  <div class="uploading-text">Uploading...</div>
+                  <div class="bs-error-badge">Upload Failed</div>
+                </div>
+                <div class="bs-error-badge" style="font-size:7px;padding:3px 8px;">Photo permission error — Android 16</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What the tech sees</div>
+          <p>Selects a photo → spinner → silent fail. No error message. No photo in job record.</p>
+          <div class="evidence-quote">"Ever since android 16 update, photos won't upload into the app rendering it useless in the field"<br>— Android user review, 2025</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="ba-card after">
+      <div class="ba-card-header"><span class="icon">✅</span> FIXED — Updated Permission Model</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="after-screen-photo">
+                <div class="as-header">📷 Add Job Photos</div>
+                <div class="as-photo-thumb">🏠</div>
+                <div class="as-success-banner">✓ Photo uploaded (2 of 3)</div>
+                <div class="as-photo-thumb" style="height:40px;">🔧</div>
+                <div class="as-action-btn">Generate Estimate with AI →</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What changes</div>
+          <p>Updated react-native-image-picker to Android 16 permission model. Photos upload immediately. Estimate AI receives photos and generates quotes in the field.</p>
+          <div class="evidence-quote green">Estimate AI now functions on all Android devices. Field-to-office data complete.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+</div>
+
+<!-- BUG 2: OFFLINE DATA LOSS -->
+<div class="section" style="padding-bottom:16px;">
+  <div class="section-label">
+    <div class="num">2</div>
+    <h2>Offline Mode: Data Disappears When Reconnecting</h2>
+  </div>
+
+  <div class="ba-grid">
+    <!-- BEFORE -->
+    <div class="ba-card before">
+      <div class="ba-card-header"><span class="icon">❌</span> NOW — Poor Cell Coverage Area</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div style="display:flex;flex-direction:column;gap:5px;height:100%;">
+                <div class="offline-status">✗ OFFLINE MODE</div>
+                <div class="offline-form">
+                  <div class="form-field filled"></div>
+                  <div class="form-field filled"></div>
+                  <div class="form-field"></div>
+                  <div class="form-field" style="height:22px;margin-bottom:0;background:#EDF2F7;border-radius:3px;"></div>
+                </div>
+                <div class="lost-data-overlay">
+                  <div class="icon">⚠️</div>
+                  <p>Sync conflict — data lost on reconnect</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What happens</div>
+          <p>Tech fills out job record in basement (no signal). App reconnects — sync conflict drops the writes. Data lost.</p>
+          <div class="evidence-quote">"offline mode is not very helpful, and data is easily lost in poor cell coverage areas"<br>— App Store review, 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="ba-card after">
+      <div class="ba-card-header"><span class="icon">✅</span> FIXED — Conflict-Safe Sync Queue</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div style="display:flex;flex-direction:column;gap:5px;height:100%;">
+                <div class="online-status">● BACK ONLINE</div>
+                <div class="sync-indicator">⟳ Syncing 4 records...</div>
+                <div class="offline-form" style="opacity:0.9;">
+                  <div class="form-field filled"></div>
+                  <div class="form-field filled"></div>
+                  <div class="form-field" style="width:70%;background:#A0AEC0;height:16px;border-radius:3px;"></div>
+                </div>
+                <div class="saved-badge">✓ All data synced safely</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What changes</div>
+          <p>Persistent offline queue with conflict-safe merge strategy. When reconnecting, local writes are preserved and merged — never silently dropped.</p>
+          <div class="evidence-quote green">Job records survive connectivity loss. Payroll data complete. Customer history intact.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+</div>
+
+<!-- BUG 3: NOTIFICATIONS -->
+<div class="section" style="padding-bottom:16px;">
+  <div class="section-label">
+    <div class="num">3</div>
+    <h2>Push Notifications: Job Alerts Arrive 15 Minutes Late</h2>
+  </div>
+
+  <div class="ba-grid">
+    <!-- BEFORE -->
+    <div class="ba-card before">
+      <div class="ba-card-header"><span class="icon">❌</span> NOW — FCM Notification Payload on Doze</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div style="display:flex;flex-direction:column;gap:5px;height:100%;">
+                <div class="bs-header">Job Notifications</div>
+                <div class="notif-list">
+                  <div class="notif-item">
+                    <div class="ni-icon">✅</div>
+                    <div class="ni-text">Job #2847 assigned<br><span class="delay-badge">DELAYED +12min</span></div>
+                    <div class="ni-time">9:47am</div>
+                  </div>
+                  <div class="notif-item delayed">
+                    <div class="ni-icon">🔧</div>
+                    <div class="ni-text">Status: En Route<br><span class="delay-badge">DELAYED +18min</span></div>
+                    <div class="ni-time">10:02am</div>
+                  </div>
+                  <div class="notif-item missing">
+                    <div class="ni-icon">💳</div>
+                    <div class="ni-text">Payment collected</div>
+                    <div class="ni-time">—</div>
+                  </div>
+                </div>
+                <div class="doze-overlay">
+                  <div class="doze-icon">😴</div>
+                  <p>Android Doze batching notifications<br>Samsung OneUI Adaptive Battery</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What happens</div>
+          <p>FCM <code>notification</code> payload is batched by Android Doze. Alerts arrive 10–20 min late. Some never arrive. Documented in FieldPulse's own Help Center.</p>
+          <div class="evidence-quote">"Phone notifications will display improperly when changing the status of jobs"<br>— FieldPulse Help Center + user reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFTER -->
+    <div class="ba-card after">
+      <div class="ba-card-header"><span class="icon">✅</span> FIXED — FCM Data Payload + Foreground Service</div>
+      <div class="ba-card-body">
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div style="display:flex;flex-direction:column;gap:5px;height:100%;">
+                <div class="as-header">Job Notifications</div>
+                <div class="notif-list">
+                  <div class="notif-item realtime">
+                    <div class="ni-icon">✅</div>
+                    <div class="ni-text">Job #2847 assigned<br><span class="realtime-badge">INSTANT</span></div>
+                    <div class="ni-time">9:35am</div>
+                  </div>
+                  <div class="notif-item realtime">
+                    <div class="ni-icon">🔧</div>
+                    <div class="ni-text">Status: En Route<br><span class="realtime-badge">INSTANT</span></div>
+                    <div class="ni-time">9:44am</div>
+                  </div>
+                  <div class="notif-item realtime">
+                    <div class="ni-icon">💳</div>
+                    <div class="ni-text">Payment $340 collected<br><span class="realtime-badge">INSTANT</span></div>
+                    <div class="ni-time">10:18am</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desc-box">
+          <div class="desc-title">What changes</div>
+          <p>Switch to FCM <code>data</code> payload processed by app via Notifee foreground service. Doze-resistant. Notifications arrive within 1-2 seconds regardless of battery optimization.</p>
+          <div class="evidence-quote green">Dispatcher has real-time job status. Techs never miss an assignment. Operator AI booking loop closed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider" style="margin-bottom:8px;"></div>
+</div>
+
+<!-- SPRINT PROPOSAL -->
+<div style="max-width:960px;margin:0 auto 0;padding:0 20px;">
+  <div class="sprint-section">
+    <h3>4–6 Week Sprint · 2 React Native Engineers</h3>
+    <div class="sprint-sub">Fixed scope. No surprises. Deliverables you can ship.</div>
+    <table class="sprint-table">
+      <thead>
+        <tr>
+          <th>Fix</th>
+          <th>Platform</th>
+          <th>Time</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Android 16 photo upload (react-native-image-picker update + URI fix)</td>
+          <td>Android</td>
+          <td>~2 weeks</td>
+          <td><span class="p0">P0 — AI blocker</span></td>
+        </tr>
+        <tr>
+          <td>FCM data payload migration + Notifee foreground service</td>
+          <td>Android</td>
+          <td>~1.5 weeks</td>
+          <td><span class="p1">P1 — Dispatching</span></td>
+        </tr>
+        <tr>
+          <td>Offline sync conflict resolution + persistent queue</td>
+          <td>Both</td>
+          <td>~3 weeks</td>
+          <td><span class="p1">P1 — Data integrity</span></td>
+        </tr>
+        <tr>
+          <td>QA — Samsung OneUI 6/7, Pixel 9, Android 13/14/16 regression suite</td>
+          <td>Android</td>
+          <td>~1 week</td>
+          <td><span class="p1">P1 — Release gate</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="sprint-total">
+      <div>
+        <div class="total-label">Fixed price range</div>
+        <div class="total-value">$12–18K</div>
+        <div class="total-sub">2 senior RN engineers · 4–6 weeks · </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="total-label">Can start</div>
+        <div style="font-size:18px;font-weight:700;color:#68D391;">Within 2 weeks</div>
+        <div class="total-sub">No onboarding cost; team scales to ongoing if needed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div style="padding:0 20px;">
+  <div class="cta-section">
+    <h3>Let's fix Android before your next release</h3>
+    <p>15 minutes to walk through the bugs and scope together. We've done this for 5 similar field service teams.</p>
+    elinext.com/contacts/
+    <div class="cta-sub">Elinext Mobile Engineering · Elinext Mobile Engineering</div>
+  </div>
+</div>
+
+</body>
+</html>

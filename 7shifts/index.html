@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7shifts Android Reliability Audit — Elinext</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; line-height: 1.6; }
+
+  /* HEADER */
+  header { background: #0f172a; border-bottom: 1px solid #1e293b; padding: 36px 24px 32px; text-align: center; }
+  .header-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #3b82f6; font-weight: 600; margin-bottom: 12px; }
+  header h1 { font-size: 28px; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+  header .subtitle { font-size: 14px; color: #94a3b8; }
+  header .prepared { display: inline-block; margin-top: 14px; font-size: 12px; color: #64748b; background: #1e293b; border: 1px solid #334155; border-radius: 6px; padding: 5px 14px; }
+
+  /* RATING BAR */
+  .rating-bar { max-width: 720px; margin: 32px auto; padding: 0 24px; }
+  .rating-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 28px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; }
+  .rating-item { text-align: center; }
+  .rating-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #64748b; margin-bottom: 4px; }
+  .rating-value { font-size: 22px; font-weight: 700; }
+  .rating-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .rating-ios { color: #f8fafc; }
+  .rating-android { color: #facc15; }
+  .rating-bench { color: #22c55e; }
+  .rating-gap { color: #ef4444; }
+  .divider-v { width: 1px; background: #334155; height: 48px; }
+
+  /* SECTION */
+  .section-label { max-width: 720px; margin: 40px auto 16px; padding: 0 24px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #64748b; font-weight: 600; }
+
+  /* BUG CARD */
+  .bug-card { max-width: 720px; margin: 0 auto 28px; padding: 0 24px; }
+  .bug-card-inner { background: #1e293b; border: 1px solid #334155; border-radius: 14px; overflow: hidden; }
+  .bug-card-header { padding: 18px 24px 14px; border-bottom: 1px solid #334155; display: flex; align-items: center; gap: 12px; }
+  .bug-number { width: 28px; height: 28px; border-radius: 50%; background: #0f172a; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #94a3b8; flex-shrink: 0; }
+  .bug-title { font-size: 16px; font-weight: 700; color: #f8fafc; }
+  .bug-tag { margin-left: auto; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; background: #1a1a2e; border: 1px solid #3b82f6; color: #3b82f6; border-radius: 4px; padding: 3px 8px; }
+
+  /* BEFORE/AFTER GRID */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .ba-col { padding: 24px; }
+  .ba-col.before { border-right: 1px solid #334155; }
+  .ba-badge { display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; border-radius: 4px; padding: 3px 10px; margin-bottom: 14px; }
+  .badge-before { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-after { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+
+  /* PHONE MOCKUP */
+  .phone { width: 200px; margin: 0 auto 16px; background: #0a0a0f; border: 2px solid #334155; border-radius: 20px; padding: 8px 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .phone-notch { width: 40px; height: 6px; background: #334155; border-radius: 3px; margin: 0 auto 6px; }
+  .phone-screen { background: #f8fafc; border-radius: 10px; min-height: 300px; overflow: hidden; }
+
+  /* SCREEN: login error */
+  .screen-login-error { padding: 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; }
+  .screen-login-error .app-icon { width: 36px; height: 36px; background: #2563eb; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+  .screen-login-error .app-icon span { color: white; font-size: 14px; font-weight: 800; }
+  .screen-login-error .error-box { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 8px; width: 100%; text-align: center; }
+  .screen-login-error .error-title { font-size: 9px; font-weight: 700; color: #dc2626; margin-bottom: 2px; }
+  .screen-login-error .error-sub { font-size: 7.5px; color: #991b1b; }
+  .screen-login-error .retry-btn { margin-top: 8px; background: #e5e7eb; border-radius: 4px; padding: 4px 12px; font-size: 8px; color: #374151; font-weight: 600; }
+
+  /* SCREEN: success home */
+  .screen-home { padding: 8px; min-height: 180px; }
+  .screen-home .status-bar { display: flex; justify-content: space-between; font-size: 6px; color: #6b7280; margin-bottom: 6px; }
+  .screen-home .greeting { font-size: 9px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+  .screen-home .greeting span { color: #2563eb; }
+  .screen-home .shift-item { background: #f0fdf4; border-left: 3px solid #16a34a; border-radius: 3px; padding: 4px 6px; margin-bottom: 4px; }
+  .screen-home .shift-time { font-size: 7px; font-weight: 700; color: #15803d; }
+  .screen-home .shift-name { font-size: 7px; color: #374151; }
+  .screen-home .shift-item2 { background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 3px; padding: 4px 6px; margin-bottom: 4px; }
+  .screen-home .shift-time2 { font-size: 7px; font-weight: 700; color: #1d4ed8; }
+
+  /* SCREEN: no notifications */
+  .screen-notif-empty { background: #f8fafc; min-height: 180px; padding: 8px; }
+  .screen-notif-empty .notif-header { font-size: 8px; font-weight: 700; color: #111827; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 8px; }
+  .screen-notif-empty .notif-empty-state { text-align: center; padding: 20px 8px; }
+  .screen-notif-empty .notif-empty-icon { font-size: 24px; margin-bottom: 6px; opacity: 0.2; }
+  .screen-notif-empty .notif-empty-text { font-size: 7.5px; color: #9ca3af; }
+  .screen-notif-empty .shift-warning { margin-top: 10px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 6px; }
+  .screen-notif-empty .warning-text { font-size: 7px; color: #92400e; font-weight: 600; }
+
+  /* SCREEN: notification success */
+  .screen-notif-ok { background: #f8fafc; min-height: 180px; padding: 8px; }
+  .screen-notif-ok .notif-banner { background: #111827; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .screen-notif-ok .notif-app-icon { width: 20px; height: 20px; background: #2563eb; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .screen-notif-ok .notif-app-icon span { font-size: 9px; font-weight: 800; color: white; }
+  .screen-notif-ok .notif-content { flex: 1; }
+  .screen-notif-ok .notif-title { font-size: 8px; font-weight: 700; color: #f9fafb; }
+  .screen-notif-ok .notif-body { font-size: 7px; color: #d1d5db; }
+  .screen-notif-ok .notif-time { font-size: 6.5px; color: #6b7280; }
+  .screen-notif-ok .home-bg { background: #ffffff; border-radius: 4px; padding: 6px; }
+  .screen-notif-ok .home-text { font-size: 7.5px; color: #374151; }
+
+  /* SCREEN: timezone before */
+  .screen-tz-before { background: #f8fafc; min-height: 180px; padding: 8px; }
+  .screen-tz-before .tz-header { font-size: 8px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+  .screen-tz-before .tz-mgr { background: #eff6ff; border-radius: 4px; padding: 6px; margin-bottom: 6px; }
+  .screen-tz-before .tz-label { font-size: 6.5px; color: #6b7280; margin-bottom: 2px; }
+  .screen-tz-before .tz-time { font-size: 10px; font-weight: 700; color: #1e40af; }
+  .screen-tz-before .tz-worker { background: #fef2f2; border-radius: 4px; padding: 6px; border: 1px solid #fca5a5; }
+  .screen-tz-before .tz-mismatch { font-size: 7px; color: #dc2626; font-weight: 600; margin-top: 3px; }
+
+  /* SCREEN: timezone after */
+  .screen-tz-after { background: #f8fafc; min-height: 180px; padding: 8px; }
+  .screen-tz-after .tz-header { font-size: 8px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+  .screen-tz-after .tz-mgr { background: #eff6ff; border-radius: 4px; padding: 6px; margin-bottom: 6px; }
+  .screen-tz-after .tz-label { font-size: 6.5px; color: #6b7280; margin-bottom: 2px; }
+  .screen-tz-after .tz-time { font-size: 10px; font-weight: 700; color: #1e40af; }
+  .screen-tz-after .tz-worker { background: #f0fdf4; border-radius: 4px; padding: 6px; border: 1px solid #86efac; }
+  .screen-tz-after .tz-match { font-size: 7px; color: #16a34a; font-weight: 600; margin-top: 3px; }
+
+  /* CAPTION + QUOTE */
+  .ba-caption { font-size: 12px; color: #cbd5e1; margin-bottom: 10px; }
+  blockquote { font-size: 11px; color: #94a3b8; font-style: italic; border-left: 2px solid #334155; padding-left: 10px; margin-bottom: 8px; line-height: 1.5; }
+  blockquote cite { display: block; font-size: 10px; color: #64748b; font-style: normal; margin-top: 4px; }
+  .evidence-link { display: inline-block; font-size: 10px; color: #3b82f6; text-decoration: none; border: 1px solid rgba(59,130,246,0.3); border-radius: 4px; padding: 3px 8px; margin-bottom: 8px; }
+  .evidence-link:hover { background: rgba(59,130,246,0.1); }
+  .sub-note { font-size: 10px; color: #64748b; font-style: italic; }
+
+  /* FIX DETAILS */
+  .fix-list { margin-top: 10px; }
+  .fix-item { font-size: 11px; color: #cbd5e1; padding: 3px 0; padding-left: 14px; position: relative; }
+  .fix-item::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+  .timeline-chip { display: inline-block; margin-top: 12px; font-size: 10px; font-weight: 600; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); color: #3b82f6; border-radius: 20px; padding: 4px 12px; }
+
+  /* SPRINT TABLE */
+  .sprint-section { max-width: 720px; margin: 0 auto 28px; padding: 0 24px; }
+  .sprint-inner { background: #1e293b; border: 1px solid #334155; border-radius: 14px; overflow: hidden; }
+  .sprint-table { width: 100%; border-collapse: collapse; }
+  .sprint-table th { background: #0f172a; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #64748b; font-weight: 600; padding: 12px 16px; text-align: left; border-bottom: 1px solid #334155; }
+  .sprint-table td { font-size: 12px; color: #cbd5e1; padding: 12px 16px; border-bottom: 1px solid #1e293b; vertical-align: top; }
+  .sprint-table tr:last-child td { border-bottom: none; }
+  .sprint-table tr:hover td { background: rgba(59,130,246,0.04); }
+  .sprint-week { font-weight: 700; color: #94a3b8; white-space: nowrap; }
+  .sprint-outcome { color: #22c55e; font-size: 11px; font-weight: 600; }
+
+  /* CTA */
+  .cta-section { max-width: 720px; margin: 0 auto 60px; padding: 0 24px; }
+  .cta-inner { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; border-radius: 14px; padding: 36px 32px; text-align: center; }
+  .cta-inner h2 { font-size: 22px; font-weight: 700; color: #f8fafc; margin-bottom: 8px; }
+  .cta-inner .cta-sub { font-size: 14px; color: #94a3b8; margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .contact-card { display: inline-block; background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px 24px; text-align: left; margin-bottom: 20px; min-width: 260px; }
+  .contact-name { font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 2px; }
+  .contact-company { font-size: 12px; color: #3b82f6; margin-bottom: 10px; }
+  .contact-email { font-size: 13px; color: #94a3b8; }
+  .contact-email a { color: #3b82f6; text-decoration: none; }
+  .contact-email a:hover { text-decoration: underline; }
+  .cta-stats { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+  .cta-stat { font-size: 11px; color: #64748b; }
+  .cta-stat strong { color: #94a3b8; }
+  .cta-btn { display: inline-block; margin-top: 20px; background: #2563eb; color: white; font-size: 14px; font-weight: 600; padding: 12px 28px; border-radius: 8px; text-decoration: none; letter-spacing: 0.3px; }
+  .cta-btn:hover { background: #1d4ed8; }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 24px; border-top: 1px solid #1e293b; font-size: 11px; color: #475569; }
+
+  @media (max-width: 540px) {
+    .ba-grid { grid-template-columns: 1fr; }
+    .ba-col.before { border-right: none; border-bottom: 1px solid #334155; }
+    .rating-card { justify-content: center; }
+    .divider-v { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Elinext Mobile Engineering</div>
+  <h1>7shifts Android Reliability Audit</h1>
+  <p class="subtitle">Three documented issues. Three fixes. Fourteen weeks.</p>
+  <span class="prepared">Prepared for Engineering Leadership, CTO &mdash; 7shifts</span>
+</header>
+
+<!-- RATING BAR -->
+<div class="rating-bar">
+  <div class="rating-card">
+    <div class="rating-item">
+      <div class="rating-label">iOS App Store</div>
+      <div class="rating-value rating-ios">4.8 <span style="font-size:14px;">&#9733;</span></div>
+      <div class="rating-sub">25,392 ratings</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="rating-item">
+      <div class="rating-label">Google Play</div>
+      <div class="rating-value rating-android">4.5 <span style="font-size:14px;">&#9733;</span></div>
+      <div class="rating-sub">8,100 ratings</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="rating-item">
+      <div class="rating-label">iOS &rarr; Android gap</div>
+      <div class="rating-value rating-gap">&minus;0.3 &#9733;</div>
+      <div class="rating-sub">Attributable to reliability bugs</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="rating-item">
+      <div class="rating-label">Deputy Android (benchmark)</div>
+      <div class="rating-value rating-bench">4.74 <span style="font-size:14px;">&#9733;</span></div>
+      <div class="rating-sub">Closest competitor</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUG 1: AUTH -->
+<div class="section-label">Documented Issues &amp; Fixes</div>
+
+<div class="bug-card">
+  <div class="bug-card-inner">
+    <div class="bug-card-header">
+      <div class="bug-number">1</div>
+      <div class="bug-title">Login / Authentication Failure</div>
+      <div class="bug-tag">Severity: Critical</div>
+    </div>
+    <div class="ba-grid">
+      <!-- BEFORE -->
+      <div class="ba-col before">
+        <div class="ba-badge badge-before">Before</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-login-error">
+              <div class="app-icon"><span>7S</span></div>
+              <div class="error-box">
+                <div class="error-title">Login Failed</div>
+                <div class="error-sub">Please try again</div>
+              </div>
+              <div class="retry-btn">Try Again</div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">Aug 21&ndash;27, 2025: 6-day login outage. No root cause published.</p>
+        <blockquote>
+          "The app has a habit of logging everyone out, or the servers crashing in general."
+          <cite>&mdash; App Store review, June 16, 2025</cite>
+        </blockquote>
+        <a class="evidence-link" href="https://statuspage.incident.io/7shifts/incidents/01K373E8S3VJ22SXRN24HQYQGR" target="_blank" rel="noopener">&#128279; Incident report &rarr;</a>
+        <p class="sub-note">StatusGator documents 191+ outages since January 2023.</p>
+      </div>
+      <!-- AFTER -->
+      <div class="ba-col">
+        <div class="ba-badge badge-after">After</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-home">
+              <div class="status-bar"><span>9:41</span><span>&#9679;&#9679;&#9679;</span></div>
+              <div class="greeting">Good morning, <span>Maria</span></div>
+              <div class="shift-item">
+                <div class="shift-time">9:00 AM &ndash; 5:00 PM</div>
+                <div class="shift-name">Front of House &bull; Today</div>
+              </div>
+              <div class="shift-item2">
+                <div class="shift-time2">2:00 PM &ndash; 10:00 PM</div>
+                <div class="shift-name" style="color:#374151;">Kitchen &bull; Tomorrow</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">Session token refresh hardened. Offline auth cache. Graceful SSO fallback.</p>
+        <div class="fix-list">
+          <div class="fix-item">JWT refresh with exponential backoff</div>
+          <div class="fix-item">Offline authentication cache (24h TTL)</div>
+          <div class="fix-item">SSO token fallback path</div>
+          <div class="fix-item">Real-time session health monitoring</div>
+        </div>
+        <div class="timeline-chip">Weeks 5&ndash;10 &nbsp;&middot;&nbsp; 2 Android engineers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUG 2: PUSH NOTIFICATIONS -->
+<div class="bug-card">
+  <div class="bug-card-inner">
+    <div class="bug-card-header">
+      <div class="bug-number">2</div>
+      <div class="bug-title">Push Notification Delivery Failures</div>
+      <div class="bug-tag">Platform: Android</div>
+    </div>
+    <div class="ba-grid">
+      <!-- BEFORE -->
+      <div class="ba-col before">
+        <div class="ba-badge badge-before">Before</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-notif-empty">
+              <div class="notif-header">Notifications</div>
+              <div class="notif-empty-state">
+                <div class="notif-empty-icon">&#128276;</div>
+                <div class="notif-empty-text">No notifications</div>
+              </div>
+              <div class="shift-warning">
+                <div class="warning-text">&#9888; Shift starts in 60 min — worker unaware</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">Shift starts in 60 min. Worker never received the notification.</p>
+        <blockquote>
+          "Some employees don't get chat notifications despite having notifications enabled."
+          <cite>&mdash; Google Play review, 2024</cite>
+        </blockquote>
+        <a class="evidence-link" href="https://kb.7shifts.com/hc/en-us/articles/15981314768147-7shifts-Push-Notifications" target="_blank" rel="noopener">&#128279; Official KB troubleshooting article &rarr;</a>
+        <p class="sub-note">7shifts maintains a dedicated push notification troubleshooting KB — confirming complaint volume.</p>
+      </div>
+      <!-- AFTER -->
+      <div class="ba-col">
+        <div class="ba-badge badge-after">After</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-notif-ok">
+              <div class="notif-banner">
+                <div class="notif-app-icon"><span>7S</span></div>
+                <div class="notif-content">
+                  <div class="notif-title">&#9200; Your shift starts in 1 hour</div>
+                  <div class="notif-body">Front of House &bull; 9:00 AM today</div>
+                  <div class="notif-time">8:00 AM &bull; 7shifts</div>
+                </div>
+              </div>
+              <div class="home-bg">
+                <div class="home-text" style="color:#16a34a; font-weight:700; font-size:8px;">&#10003; Delivered reliably</div>
+                <div class="home-text" style="font-size:7px; margin-top:2px;">FCM high-priority &bull; Doze-exempt &bull; Confirmed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">High-priority FCM flags. Doze mode exemption. Critical shift notifications always delivered.</p>
+        <div class="fix-list">
+          <div class="fix-item">FCM <code style="font-size:10px; color:#93c5fd;">priority: high</code> for shift reminders</div>
+          <div class="fix-item">Android Doze/App Standby exemption request</div>
+          <div class="fix-item">Delivery receipt tracking per device</div>
+          <div class="fix-item">Fallback SMS for critical missed notifications</div>
+        </div>
+        <div class="timeline-chip">Weeks 1&ndash;4 &nbsp;&middot;&nbsp; 1 Android engineer</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUG 3: TIMEZONE -->
+<div class="bug-card">
+  <div class="bug-card-inner">
+    <div class="bug-card-header">
+      <div class="bug-number">3</div>
+      <div class="bug-title">Timezone Data Integrity — Shift Creation</div>
+      <div class="bug-tag">Platform: Android + iOS</div>
+    </div>
+    <div class="ba-grid">
+      <!-- BEFORE -->
+      <div class="ba-col before">
+        <div class="ba-badge badge-before">Before</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-tz-before">
+              <div class="tz-header">Shift Times</div>
+              <div class="tz-mgr">
+                <div class="tz-label">Manager creates:</div>
+                <div class="tz-time">9:00 AM &ndash; 1:00 PM</div>
+              </div>
+              <div class="tz-worker">
+                <div class="tz-label">Worker sees:</div>
+                <div class="tz-time" style="color:#dc2626;">10:00 AM &ndash; 2:00 PM</div>
+                <div class="tz-mismatch">&#9888; +1 hour offset error</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">Manager creates 9&ndash;1 shift. Worker sees 10&ndash;2.</p>
+        <blockquote>
+          "When creating a shift, the app will save it in a different time zone. A shift set for 9-1 displays as 10-2."
+          <cite>&mdash; Google Play review, 2024</cite>
+        </blockquote>
+        <a class="evidence-link" href="https://kb.7shifts.com/hc/en-us/articles/33623132621971-How-to-change-the-timezone-if-it-s-displaying-incorrectly-on-my-7shifts-app" target="_blank" rel="noopener">&#128279; Official timezone KB article &rarr;</a>
+        <p class="sub-note">7shifts KB article confirms this is a known, recurring issue requiring manual workarounds.</p>
+      </div>
+      <!-- AFTER -->
+      <div class="ba-col">
+        <div class="ba-badge badge-after">After</div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="screen-tz-after">
+              <div class="tz-header">Shift Times</div>
+              <div class="tz-mgr">
+                <div class="tz-label">Manager creates:</div>
+                <div class="tz-time">9:00 AM &ndash; 1:00 PM</div>
+              </div>
+              <div class="tz-worker">
+                <div class="tz-label">Worker sees:</div>
+                <div class="tz-time" style="color:#15803d;">9:00 AM &ndash; 1:00 PM</div>
+                <div class="tz-match">&#10003; Times match exactly</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ba-caption">UTC serialization standardized. DST-safe timezone handling. All locations display correctly.</p>
+        <div class="fix-list">
+          <div class="fix-item">All timestamps stored and transmitted as UTC</div>
+          <div class="fix-item">DST-aware local display using <code style="font-size:10px; color:#93c5fd;">java.time</code></div>
+          <div class="fix-item">Location-to-timezone mapping validated server-side</div>
+          <div class="fix-item">Automated regression test suite for TZ edge cases</div>
+        </div>
+        <div class="timeline-chip">Weeks 11&ndash;14 &nbsp;&middot;&nbsp; 1 Android + 1 iOS engineer</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPRINT TABLE -->
+<div class="section-label">Proposed Sprint Plan</div>
+<div class="sprint-section">
+  <div class="sprint-inner">
+    <table class="sprint-table">
+      <thead>
+        <tr>
+          <th>Sprint</th>
+          <th>Scope</th>
+          <th>Success Metric</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sprint-week">Weeks 1&ndash;4</td>
+          <td>Push notification hardening — FCM priority flags, Doze mode exemption, delivery receipt instrumentation</td>
+          <td class="sprint-outcome">Notification delivery rate &gt;98% on Android</td>
+        </tr>
+        <tr>
+          <td class="sprint-week">Weeks 5&ndash;10</td>
+          <td>Auth / session management hardening — JWT refresh, offline cache, SSO fallback, session health dashboard</td>
+          <td class="sprint-outcome">Login outage frequency reduced to near-zero</td>
+        </tr>
+        <tr>
+          <td class="sprint-week">Weeks 11&ndash;14</td>
+          <td>Timezone serialization fix across Android + iOS — UTC normalization, DST handling, automated regression suite</td>
+          <td class="sprint-outcome">Shift creation timezone error rate &lt;0.1%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="section-label">Next Step</div>
+<div class="cta-section">
+  <div class="cta-inner">
+    <h2>Want to compare notes?</h2>
+    <p class="cta-sub">We have done this analysis before. If the root causes look different from the inside, we want to know — that is a more interesting conversation.</p>
+    <div class="contact-card">
+      <div class="contact-name">Elinext Mobile Engineering</div>
+      <div class="contact-company">Elinext Mobile Engineering</div>
+      <div class="contact-email">elinext.com/contacts/</div>
+    </div>
+    <div class="cta-stats">
+      <span class="cta-stat">iOS, Android, Kotlin & Swift engineering</span>
+      <span class="cta-stat"><strong>AI-powered</strong> development workflow — 30x productivity documented</span>
+      <span class="cta-stat"><strong>No retainer</strong> — start with a single sprint</span>
+    </div>
+    Get in touch &rarr;
+  </div>
+</div>
+
+<footer>
+  Analysis based on publicly available App Store reviews, Google Play reviews, 7shifts status page, and 7shifts knowledge base articles. &nbsp;&middot;&nbsp; Prepared by Elinext, February 2026.
+</footer>
+
+</body>
+</html>

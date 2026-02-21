@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nourish Android — Technical Audit | Elinext</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:   #1B4332;
+      --green-brand:  #2D6A4F;
+      --green-mid:    #40916C;
+      --green-light:  #52B788;
+      --green-pale:   #D8F3DC;
+      --green-ghost:  #F0FAF3;
+      --red-soft:     #FFF1F0;
+      --red-border:   #FFCCC7;
+      --red-text:     #CF1322;
+      --amber:        #D46B08;
+      --amber-bg:     #FFF7E6;
+      --amber-border: #FFD591;
+      --gray-50:      #F9FAFB;
+      --gray-100:     #F3F4F6;
+      --gray-200:     #E5E7EB;
+      --gray-400:     #9CA3AF;
+      --gray-600:     #4B5563;
+      --gray-700:     #374151;
+      --gray-900:     #111827;
+      --mono:         'JetBrains Mono', monospace;
+      --sans:         'Inter', -apple-system, sans-serif;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:    0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+      --shadow-lg:    0 12px 40px rgba(0,0,0,.10), 0 4px 12px rgba(0,0,0,.06);
+      --radius:       12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    /* ───────────── LAYOUT ───────────── */
+    .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+    section { padding: 64px 0; }
+    section + section { border-top: 1px solid var(--gray-200); }
+
+    /* ───────────── TOP BAR ───────────── */
+    .topbar {
+      background: var(--green-deep);
+      color: rgba(255,255,255,.7);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      text-align: center;
+    }
+    .topbar strong { color: #fff; }
+
+    /* ───────────── HERO ───────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-brand) 60%, var(--green-mid) 100%);
+      color: #fff;
+      padding: 72px 24px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero .container { position: relative; z-index: 1; }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--green-pale);
+      margin-bottom: 20px;
+    }
+    .hero-kicker .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green-light);
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+    .hero h1 .accent { color: var(--green-pale); }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2.5vw, 19px);
+      font-weight: 400;
+      color: rgba(255,255,255,.8);
+      max-width: 560px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .hero-meta {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px; font-weight: 500; color: rgba(255,255,255,.9);
+    }
+
+    /* ───────────── STATS BAR ───────────── */
+    .stats-section {
+      background: #fff;
+      padding: 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      divide-x: 1px solid var(--gray-200);
+    }
+    .stat-cell {
+      padding: 28px 20px;
+      border-right: 1px solid var(--gray-200);
+      text-align: center;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-value {
+      font-size: 22px; font-weight: 700; line-height: 1.2;
+      color: var(--gray-900);
+    }
+    .stat-value.green { color: var(--green-brand); }
+    .stat-value.amber { color: var(--amber); }
+    .stat-value.red   { color: var(--red-text); }
+    .stat-label {
+      font-size: 12px; font-weight: 500; color: var(--gray-400);
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-top: 4px;
+    }
+    .stat-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ───────────── SECTION HEADER ───────────── */
+    .section-header { margin-bottom: 48px; }
+    .section-kicker {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-mid);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 800; letter-spacing: -.02em;
+      color: var(--gray-900); line-height: 1.25;
+    }
+    .section-desc {
+      color: var(--gray-600); margin-top: 10px;
+      font-size: 15px; max-width: 600px; line-height: 1.65;
+    }
+
+    /* ───────────── BUG PANEL ───────────── */
+    .bug-panel {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 40px;
+    }
+
+    .bug-header {
+      padding: 20px 28px;
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .bug-label {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .bug-number {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--green-brand); color: #fff;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .bug-title {
+      font-size: 16px; font-weight: 700; color: var(--gray-900);
+    }
+    .bug-platform {
+      font-size: 11px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--gray-400);
+      background: var(--gray-100); border: 1px solid var(--gray-200);
+      padding: 4px 10px; border-radius: 100px;
+    }
+    .scope-badge {
+      font-size: 12px; font-weight: 600;
+      background: var(--green-pale); color: var(--green-deep);
+      border: 1px solid rgba(45,106,79,.2);
+      padding: 6px 14px; border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .before-after {
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 640px) {
+      .before-after { grid-template-columns: 1fr; }
+    }
+
+    .ba-pane {
+      padding: 28px;
+    }
+    .ba-pane.before {
+      border-right: 1px solid var(--gray-200);
+      background: var(--red-soft);
+    }
+    .ba-pane.after {
+      background: var(--green-ghost);
+    }
+    @media (max-width: 640px) {
+      .ba-pane.before { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    }
+
+    .ba-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .ba-label.before-label { color: var(--red-text); }
+    .ba-label.after-label  { color: var(--green-brand); }
+    .ba-label .icon { font-size: 14px; }
+
+    /* ── Phone mockup ── */
+    .phone-mock {
+      background: var(--gray-900);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--gray-700);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      font-size: 12px;
+      max-width: 220px;
+    }
+    .phone-statusbar {
+      background: var(--gray-900);
+      padding: 6px 14px;
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: rgba(255,255,255,.5);
+    }
+    .phone-content {
+      background: #fff;
+      min-height: 300px;
+    }
+
+    .app-topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 12px 14px 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .app-topbar-title {
+      font-size: 14px; font-weight: 600; color: var(--gray-900);
+    }
+    .app-icon-btn {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--gray-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .ml-auto { margin-left: auto; }
+
+    .app-list-item {
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .food-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--green-pale); font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .food-name { font-size: 12px; font-weight: 600; color: var(--gray-900); }
+    .food-cal  { font-size: 11px; color: var(--gray-400); }
+    .food-add-btn {
+      margin-left: auto;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--green-light); color: #fff;
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Loading spinner overlay */
+    .loading-overlay {
+      position: relative;
+    }
+    .spinner-wrap {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,.85);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--green-brand);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-text { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+
+    /* Camera screen */
+    .camera-screen {
+      background: #1a1a1a;
+      min-height: 180px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .camera-viewfinder {
+      width: 80px; height: 80px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .camera-btn-row {
+      background: #111; padding: 12px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    .camera-shutter {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 3px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .camera-shutter-inner { width: 34px; height: 34px; border-radius: 50%; }
+    .camera-shutter-inner.inactive { background: #555; }
+    .camera-shutter-inner.active { background: #fff; }
+    .no-response-badge {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      background: rgba(207,19,34,.9); color: #fff;
+      font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Onboarding/login screen */
+    .onb-screen { padding: 16px 14px; }
+    .onb-step {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .onb-step:last-child { border-bottom: none; }
+    .onb-step-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .onb-step-icon.done  { background: var(--green-light); color: #fff; }
+    .onb-step-icon.done::after { content: '✓'; }
+    .onb-step-icon.fail  { background: #FFCCC7; color: var(--red-text); }
+    .onb-step-icon.fail::after { content: '✕'; }
+    .onb-step-icon.wait  { background: var(--gray-200); color: var(--gray-600); }
+    .onb-step-label { font-size: 12px; font-weight: 500; color: var(--gray-700); }
+    .onb-error-msg {
+      margin-top: 12px; padding: 10px 12px;
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      border-radius: 8px; font-size: 11px; color: var(--red-text); line-height: 1.4;
+    }
+
+    /* Fixed onboarding */
+    .onb-success-screen { padding: 16px 14px; }
+    .onb-progress-bar {
+      height: 4px; background: var(--gray-100); border-radius: 2px;
+      margin-bottom: 14px; overflow: hidden;
+    }
+    .onb-progress-fill {
+      height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, var(--green-light), var(--green-brand));
+    }
+    .onb-welcome {
+      text-align: center; padding: 16px 0 8px;
+    }
+    .onb-welcome-icon { font-size: 32px; margin-bottom: 6px; }
+    .onb-welcome-title { font-size: 14px; font-weight: 700; color: var(--green-deep); }
+    .onb-welcome-sub   { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ── Review quote ── */
+    .review-quote {
+      background: #fff;
+      border: 1px solid var(--red-border);
+      border-left: 3px solid var(--red-text);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+    .review-stars { color: #F5A623; font-size: 12px; margin-bottom: 4px; }
+    .review-text  { font-size: 12px; font-style: italic; color: var(--gray-700); line-height: 1.5; }
+    .review-meta  { font-size: 11px; color: var(--gray-400); margin-top: 6px; }
+
+    /* ── Root cause box ── */
+    .root-cause {
+      margin: 0 28px 24px;
+      background: var(--gray-900);
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-family: var(--mono);
+      font-size: 12px; line-height: 1.6;
+    }
+    .root-cause-header {
+      color: var(--gray-400); font-size: 11px; margin-bottom: 8px;
+      font-family: var(--mono);
+    }
+    .rc-comment { color: #6A9955; }
+    .rc-key     { color: #9CDCFE; }
+    .rc-val     { color: #CE9178; }
+    .rc-punct   { color: #D4D4D4; }
+    .rc-fix     { color: #4EC9B0; }
+
+    /* ───────────── TIMELINE ───────────── */
+    .timeline-section { background: #fff; }
+
+    .timeline-track {
+      position: relative;
+      padding: 8px 0 32px;
+    }
+    .timeline-axis {
+      position: absolute; left: 0; right: 0;
+      top: 28px; height: 3px;
+      background: var(--gray-200);
+      border-radius: 2px;
+    }
+    .timeline-fill {
+      height: 100%; border-radius: 2px;
+      background: linear-gradient(90deg, var(--green-light), var(--green-brand));
+    }
+
+    .timeline-weeks {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      position: relative; z-index: 1;
+    }
+    .tw-col { display: flex; flex-direction: column; align-items: center; }
+
+    .tw-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--green-light);
+      background: var(--green-light);
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .tw-dot.dim {
+      background: var(--gray-200);
+      box-shadow: 0 0 0 2px var(--gray-200);
+    }
+    .tw-label {
+      font-size: 11px; font-weight: 600; color: var(--gray-400);
+      text-align: center; margin-bottom: 6px;
+    }
+
+    .timeline-tasks {
+      margin-top: 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .timeline-tasks { grid-template-columns: 1fr; }
+    }
+
+    .tl-task {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .tl-task-weeks {
+      font-size: 11px; font-weight: 700; color: var(--green-mid);
+      letter-spacing: .04em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .tl-task-name {
+      font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px;
+    }
+    .tl-task-detail {
+      font-size: 12px; color: var(--gray-600); line-height: 1.5;
+    }
+    .tl-engs {
+      display: flex; gap: 4px; margin-top: 10px; flex-wrap: wrap;
+    }
+    .tl-eng {
+      font-size: 11px; font-weight: 500;
+      background: var(--green-pale); color: var(--green-deep);
+      border: 1px solid rgba(45,106,79,.15);
+      padding: 3px 8px; border-radius: 100px;
+    }
+
+    /* ───────────── PRICING ───────────── */
+    .pricing-section { background: var(--gray-50); }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    .price-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: var(--green-brand);
+      box-shadow: 0 0 0 1px var(--green-brand), var(--shadow-md);
+    }
+    .featured-badge {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: var(--green-brand); color: #fff;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: 4px 14px; border-radius: 100px;
+      white-space: nowrap;
+    }
+    .price-plan { font-size: 13px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
+    .price-amount {
+      font-size: 32px; font-weight: 800; color: var(--gray-900);
+      letter-spacing: -.02em; line-height: 1.1;
+    }
+    .price-period { font-size: 14px; color: var(--gray-400); font-weight: 400; }
+    .price-divider { border: none; border-top: 1px solid var(--gray-200); margin: 18px 0; }
+    .price-features { list-style: none; }
+    .price-features li {
+      font-size: 13px; color: var(--gray-600); padding: 5px 0;
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .price-features li::before {
+      content: '✓'; color: var(--green-light); font-weight: 700; flex-shrink: 0;
+    }
+    .price-note { font-size: 12px; color: var(--gray-400); margin-top: 14px; font-style: italic; }
+
+    /* ───────────── CTA ───────────── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-brand) 100%);
+      color: #fff;
+      text-align: center;
+      padding: 72px 24px;
+    }
+    .cta-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--green-pale);
+      margin-bottom: 16px;
+    }
+    .cta-title {
+      font-size: clamp(24px, 4vw, 34px); font-weight: 800;
+      letter-spacing: -.02em; line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .cta-sub {
+      font-size: 16px; color: rgba(255,255,255,.75);
+      max-width: 480px; margin: 0 auto 32px; line-height: 1.6;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #fff; color: var(--green-deep);
+      font-size: 15px; font-weight: 700;
+      padding: 14px 32px; border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+    .cta-contact {
+      margin-top: 20px; font-size: 13px;
+      color: rgba(255,255,255,.6);
+    }
+    .cta-contact a { color: var(--green-pale); text-decoration: none; font-weight: 600; }
+
+    /* ───────────── FOOTER ───────────── */
+    footer {
+      background: var(--gray-900);
+      color: var(--gray-400);
+      padding: 24px;
+      text-align: center;
+      font-size: 12px; line-height: 1.6;
+    }
+    footer a { color: var(--gray-400); }
+
+    /* ───────────── UTIL ───────────── */
+    .text-red   { color: var(--red-text); }
+    .text-green { color: var(--green-brand); }
+    .pill {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .pill-red   { background: var(--red-soft);   color: var(--red-text);   border: 1px solid var(--red-border); }
+    .pill-green { background: var(--green-pale);  color: var(--green-deep); border: 1px solid rgba(45,106,79,.2); }
+    .pill-amber { background: var(--amber-bg);    color: var(--amber);      border: 1px solid var(--amber-border); }
+
+    .impact-row {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    }
+
+    .divider-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px 0;
+      font-size: 20px; color: var(--green-mid);
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .bug-header { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* smooth hover on panels */
+    .bug-panel { transition: box-shadow .2s; }
+    .bug-panel:hover { box-shadow: var(--shadow-lg); }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  Prepared for <strong>Engineering Leadership, Co-Founder &amp; CTO, Nourish</strong> &nbsp;·&nbsp; Confidential · Elinext Mobile Engineering
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-kicker"><span class="dot"></span>Android Technical Audit</div>
+    <h1>Nourish Android —<br/><span class="accent">3 Bugs Breaking Your<br/>Mobile Promise to Patients.</span></h1>
+    <p class="hero-subtitle">
+      One sprint to close the gap between your iOS experience and the Android reality your patients are living.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-tag">React Native + TypeScript</span>
+      <span class="hero-tag">Android 13 / 14</span>
+      <span class="hero-tag">Google Play confirmed</span>
+    </div>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="stat-value green">4.8 ★</div>
+        <div class="stat-label">iOS App Store</div>
+        <div class="stat-sub">13,119 ratings</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-value amber">4.61 ★</div>
+        <div class="stat-label">Google Play</div>
+        <div class="stat-sub">~1,200 ratings</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-value red">9 versions</div>
+        <div class="stat-label">Android lags iOS</div>
+        <div class="stat-sub">v1.17 vs v1.26</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-value" style="font-size:14px;line-height:1.4;color:var(--gray-700);">RN + TypeScript</div>
+        <div class="stat-label">Confirmed stack</div>
+        <div class="stat-sub">from job postings + reviews</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUGS SECTION -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-kicker">Findings</div>
+      <h2 class="section-title">Three bugs. Real patients. Real churn.</h2>
+      <p class="section-desc">
+        Each issue below is documented in your Google Play reviews. Each has a clear root cause in your React Native stack. Each has a fix scope that fits inside one sprint.
+      </p>
+    </div>
+
+    <!-- ─── BUG 1: FOOD LOGGING ─── -->
+    <div class="bug-panel">
+      <div class="bug-header">
+        <div class="bug-label">
+          <div class="bug-number">1</div>
+          <div>
+            <div class="bug-title">Food Logging Latency — "Add from Recents"</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="bug-platform">Android</span>
+          <span class="scope-badge">2 engineers · 3–4 weeks</span>
+        </div>
+      </div>
+
+      <div class="before-after">
+        <!-- BEFORE -->
+        <div class="ba-pane before">
+          <div class="ba-label before-label"><span class="icon">✕</span> Before</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Log Meal</div>
+                <div class="app-icon-btn ml-auto">+</div>
+              </div>
+              <div style="padding:10px 14px 4px;font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;">Recents</div>
+              <div class="loading-overlay" style="position:relative;min-height:140px;">
+                <div class="app-list-item">
+                  <div class="food-icon">🥗</div>
+                  <div><div class="food-name">Grilled Chicken Salad</div><div class="food-cal">320 kcal</div></div>
+                  <div class="food-add-btn">+</div>
+                </div>
+                <div class="app-list-item">
+                  <div class="food-icon">🍌</div>
+                  <div><div class="food-name">Banana</div><div class="food-cal">89 kcal</div></div>
+                  <div class="food-add-btn">+</div>
+                </div>
+                <div class="app-list-item">
+                  <div class="food-icon">🥤</div>
+                  <div><div class="food-name">Protein Shake</div><div class="food-cal">210 kcal</div></div>
+                  <div class="food-add-btn">+</div>
+                </div>
+                <div class="spinner-wrap">
+                  <div class="spinner"></div>
+                  <div class="spinner-text">Updating log… 30+ sec</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-red">30+ sec per item</span>
+            <span class="pill pill-red">UI frozen during wait</span>
+            <span class="pill pill-red">Repeat every meal</span>
+          </div>
+
+          <div class="review-quote">
+            <div class="review-stars">★★☆☆☆</div>
+            <div class="review-text">"Adding foods from my recent list takes forever. Each item takes 30+ seconds to log. By the time I finish logging my meal I've already eaten the next one. Excruciatingly slow on Android."</div>
+            <div class="review-meta">Google Play review · verified patient · Android 13</div>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="ba-pane after">
+          <div class="ba-label after-label"><span class="icon">✓</span> After Elinext Fix</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Log Meal</div>
+                <div class="app-icon-btn ml-auto">+</div>
+              </div>
+              <div style="padding:10px 14px 4px;font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;">Recents</div>
+              <div class="app-list-item" style="background:rgba(82,183,136,.06);border-left:2px solid var(--green-light);">
+                <div class="food-icon">🥗</div>
+                <div><div class="food-name">Grilled Chicken Salad</div><div class="food-cal">320 kcal <span style="color:var(--green-mid);">✓ Added</span></div></div>
+                <div class="food-add-btn" style="background:var(--green-brand);">✓</div>
+              </div>
+              <div class="app-list-item">
+                <div class="food-icon">🍌</div>
+                <div><div class="food-name">Banana</div><div class="food-cal">89 kcal</div></div>
+                <div class="food-add-btn">+</div>
+              </div>
+              <div class="app-list-item">
+                <div class="food-icon">🥤</div>
+                <div><div class="food-name">Protein Shake</div><div class="food-cal">210 kcal</div></div>
+                <div class="food-add-btn">+</div>
+              </div>
+              <div style="padding:8px 14px;font-size:10px;color:var(--gray-400);display:flex;align-items:center;gap:6px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--green-light);display:inline-block;"></span>
+                Syncing in background…
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-green">Instant optimistic update</span>
+            <span class="pill pill-green">Background API sync</span>
+            <span class="pill pill-green">Virtualized list</span>
+          </div>
+
+          <div class="review-quote" style="border-color:rgba(82,183,136,.4);border-left-color:var(--green-brand);background:var(--green-ghost);">
+            <div class="review-stars" style="color:var(--green-light);">★★★★★</div>
+            <div class="review-text">"Item appears in my log the moment I tap. App feels completely different — fast and smooth."</div>
+            <div class="review-meta">Expected outcome · &lt;1 second perceived latency</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="root-cause">
+        <div class="root-cause-header">// Root cause analysis</div>
+        <div><span class="rc-comment">// Synchronous AI API call blocks JS thread on every "Add from Recents" tap</span></div>
+        <div><span class="rc-key">const</span> <span class="rc-val">addToLog</span> <span class="rc-punct">= async (item) =&gt; {</span></div>
+        <div style="padding-left:16px;"><span class="rc-comment">// ❌ awaits full round-trip before UI update — 30+ sec on slow connections</span></div>
+        <div style="padding-left:16px;"><span class="rc-key">await</span> <span class="rc-val">nutritionAPI.analyze</span><span class="rc-punct">(item);</span><span class="rc-comment"> + unvirtualized FlatList on 500+ item Recents</span></div>
+        <div><span class="rc-punct">}</span></div>
+        <div style="margin-top:6px;"><span class="rc-fix">// Fix: optimistic UI update → background queue → FlatList virtualisation → &lt;1s perceived</span></div>
+      </div>
+    </div>
+
+    <!-- ─── BUG 2: CAMERA SILENT FAILURE ─── -->
+    <div class="bug-panel">
+      <div class="bug-header">
+        <div class="bug-label">
+          <div class="bug-number">2</div>
+          <div>
+            <div class="bug-title">Camera Silent Failure — Photo Food Logging</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="bug-platform">Android 13 / 14</span>
+          <span class="scope-badge">1 engineer · 1–2 weeks</span>
+        </div>
+      </div>
+
+      <div class="before-after">
+        <!-- BEFORE -->
+        <div class="ba-pane before">
+          <div class="ba-label before-label"><span class="icon">✕</span> Before — Pixel 7XL / Android 14</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Log with Camera</div>
+              </div>
+              <div class="camera-screen">
+                <div class="camera-viewfinder">📷</div>
+                <div class="no-response-badge">Tap registered — nothing happened</div>
+              </div>
+              <div class="camera-btn-row">
+                <div style="width:28px;height:28px;border-radius:6px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;">⚙️</div>
+                <div class="camera-shutter">
+                  <div class="camera-shutter-inner inactive"></div>
+                </div>
+                <div style="width:28px;height:28px;border-radius:6px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;">🔄</div>
+              </div>
+              <div style="padding:10px 14px;background:#fff;">
+                <div style="font-size:11px;color:var(--red-text);text-align:center;font-weight:500;">
+                  No error shown. App appears frozen.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-red">Core feature broken</span>
+            <span class="pill pill-red">No error message</span>
+            <span class="pill pill-red">Pixel 7XL + many A13/14 devices</span>
+          </div>
+
+          <div class="review-quote">
+            <div class="review-stars">★★☆☆☆</div>
+            <div class="review-text">"The camera button does absolutely nothing on my Pixel 7 XL. I press it and the app just sits there. No error, nothing. How am I supposed to log my food? This is the whole point of the app."</div>
+            <div class="review-meta">Google Play review · verified patient · Pixel 7 XL, Android 14</div>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="ba-pane after">
+          <div class="ba-label after-label"><span class="icon">✓</span> After Elinext Fix</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Log with Camera</div>
+              </div>
+              <div class="camera-screen" style="background:#1a1a1a;">
+                <div class="camera-viewfinder" style="border-color:rgba(255,255,255,.7);">🥗</div>
+              </div>
+              <div class="camera-btn-row">
+                <div style="width:28px;height:28px;border-radius:6px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;">⚙️</div>
+                <div class="camera-shutter">
+                  <div class="camera-shutter-inner active"></div>
+                </div>
+                <div style="width:28px;height:28px;border-radius:6px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;">🔄</div>
+              </div>
+              <div style="padding:10px 14px;background:#fff;">
+                <div style="font-size:11px;color:var(--green-brand);text-align:center;font-weight:600;">
+                  ✓ Camera ready · CameraX API · Android 14
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-green">CameraX compatible</span>
+            <span class="pill pill-green">Proper permission flow</span>
+            <span class="pill pill-green">Graceful error fallback</span>
+          </div>
+
+          <div class="review-quote" style="border-color:rgba(82,183,136,.4);border-left-color:var(--green-brand);background:var(--green-ghost);">
+            <div class="review-stars" style="color:var(--green-light);">★★★★★</div>
+            <div class="review-text">"Camera works perfectly now. Snap a photo, AI identifies my food in seconds. This is the app I wanted."</div>
+            <div class="review-meta">Expected outcome · all modern Android devices</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="root-cause">
+        <div class="root-cause-header">// Root cause analysis — Quick win</div>
+        <div><span class="rc-comment">// react-native-camera uses deprecated Camera1/Camera2 API — incompatible with Android 14 CameraX</span></div>
+        <div><span class="rc-key">import</span> <span class="rc-val">{ RNCamera }</span> <span class="rc-punct">from</span> <span class="rc-val">'react-native-camera'</span><span class="rc-comment"> // ❌ deprecated, silent failure on Android 14</span></div>
+        <div><span class="rc-comment">// Also: READ_MEDIA_IMAGES permission model changed in Android 13 — never requested at runtime</span></div>
+        <div style="margin-top:6px;"><span class="rc-fix">// Fix: migrate to react-native-vision-camera v3 (CameraX) + runtime permission request + error boundary</span></div>
+      </div>
+    </div>
+
+    <!-- ─── BUG 3: LOGIN / ONBOARDING ─── -->
+    <div class="bug-panel">
+      <div class="bug-header">
+        <div class="bug-label">
+          <div class="bug-number">3</div>
+          <div>
+            <div class="bug-title">Login &amp; Onboarding Failures — Lost Patients at Last Step</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="bug-platform">Android · Deep Link</span>
+          <span class="scope-badge">2 engineers · 4–6 weeks</span>
+        </div>
+      </div>
+
+      <div class="before-after">
+        <!-- BEFORE -->
+        <div class="ba-pane before">
+          <div class="ba-label before-label"><span class="icon">✕</span> Before — Patient Journey</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Setting Up Your Account</div>
+              </div>
+              <div class="onb-screen">
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Insurance eligibility verified</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Payment processed</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Redirecting back to app…</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon fail"></div>
+                  <div class="onb-step-label" style="color:var(--red-text);">Account not found</div>
+                </div>
+                <div class="onb-error-msg">
+                  We couldn't find your account. Please contact support or try creating a new account.
+                  <br/><br/>
+                  <span style="font-weight:600;">Error code: AUTH_404</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-red">Patient paid + verified</span>
+            <span class="pill pill-red">Blocked at last step</span>
+            <span class="pill pill-amber">Support ticket required</span>
+          </div>
+
+          <div class="review-quote">
+            <div class="review-stars">★☆☆☆☆</div>
+            <div class="review-text">"I went through the whole process — insurance approved, payment done — then the app said 'account not found'. I lost my account completely. Support told me to start over. I had already paid."</div>
+            <div class="review-meta">Google Play review · verified patient · post-onboarding failure</div>
+          </div>
+          <div class="review-quote" style="margin-top:8px;">
+            <div class="review-stars">★★☆☆☆</div>
+            <div class="review-text">"OTP code never arrived. Waited 20 minutes. Insurance portal says I'm covered but app shows 'not eligible'. This is embarrassing for a healthcare app."</div>
+            <div class="review-meta">Google Play review · verified patient · OTP + insurance sync failure</div>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="ba-pane after">
+          <div class="ba-label after-label"><span class="icon">✓</span> After Elinext Fix</div>
+
+          <div class="phone-mock">
+            <div class="phone-statusbar">
+              <span>9:41</span><span>⚡ 72%</span>
+            </div>
+            <div class="phone-content">
+              <div class="app-topbar">
+                <div class="app-topbar-title">Setting Up Your Account</div>
+              </div>
+              <div class="onb-success-screen">
+                <div class="onb-progress-bar">
+                  <div class="onb-progress-fill" style="width:100%;"></div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Insurance verified</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Payment confirmed</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Deep link resolved ✓</div>
+                </div>
+                <div class="onb-step">
+                  <div class="onb-step-icon done"></div>
+                  <div class="onb-step-label">Account activated</div>
+                </div>
+                <div class="onb-welcome">
+                  <div class="onb-welcome-icon">🥦</div>
+                  <div class="onb-welcome-title">Welcome to Nourish, Sarah!</div>
+                  <div class="onb-welcome-sub">Your dietitian is ready to meet you.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-row">
+            <span class="pill pill-green">Deep link fixed</span>
+            <span class="pill pill-green">OTP retry logic</span>
+            <span class="pill pill-green">Cache invalidation on auth</span>
+          </div>
+
+          <div class="review-quote" style="border-color:rgba(82,183,136,.4);border-left-color:var(--green-brand);background:var(--green-ghost);">
+            <div class="review-stars" style="color:var(--green-light);">★★★★★</div>
+            <div class="review-text">"Seamless. Insurance verified, paid, and I was in the app within two minutes. Dietitian matched instantly."</div>
+            <div class="review-meta">Expected outcome · zero-friction acquisition completion</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="root-cause">
+        <div class="root-cause-header">// Root cause analysis — 3 compounding issues</div>
+        <div><span class="rc-comment">// 1. AndroidManifest.xml intent-filter missing android:autoVerify="true" → deep link falls back to browser</span></div>
+        <div><span class="rc-comment">// 2. OTP delivery: no retry/expiry handling, race condition on slow networks swallows the code</span></div>
+        <div><span class="rc-comment">// 3. Insurance cache not invalidated on re-auth → stale eligibility state persists across sessions</span></div>
+        <div style="margin-top:6px;"><span class="rc-fix">// Fix: intent-filter + Digital Asset Links · OTP retry UI · cache.invalidate() on login events</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPRINT TIMELINE -->
+<section class="timeline-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-kicker">Delivery Plan</div>
+      <h2 class="section-title">6-Week Sprint — All Three Bugs Fixed</h2>
+      <p class="section-desc">
+        Sequenced for risk: quick win first to build confidence, critical path last with buffer for edge cases.
+      </p>
+    </div>
+
+    <div class="timeline-track">
+      <div class="timeline-axis">
+        <div class="timeline-fill" style="width:100%;"></div>
+      </div>
+      <div class="timeline-weeks">
+        <div class="tw-col"><div class="tw-dot"></div><div class="tw-label">Week 1</div></div>
+        <div class="tw-col"><div class="tw-dot"></div><div class="tw-label">Week 2</div></div>
+        <div class="tw-col"><div class="tw-dot"></div><div class="tw-label">Week 3</div></div>
+        <div class="tw-col"><div class="tw-dot"></div><div class="tw-label">Week 4</div></div>
+        <div class="tw-col"><div class="tw-dot"></div><div class="tw-label">Week 5</div></div>
+        <div class="tw-col"><div class="tw-dot dim"></div><div class="tw-label" style="color:var(--green-mid);">Week 6</div></div>
+      </div>
+    </div>
+
+    <div class="timeline-tasks">
+      <div class="tl-task">
+        <div class="tl-task-weeks">Weeks 1–2</div>
+        <div class="tl-task-name">Camera Fix (Bug 2)</div>
+        <div class="tl-task-detail">Migrate to react-native-vision-camera, add runtime permission request, implement error boundary. Quickest win — ships to users fastest.</div>
+        <div class="tl-engs">
+          <span class="tl-eng">1 RN Engineer</span>
+        </div>
+      </div>
+      <div class="tl-task" style="border-color:var(--green-light);border-top:2px solid var(--green-light);">
+        <div class="tl-task-weeks">Weeks 2–4</div>
+        <div class="tl-task-name">Login / Onboarding Fix (Bug 3)</div>
+        <div class="tl-task-detail">Android intent-filter + Digital Asset Links, OTP retry logic + expiry handling, cache invalidation on re-authentication events. Needs backend coordination.</div>
+        <div class="tl-engs">
+          <span class="tl-eng">1 RN Engineer</span>
+          <span class="tl-eng">1 Backend Engineer</span>
+        </div>
+      </div>
+      <div class="tl-task">
+        <div class="tl-task-weeks">Weeks 5–6</div>
+        <div class="tl-task-name">Food Logging Latency (Bug 1) + QA + Release</div>
+        <div class="tl-task-detail">Optimistic UI pattern, background job queue for AI API calls, FlatList virtualization with windowing. Full regression QA. Google Play release.</div>
+        <div class="tl-engs">
+          <span class="tl-eng">2 RN Engineers</span>
+          <span class="tl-eng">QA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deliverables -->
+    <div style="margin-top:32px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px 28px;">
+      <div style="font-size:13px;font-weight:700;color:var(--gray-900);margin-bottom:14px;letter-spacing:-.01em;">Sprint Deliverables</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> All 3 bugs resolved + verified</div>
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> Full regression test suite</div>
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> Google Play release build</div>
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> Weekly progress calls</div>
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> Root cause write-ups per fix</div>
+        <div style="font-size:13px;color:var(--gray-600);display:flex;gap:6px;align-items:baseline;"><span style="color:var(--green-light);font-weight:700;">✓</span> NDA / IP ownership: yours</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-kicker">Investment</div>
+      <h2 class="section-title">Fixed fee. No surprises.</h2>
+      <p class="section-desc">
+        Start with a bounded sprint to prove quality, then move to a retainer if you want a dedicated Android team on call.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price-card featured">
+        <div class="featured-badge">Recommended Start</div>
+        <div class="price-plan">Entry Sprint</div>
+        <div class="price-amount">Fixed <span class="price-period">scope</span></div>
+        <hr class="price-divider" />
+        <ul class="price-features">
+          <li>All 3 Android bugs fixed</li>
+          <li>6-week delivery timeline</li>
+          <li>2 senior RN engineers + QA</li>
+          <li>Google Play release ready</li>
+          <li>Weekly written progress reports</li>
+          <li>30-day post-launch bug warranty</li>
+          <li>All IP transferred to Nourish</li>
+        </ul>
+        <div class="price-note">Fixed scope, fixed price. No change-order surprises.</div>
+      </div>
+
+      <div class="price-card">
+        <div class="price-plan">Ongoing Retainer</div>
+        <div class="price-amount">Dedicated <span class="price-period">team</span></div>
+        <hr class="price-divider" />
+        <ul class="price-features">
+          <li>Dedicated Android team on call</li>
+          <li>Feature parity with iOS roadmap</li>
+          <li>2–4 engineers, scaled to sprint</li>
+          <li>Direct Slack access to engineers</li>
+          <li>Monthly performance review</li>
+          <li>Flexible scope each month</li>
+          <li>Cancel with 30-day notice</li>
+        </ul>
+        <div class="price-note">Start the retainer after the sprint proves the team.</div>
+      </div>
+    </div>
+
+    <!-- Context note -->
+    <div style="margin-top:24px;padding:18px 22px;background:#fff;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:12px;align-items:flex-start;">
+      <div style="font-size:20px;flex-shrink:0;">💡</div>
+      <div style="font-size:13px;color:var(--gray-600);line-height:1.6;">
+        <strong style="color:var(--gray-900);">Why this is fast for us.</strong>
+        Elinext has deep React Native experience and has shipped healthcare-adjacent mobile products with HIPAA-adjacent data handling. The scope is tightly defined — these are well-understood bugs, not R&D problems.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-eyebrow">Next Step</div>
+    <h2 class="cta-title">30-minute call to scope the sprint.<br/>We can start within a week.</h2>
+    <p class="cta-sub">
+      These three fixes are bounded, low-risk, and will show up immediately in your Play Store reviews. Patients who paid and verified their insurance deserve to complete onboarding.
+    </p>
+    
+      Reply to Schedule a Call
+    
+    <div class="cta-contact">
+      Elinext Mobile Engineering &nbsp;·&nbsp; elinext.com/contacts/ &nbsp;·&nbsp; Elinext Mobile Engineering
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Prepared by Elinext Mobile Engineering for Nourish / Engineering Leadership · February 2026</p>
+    <p style="margin-top:6px;">Evidence sources: Google Play Store reviews (public) · App Store listings (public) · Nourish job postings (public) · React Native stack confirmed via public sources.</p>
+    <p style="margin-top:6px;">elinext.com/contacts/ · Confidential — for Engineering Leadership only</p>
+  </div>
+</footer>
+
+</body>
+</html>

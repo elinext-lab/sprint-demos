@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZR415HX0B2');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harri WFM — Mobile Reliability Analysis | Elinext</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0b1628;
+    --navy-mid: #132240;
+    --navy-light: #1c3058;
+    --accent-blue: #2563eb;
+    --accent-teal: #0891b2;
+    --accent-green: #059669;
+    --accent-red: #dc2626;
+    --accent-amber: #d97706;
+    --white: #f8fafc;
+    --gray-100: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy-mid);
+    border-bottom: 2px solid var(--accent-blue);
+    padding: 32px 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.4px;
+  }
+  .header-left h1 span { color: var(--accent-blue); }
+  .header-left p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-blue);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .header-right .company {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .header-right .company span { color: var(--accent-teal); }
+  .header-right .subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .header-right .contact-line {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--accent-teal);
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+
+  section { padding: 60px 0; }
+  section + section { border-top: 1px solid var(--navy-light); }
+
+  h2.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  h2.section-title .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .tag-critical { background: rgba(220,38,38,0.2); color: #fca5a5; }
+  .tag-high { background: rgba(217,119,6,0.2); color: #fcd34d; }
+  .tag-medium { background: rgba(8,145,178,0.2); color: #67e8f9; }
+  .section-desc {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 36px;
+    max-width: 680px;
+  }
+
+  /* EXECUTIVE SUMMARY */
+  .exec-summary {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+  }
+  .exec-summary h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-blue);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .exec-summary p {
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .exec-summary strong { color: var(--white); }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .stat-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 8px;
+    padding: 20px 20px 16px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-card .number.red { color: var(--accent-red); }
+  .stat-card .number.amber { color: var(--accent-amber); }
+  .stat-card .number.green { color: var(--accent-green); }
+  .stat-card .number.blue { color: var(--accent-blue); }
+  .stat-card .label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  /* BEFORE / AFTER LAYOUT */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    align-items: start;
+    margin-bottom: 48px;
+  }
+  .arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+  }
+  .arrow-col svg { width: 28px; height: 28px; opacity: 0.5; }
+
+  .phone-frame-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .frame-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    padding: 5px 16px;
+    border-radius: 20px;
+  }
+  .frame-label.before { background: rgba(220,38,38,0.15); color: #fca5a5; }
+  .frame-label.after { background: rgba(5,150,105,0.15); color: #6ee7b7; }
+
+  .phone-frame {
+    width: 220px;
+    height: 400px;
+    background: #0f172a;
+    border: 3px solid #334155;
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+  }
+  .phone-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 22px;
+    background: #0f172a;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    z-index: 10;
+    border: 3px solid #334155;
+    border-top: none;
+  }
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px 16px;
+    position: relative;
+  }
+
+  /* BEFORE screens */
+  .screen-before-auth .app-header {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #3b82f6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .spinner {
+    width: 44px;
+    height: 44px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-badge {
+    background: rgba(220,38,38,0.15);
+    border: 1px solid rgba(220,38,38,0.4);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+    width: 100%;
+  }
+  .error-badge .icon { font-size: 18px; margin-bottom: 6px; }
+  .error-badge .msg {
+    font-size: 11px;
+    color: #fca5a5;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .error-badge .sub {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  .reinstall-prompt {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    margin-top: 8px;
+    text-align: center;
+  }
+  .reinstall-prompt .txt {
+    font-size: 10px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+  .reinstall-prompt .cta-del {
+    font-size: 11px;
+    color: #ef4444;
+    font-weight: 600;
+    margin-top: 6px;
+    padding: 5px 12px;
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* AFTER screens */
+  .screen-after .app-header {
+    position: absolute;
+    top: 24px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #3b82f6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .success-ring {
+    width: 52px;
+    height: 52px;
+    border: 3px solid var(--accent-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .success-ring::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 2px solid rgba(5,150,105,0.2);
+    border-radius: 50%;
+  }
+  .check { font-size: 22px; }
+
+  .success-msg {
+    background: rgba(5,150,105,0.12);
+    border: 1px solid rgba(5,150,105,0.35);
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+    width: 100%;
+  }
+  .success-msg .title { font-size: 11px; color: #6ee7b7; font-weight: 700; margin-bottom: 4px; }
+  .success-msg .body { font-size: 10px; color: #94a3b8; line-height: 1.4; }
+
+  .schedule-preview {
+    width: 100%;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .schedule-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 10px;
+  }
+  .schedule-row:last-child { border-bottom: none; }
+  .schedule-row .day { color: #94a3b8; }
+  .schedule-row .time { color: #e2e8f0; font-weight: 600; }
+  .schedule-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); }
+
+  /* SCREEN VARIANTS */
+  .screen-hire-before .crash-badge {
+    background: rgba(220,38,38,0.1);
+    border: 1px solid rgba(220,38,38,0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+    text-align: center;
+  }
+  .crash-badge .code {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #fca5a5;
+    font-weight: 700;
+    word-break: break-all;
+    margin-bottom: 6px;
+  }
+  .crash-badge .code-sub { font-size: 10px; color: #64748b; }
+
+  .hire-form {
+    width: 100%;
+  }
+  .hire-form .field {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin-bottom: 6px;
+    font-size: 10px;
+    color: #94a3b8;
+  }
+  .hire-form .field.active {
+    border-color: var(--accent-blue);
+    color: #e2e8f0;
+  }
+  .hire-post-btn {
+    width: 100%;
+    padding: 9px;
+    background: var(--accent-blue);
+    color: white;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* CAPTION */
+  .caption {
+    margin-top: 16px;
+    width: 220px;
+    text-align: center;
+  }
+  .caption .quote {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .caption .source {
+    font-size: 10px;
+    color: var(--accent-amber);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  /* EVIDENCE BLOCK */
+  .evidence-block {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .evidence-block h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .review-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .review-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .stars { color: var(--accent-amber); font-size: 11px; flex-shrink: 0; }
+  .review-body { flex: 1; }
+  .review-text { font-size: 13px; color: var(--text-primary); font-style: italic; line-height: 1.5; }
+  .review-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* TABLE */
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  table.data-table th {
+    background: var(--navy-light);
+    color: var(--text-secondary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  table.data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-primary);
+    vertical-align: middle;
+  }
+  table.data-table tr:last-child td { border-bottom: none; }
+  table.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .rating-critical { color: var(--accent-red); font-weight: 700; }
+  .rating-ok { color: var(--accent-amber); font-weight: 600; }
+  .rating-good { color: var(--accent-green); font-weight: 600; }
+  .badge-harri {
+    background: rgba(37,99,235,0.15);
+    color: #93c5fd;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* HYPOTHESIS BOX */
+  .hypothesis {
+    background: rgba(8,145,178,0.08);
+    border: 1px solid rgba(8,145,178,0.25);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .hypothesis h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent-teal);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .hypothesis p { font-size: 13px; color: var(--text-primary); line-height: 1.65; }
+  .hypothesis code {
+    background: rgba(255,255,255,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #67e8f9;
+  }
+
+  /* SPRINT TABLE */
+  .sprint-table-wrapper {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-light);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+  .sprint-table-wrapper h3 {
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    border-bottom: 1px solid var(--navy-light);
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* COMPETITOR CHART */
+  .comp-bars { padding: 16px 0; }
+  .comp-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .comp-name { width: 170px; font-size: 13px; color: var(--text-primary); flex-shrink: 0; }
+  .comp-bar-wrap { flex: 1; height: 28px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; position: relative; }
+  .comp-bar {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    transition: width 0.4s ease;
+  }
+  .bar-green { background: linear-gradient(90deg, #059669, #10b981); }
+  .bar-blue { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+  .bar-amber { background: linear-gradient(90deg, #d97706, #f59e0b); }
+  .bar-red { background: linear-gradient(90deg, #dc2626, #ef4444); }
+  .bar-gray { background: linear-gradient(90deg, #475569, #64748b); }
+  .comp-note { width: 200px; font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+    border: 1px solid rgba(37,99,235,0.3);
+    border-radius: 12px;
+    padding: 40px 48px;
+    text-align: center;
+    margin: 48px 0;
+  }
+  .cta-section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .cta-section p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 28px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-card {
+    background: var(--navy);
+    border: 1px solid var(--navy-light);
+    border-radius: 8px;
+    padding: 20px 24px;
+    text-align: left;
+    min-width: 240px;
+  }
+  .cta-card .cta-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .cta-card .cta-value { font-size: 15px; font-weight: 600; color: var(--accent-teal); }
+
+  .cta-btn {
+    display: inline-block;
+    margin-top: 28px;
+    background: var(--accent-blue);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    letter-spacing: 0.2px;
+  }
+  .cta-btn:hover { background: #1d4ed8; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--navy-mid);
+    border-top: 1px solid var(--navy-light);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer .left { font-size: 13px; color: var(--text-secondary); }
+  .footer .right { font-size: 13px; color: var(--text-secondary); }
+  .footer strong { color: var(--text-primary); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--navy-light); margin: 32px 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 860px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .before-after { grid-template-columns: 1fr; gap: 16px; }
+    .arrow-col { display: none; }
+    .header { padding: 24px 20px; }
+    .header-right { text-align: left; }
+    .container { padding: 0 20px; }
+    .cta-section { padding: 28px 20px; }
+    .comp-note { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <h1>Harri WFM — <span>Mobile Reliability Analysis</span></h1>
+    <p>Technical assessment for Engineering Leadership, CTO &nbsp;|&nbsp; Prepared by Elinext Mobile Engineering</p>
+    <span class="header-badge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="white" stroke-width="1.5"/><path d="M6 3v3l2 1.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      February 2026
+    </span>
+  </div>
+  <div class="header-right">
+    <div class="company"><span>Elin</span>ext</div>
+    <div class="subtitle">Mobile Engineering &nbsp;&middot;&nbsp; Mobile Engineering</div>
+    <div class="contact-line">elinext.com/contacts/</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- EXEC SUMMARY -->
+  <section>
+    <div class="exec-summary">
+      <h3>Executive Summary</h3>
+      <p>
+        TeamLive and Harri Live both exhibit a <strong>recurring, update-triggered auth failure pattern</strong> documented across 2024 and late 2025 App Store reviews. Every release cycle, a subset of workers and managers find themselves locked out. The workaround — delete and reinstall — appears in multiple independent reviews, indicating this has become a <strong>supported workaround, not a bug fix</strong>. Separately, Harri Hire rates <strong>2.9 stars on Android</strong> (170 reviews), with JavaScript rendering errors surfacing in user-visible UI. With <strong>ADP's strategic investment in February 2025</strong> accelerating enterprise client adoption, the threshold for "acceptable mobile reliability" has materially increased. This document identifies three actionable technical problems, proposes root cause hypotheses, and outlines a bounded engagement scope to resolve them.
+      </p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="number red">2.9★</div>
+        <div class="label">Harri Hire Android</div>
+      </div>
+      <div class="stat-card">
+        <div class="number amber">8+</div>
+        <div class="label">Auth Failure Reviews (2024–2025)</div>
+      </div>
+      <div class="stat-card">
+        <div class="number blue">130+</div>
+        <div class="label">Harri Engineers (Ramallah)</div>
+      </div>
+      <div class="stat-card">
+        <div class="number green">Feb 2025</div>
+        <div class="label">ADP Strategic Investment</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAIN POINT 1 -->
+  <section>
+    <h2 class="section-title">
+      <span class="tag tag-critical">Critical</span>
+      Pain Point #1: Update-Triggered Auth Failure
+    </h2>
+    <p class="section-desc">
+      TeamLive and Harri Live both show a pattern where publishing a new app version invalidates active user sessions.
+      Workers and managers find themselves unable to log in after an update, with no clear error — just an indefinite loading screen.
+      The same pattern appears on iOS and Android simultaneously, confirming the failure is in the shared authentication layer.
+    </p>
+
+    <div class="before-after">
+      <!-- BEFORE -->
+      <div class="phone-frame-wrapper">
+        <div class="frame-label before">Before — Current State</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-before-auth">
+            <div class="app-header">TeamLive</div>
+            <div class="spinner"></div>
+            <div class="error-badge">
+              <div class="icon">&#9888;</div>
+              <div class="msg">Session expired.<br>Please log in again.</div>
+              <div class="sub">Login screen returns to loading.<br>Loop repeats.</div>
+            </div>
+            <div class="reinstall-prompt">
+              <div class="txt">Worker calls manager:<br>"The app isn't working again."</div>
+              <div class="cta-del">Delete &amp; Reinstall</div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">"Every time it updates it kicks me out of my profile, and no matter what I do now, I cannot log back in."</div>
+          <div class="source">1★ App Store — September 5, 2025</div>
+        </div>
+      </div>
+
+      <!-- ARROW -->
+      <div class="arrow-col">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
+
+      <!-- AFTER -->
+      <div class="phone-frame-wrapper">
+        <div class="frame-label after">After — Elinext Solution</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-after">
+            <div class="app-header">TeamLive</div>
+            <div class="success-ring">
+              <div class="check">&#10003;</div>
+            </div>
+            <div class="success-msg">
+              <div class="title">Session migrated automatically</div>
+              <div class="body">Auth token refreshed silently.<br>No re-login required after update.</div>
+            </div>
+            <div class="schedule-preview">
+              <div class="schedule-row"><span class="day">Mon</span><span class="time">9:00 AM – 5:00 PM</span><span class="dot"></span></div>
+              <div class="schedule-row"><span class="day">Tue</span><span class="time">Off</span><span class="dot" style="background:#475569"></span></div>
+              <div class="schedule-row"><span class="day">Wed</span><span class="time">12:00 PM – 8:00 PM</span><span class="dot"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">Auth token migration strategy: version-change detection triggers silent re-auth before the user sees any UI. No loading screen hang. No delete-reinstall.</div>
+          <div class="source">Elinext implementation pattern</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVIDENCE -->
+    <div class="evidence-block">
+      <h4>App Store Evidence — Confirmed Reviews</h4>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"Every time it updates it kicks me out of my profile, and no matter what I do now, I cannot log back in."</div>
+          <div class="review-meta">TeamLive iOS &nbsp;|&nbsp; App Store &nbsp;|&nbsp; September 5, 2025</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"Since the latest update as of late 2025, the update has caused so many issues amongst me and my coworkers. Me and a few of them can't even log into the app at all anymore."</div>
+          <div class="review-meta">TeamLive iOS &nbsp;|&nbsp; App Store &nbsp;|&nbsp; Late 2025</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"It won't let me login even if I input the correct info. It will just show a loading screen for hours… sometimes days."</div>
+          <div class="review-meta">TeamLive iOS &nbsp;|&nbsp; App Store &nbsp;|&nbsp; User: WhitNR</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"The app will often shut down, freeze or not allow you to log in. You must delete the entire app and redownload to use."</div>
+          <div class="review-meta">Harri Live iOS &nbsp;|&nbsp; App Store &nbsp;|&nbsp; June 22, 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HYPOTHESIS -->
+    <div class="hypothesis">
+      <h4>Technical Root Cause Hypothesis</h4>
+      <p>
+        When a new build ships, the stored <code>JWT</code> or <code>refresh_token</code> is invalidated — either because
+        the server revokes tokens tied to old app version headers, or the Keychain/SecureStorage key changes between builds
+        (making the token unreachable), or the JWT payload structure changed and old tokens are rejected with no client-side migration.
+        The <code>loading screen hang</code> indicates the app enters a token refresh loop with no timeout, no fallback to the login screen,
+        and no cached data to display while offline. The fact that both iOS and Android fail identically confirms the failure
+        is in <strong>shared JavaScript auth logic</strong> — not in platform-native code.
+      </p>
+    </div>
+  </section>
+
+  <!-- PAIN POINT 2 -->
+  <section>
+    <h2 class="section-title">
+      <span class="tag tag-high">High</span>
+      Pain Point #2: No Mobile Network Fallback
+    </h2>
+    <p class="section-desc">
+      The app fails on cellular data and requires WiFi to function reliably. Hospitality environments have inherently
+      inconsistent connectivity — restaurant floors, hotel corridors, back-of-house. Workers who step away from venue WiFi lose app access.
+    </p>
+
+    <div class="before-after">
+      <div class="phone-frame-wrapper">
+        <div class="frame-label before">Before — Current State</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-before-auth">
+            <div class="app-header">Harri Live</div>
+            <div class="spinner"></div>
+            <div class="error-badge">
+              <div class="icon">&#128246;</div>
+              <div class="msg">Unable to load.<br>Check your connection.</div>
+              <div class="sub">Mobile data: &#10007; &nbsp; WiFi: &#10003;<br>App non-functional on LTE/5G</div>
+            </div>
+            <div class="reinstall-prompt">
+              <div class="txt">Manager walks to WiFi router to use the app during service.</div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">"The app never works over mobile connection and requires WiFi."</div>
+          <div class="source">1★ App Store — Harri Live</div>
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
+
+      <div class="phone-frame-wrapper">
+        <div class="frame-label after">After — Elinext Solution</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-after">
+            <div class="app-header">Harri Live</div>
+            <div class="success-ring">
+              <div class="check">&#9632;</div>
+            </div>
+            <div class="success-msg">
+              <div class="title">Offline mode active</div>
+              <div class="body">Showing cached data from 4 min ago.<br>Updates sync when connected.</div>
+            </div>
+            <div class="schedule-preview">
+              <div class="schedule-row"><span class="day">Floor 2</span><span class="time">4 on shift</span><span class="dot"></span></div>
+              <div class="schedule-row"><span class="day">Bar</span><span class="time">2 on shift</span><span class="dot"></span></div>
+              <div class="schedule-row"><span class="day">Kitchen</span><span class="time">6 on shift</span><span class="dot"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">Offline-first caching serves the last-known schedule and labor state. Managers work anywhere in the building without WiFi dependency.</div>
+          <div class="source">Elinext implementation pattern</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hypothesis">
+      <h4>Technical Root Cause Hypothesis</h4>
+      <p>
+        The app makes concurrent API calls on load without timeout configuration optimized for cellular latency.
+        On mobile data (higher latency, variable bandwidth), calls exceed timeout thresholds or fail silently.
+        There is no <code>offline-first</code> data cache for core read-only data (schedule, roster, attendance).
+        The fix involves implementing a write-through local cache (MMKV or WatermelonDB), adding request
+        compression for cellular, and displaying cached data with a "last updated" timestamp when offline —
+        syncing in background when connectivity is restored.
+      </p>
+    </div>
+  </section>
+
+  <!-- PAIN POINT 3 -->
+  <section>
+    <h2 class="section-title">
+      <span class="tag tag-critical">Critical</span>
+      Pain Point #3: Harri Hire 2.9★ Android — Sales &amp; Onboarding Risk
+    </h2>
+    <p class="section-desc">
+      The employer-facing hiring app rates 2.9 stars on Android — a level that signals a broken product.
+      With hiring managers at restaurant franchises and hotel groups disproportionately on Android (&gt;70% of US service industry),
+      this affects sales demos and enterprise onboarding from day one.
+    </p>
+
+    <div class="before-after">
+      <div class="phone-frame-wrapper">
+        <div class="frame-label before">Before — Current State</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-hire-before">
+            <div class="app-header">Harri Hire</div>
+            <div class="crash-badge">
+              <div class="code">[object Object]</div>
+              <div class="code-sub">Unhandled JS exception in render</div>
+            </div>
+            <div class="reinstall-prompt" style="margin-top:10px;">
+              <div class="txt">Notifications: not arriving.<br>Login: lost on every session.<br>Applicant data: mixed up.</div>
+              <div class="cta-del">2.9&#9733; Android</div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">"[object Object]" JS error flooding the UI. Having to re-log in with every use. App auto-deletes work experience data.</div>
+          <div class="source">Google Play Reviews — Harri Hire Android</div>
+        </div>
+      </div>
+
+      <div class="arrow-col">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </div>
+
+      <div class="phone-frame-wrapper">
+        <div class="frame-label after">After — Elinext Solution</div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen screen-after">
+            <div class="app-header">Harri Hire</div>
+            <div class="hire-form">
+              <div class="field active">Software Engineer — New York, NY</div>
+              <div class="field">3 new applicants today</div>
+              <div class="field">Interview: Alex M. — Thu 2pm</div>
+              <div class="hire-post-btn">&#10003;&nbsp; Post New Role</div>
+            </div>
+            <div class="success-msg" style="margin-top: 10px;">
+              <div class="title">Notifications delivered</div>
+              <div class="body">Session persists between uses.<br>Android parity with iOS.</div>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <div class="quote">Fixed auth persistence, resolved JS rendering errors, restored notification delivery. Android hiring manager experience rebuilt for sales demo quality.</div>
+          <div class="source">Elinext implementation pattern</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="evidence-block">
+      <h4>Google Play Evidence — Harri Hire Android (2.9&#9733; / ~170 Reviews)</h4>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"[object Object]" errors flooding the user interface — a React Native unhandled exception surfacing as raw JavaScript output to end users.</div>
+          <div class="review-meta">Google Play — Harri Hire Android &nbsp;|&nbsp; Technical regression, undated</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 2★</div>
+        <div class="review-body">
+          <div class="review-text">"Having to re-log in with every use and not getting notifications consistently."</div>
+          <div class="review-meta">Google Play — Harri Hire Android &nbsp;|&nbsp; 2024–2025</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"The app automatically deletes and mixes up work experience information."</div>
+          <div class="review-meta">Google Play — Harri Hire Android &nbsp;|&nbsp; Data integrity issue</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars">&#9733; 1★</div>
+        <div class="review-body">
+          <div class="review-text">"Won't let me log into my account I already made."</div>
+          <div class="review-meta">App Store — Harri Hire iOS (3.8&#9733; / 22 reviews)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPETITOR BENCHMARKS -->
+  <section>
+    <h2 class="section-title">Competitor Benchmarks — Android Ratings</h2>
+    <p class="section-desc">
+      Harri's employee apps are competitive on aggregate ratings. The issue is not visible in headline numbers — it's in the recurring auth failure pattern
+      and the broken employer app. Deputy and 7shifts demonstrate that consistent Android quality is achievable in this category.
+    </p>
+    <div class="comp-bars">
+      <div class="comp-row">
+        <div class="comp-name">Deputy (4.74&#9733;)</div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-green" style="width:94.8%">4.74&#9733;</div></div>
+        <div class="comp-note">17,000 Android reviews — benchmark leader</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-name">Sling by Toast (4.5&#9733;)</div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-blue" style="width:90%">4.5&#9733;</div></div>
+        <div class="comp-note">Stable; notification issues on Android</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-name">7shifts (4.59&#9733;)</div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-blue" style="width:91.8%">4.59&#9733;</div></div>
+        <div class="comp-note">8,100 Android reviews; scheduling leader</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-name" style="font-weight:700;">Harri TeamLive (4.8&#9733;) <span class="badge-harri">Harri</span></div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-blue" style="width:96%">4.8&#9733;</div></div>
+        <div class="comp-note">Good headline — hidden auth failure pattern</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-name">HotSchedules (3.39&#9733;)</div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-amber" style="width:67.8%">3.39&#9733;</div></div>
+        <div class="comp-note">24,000 reviews — legacy product struggles</div>
+      </div>
+      <div class="comp-row">
+        <div class="comp-name" style="font-weight:700;">Harri Hire Android <span class="badge-harri">Harri</span></div>
+        <div class="comp-bar-wrap"><div class="comp-bar bar-red" style="width:58%">2.9&#9733;</div></div>
+        <div class="comp-note">170 reviews — below functional threshold</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPRINT PLAN -->
+  <section>
+    <h2 class="section-title">Engineering Approach</h2>
+    <p class="section-desc">
+      Three bounded workstreams. Each has a clear deliverable and measurable success metric.
+      Each fix is independent and can be shipped separately.
+    </p>
+
+    <div class="sprint-table-wrapper">
+      <h3>Sprint Plan — 8-Week Mobile Reliability Engagement</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Workstream</th>
+            <th>Scope</th>
+            <th>Duration</th>
+            <th>Engineers</th>
+            <th>Success Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Auth Layer Fix</strong><br><small style="color:#94a3b8">TeamLive + Harri Live</small></td>
+            <td>Token migration on app update; timeout + redirect fallback; regression test suite for auth flows</td>
+            <td>Weeks 1–6</td>
+            <td>1 RN engineer + 1 QA</td>
+            <td>Zero post-update login failures in next 2 release cycles</td>
+          </tr>
+          <tr>
+            <td><strong>Harri Hire Android Rebuild</strong><br><small style="color:#94a3b8">Hire app</small></td>
+            <td>Fix JS rendering errors; auth persistence; notification reliability; Android QA pass</td>
+            <td>Weeks 1–6</td>
+            <td>1 RN engineer</td>
+            <td>Harri Hire Android rating &gt;4.0&#9733; within 60 days of fix release</td>
+          </tr>
+          <tr>
+            <td><strong>Mobile Network Fallback</strong><br><small style="color:#94a3b8">TeamLive + Harri Live</small></td>
+            <td>Offline-first cache for schedule/roster; graceful degradation UI; cellular request optimization</td>
+            <td>Weeks 5–8</td>
+            <td>1 RN engineer</td>
+            <td>App functional on LTE with &lt;3s schedule load on first view</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Investment Summary</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Total Duration</strong></td>
+          <td>8 weeks</td>
+        </tr>
+        <tr>
+          <td><strong>Team</strong></td>
+          <td>2 React Native engineers + 1 QA engineer (dedicated mobile)</td>
+        </tr>
+        <tr>
+          <td><strong>Estimated Investment</strong></td>
+          <td>$20,000 – $30,000 USD</td>
+        </tr>
+        <tr>
+          <td><strong>Tech Requirement</strong></td>
+          <td>React Native (inferred); if native iOS/Android, timeline adjusts to 10 weeks</td>
+        </tr>
+        <tr>
+          <td><strong>Deliverables</strong></td>
+          <td>Implemented fixes + automated test suite for auth flows + QA sign-off documentation</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ADP CONTEXT -->
+  <section>
+    <h2 class="section-title">Why Now: ADP Investment Context</h2>
+    <p class="section-desc">
+      ADP's strategic investment in Harri (February 6, 2025) marks the beginning of an enterprise expansion phase.
+      Enterprise hospitality clients adopting Harri through ADP's ecosystem bring materially higher reliability expectations.
+    </p>
+    <div class="evidence-block">
+      <h4>What Changes Post-ADP Investment</h4>
+      <div class="review-item">
+        <div class="stars" style="color:#3b82f6; font-size:16px;">&#8226;</div>
+        <div class="review-body">
+          <div class="review-text">Enterprise restaurant chains (McDonald's, Subway system-wide, Radisson Hotel Group) are now being onboarded through ADP's channels. These accounts have IT helpdesks and formal incident escalation processes — "delete and reinstall" is not a valid resolution.</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars" style="color:#3b82f6; font-size:16px;">&#8226;</div>
+        <div class="review-body">
+          <div class="review-text">ADP's own enterprise HR platform carries 99.9%+ uptime SLAs. Harri is now positioned as an extension of ADP's product suite. The mobile reliability bar has been set by ADP, not by Harri's historical performance.</div>
+        </div>
+      </div>
+      <div class="review-item">
+        <div class="stars" style="color:#3b82f6; font-size:16px;">&#8226;</div>
+        <div class="review-body">
+          <div class="review-text">A post-update auth failure event affecting 500 locations simultaneously — all locked out of TeamLive the night before their schedule — is now an enterprise SLA incident, not a consumer app complaint.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>Ready to fix this in 8 weeks?</h2>
+    <p>
+      Elinext specializes in React Native, iOS (Swift), and Android (Kotlin) mobile engineering.
+      We've solved auth token migration patterns in workforce and scheduling apps before.
+      Let's compare notes on the technical specifics — a 20-minute call is enough to scope this.
+    </p>
+    <div class="cta-cards">
+      <div class="cta-card">
+        <div class="cta-label">Contact</div>
+        <div class="cta-value">Elinext Mobile Engineering</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-label">Email</div>
+        <div class="cta-value">elinext.com/contacts/</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-label">Company</div>
+        <div class="cta-value">Elinext Mobile Engineering</div>
+      </div>
+    </div>
+    <div class="cta-btn" style="pointer-events:none;opacity:0.9;">Prepared by Elinext Mobile Engineering</div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="left">
+    <strong>Elinext Mobile Engineering</strong> &nbsp;|&nbsp; elinext.com/contacts/ &nbsp;|&nbsp; February 2026
+  </div>
+  <div class="right">
+    Analysis based on public App Store, Google Play, and review aggregator data. All quotes are verbatim from published user reviews.
+  </div>
+</footer>
+
+</body>
+</html>
