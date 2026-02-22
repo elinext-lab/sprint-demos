@@ -62,10 +62,10 @@
     }
 
     .phone {
-      width: 320px;
+      width: 290px;
       background: #1C2333;
       border-radius: 48px;
-      padding: 14px;
+      padding: 12px;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.06),
         0 32px 100px rgba(0,0,0,0.7),
@@ -76,9 +76,8 @@
       background: var(--bg);
       border-radius: 36px;
       overflow: hidden;
-      max-width: 100%;
       position: relative;
-      height: 560px;
+      height: 580px;
       display: flex;
       flex-direction: column;
     }
@@ -88,7 +87,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 24px 6px;
+      padding: 12px 16px 4px;
       font-size: 12px;
       font-weight: 600;
       color: var(--text);
@@ -142,7 +141,6 @@
       transition: opacity 0.25s ease, transform 0.25s ease;
       overflow-y: auto;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
     }
 
     .screen::-webkit-scrollbar { display: none; }
@@ -150,8 +148,7 @@
     .screen.active {
       opacity: 1;
       pointer-events: all;
-      transform: translateX(0);
-      will-change: transform, opacity;
+      transform: translate3d(0, 0, 0);
     }
 
     .screen.slide-back {
@@ -163,11 +160,10 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 8px 8px 14px;
+      padding: 8px 8px 12px;
       background: var(--card);
       border-top: 1px solid var(--border);
       flex-shrink: 0;
-      z-index: 10;
     }
 
     .nav-item {
@@ -202,7 +198,7 @@
     .screen-header {
       display: flex;
       align-items: center;
-      padding: 10px 12px 8px;
+      padding: 10px 14px 8px;
       gap: 12px;
       flex-shrink: 0;
     }
@@ -226,7 +222,7 @@
     .back-btn:active { background: var(--blue-dim); }
 
     .screen-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--text);
     }
@@ -243,7 +239,7 @@
     /* ─── SCREEN 1: LOAD BOARD ─── */
     .lb-header {
       background: linear-gradient(180deg, #0C2040 0%, var(--bg) 100%);
-      padding: 4px 12px 12px;
+      padding: 4px 14px 12px;
       flex-shrink: 0;
     }
 
@@ -344,8 +340,8 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 12px;
+      padding: 5px 10px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-2);
       white-space: nowrap;
@@ -408,13 +404,13 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
 
     .load-route {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .route-city {
@@ -427,7 +423,7 @@
     }
 
     .route-arrow {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--text-3);
     }
 
@@ -436,14 +432,14 @@
     }
 
     .rate-value {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--green);
       letter-spacing: -0.5px;
     }
 
     .rate-rpm {
-      font-size: 9px;
+      font-size: 10px;
       color: var(--text-3);
       font-weight: 500;
     }
@@ -520,7 +516,7 @@
     .ld-filter-bar {
       background: rgba(56,189,248,0.06);
       border-bottom: 1px solid rgba(56,189,248,0.15);
-      padding: 8px 16px;
+      padding: 8px 12px;
       flex-shrink: 0;
     }
 
@@ -535,19 +531,19 @@
 
     .ld-filter-chips {
       display: flex;
+      gap: 4px;
       flex-wrap: wrap;
-      gap: 6px;
     }
 
     .ld-filter-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       background: var(--blue-dim);
       border: 1px solid rgba(56,189,248,0.3);
       border-radius: 16px;
-      padding: 4px 10px;
-      font-size: 11px;
+      padding: 3px 8px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--blue);
     }
@@ -561,16 +557,13 @@
     .persist-badge {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
+      flex-shrink: 0;
       background: rgba(74,222,128,0.08);
       border: 1px solid rgba(74,222,128,0.2);
       border-radius: 8px;
-      padding: 3px 6px;
-      font-size: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 90px;
+      padding: 3px 8px;
+      font-size: 9px;
       font-weight: 700;
       color: var(--green);
       letter-spacing: 0.04em;
@@ -587,7 +580,7 @@
       background: linear-gradient(135deg, #0C2040 0%, var(--card) 100%);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 12px;
       margin-bottom: 12px;
     }
 
@@ -600,8 +593,6 @@
 
     .ld-city-block {
       flex: 1;
-      min-width: 0;
-      overflow: hidden;
     }
 
     .ld-city {
@@ -619,7 +610,7 @@
     }
 
     .ld-arrow {
-      padding: 0 6px;
+      padding: 0 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -627,7 +618,7 @@
     }
 
     .ld-arrow-line {
-      width: 36px;
+      width: 50px;
       height: 1px;
       background: var(--border);
       position: relative;
@@ -660,7 +651,7 @@
     }
 
     .ld-rate-value {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--green);
       letter-spacing: -1px;
@@ -675,7 +666,7 @@
     .ld-rate-divider {
       width: 1px;
       background: var(--border);
-      margin: 0 14px;
+      margin: 0 8px;
     }
 
     /* Info rows */
@@ -683,7 +674,7 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       margin-bottom: 10px;
     }
 
@@ -789,7 +780,7 @@
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px 14px;
-      margin: 0 16px 12px;
+      margin: 0 12px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -838,7 +829,7 @@
 
     /* Document upload zone */
     .doc-section {
-      padding: 0 16px;
+      padding: 0 12px;
       margin-bottom: 12px;
     }
 
@@ -1430,11 +1421,11 @@
       }
 
       .phone {
-        width: min(360px, calc(100vw - 32px));
+        width: min(290px, calc(100vw - 32px));
       }
 
       .phone-inner {
-        height: 580px;
+        height: 520px;
       }
 
       .annotations {
@@ -1447,12 +1438,12 @@
       .phone {
         width: calc(100vw - 16px);
         border-radius: 32px;
-        padding: 6px;
+        padding: 8px;
       }
 
       .phone-inner {
         border-radius: 26px;
-        height: 75svh;
+        height: 70svh;
       }
     }
   </style>
@@ -1517,7 +1508,7 @@
             </div>
 
             <!-- Filter bar -->
-            <div style="padding: 6px 12px; flex-shrink: 0;">
+            <div style="padding: 8px 16px; flex-shrink: 0;">
               <div class="filter-bar">
                 <div class="filter-chip active">
                   <span class="filter-chip-icon">&#128666;</span> Dry Van
@@ -1742,12 +1733,12 @@
                   </div>
                   <div class="ld-rate-divider"></div>
                   <div class="ld-rate-block">
-                    <div class="ld-rate-value" style="font-size:22px; color:var(--blue);">$2.85</div>
+                    <div class="ld-rate-value" style="font-size:17px; color:var(--blue);">$2.85</div>
                     <div class="ld-rate-label">Per mile (RPM)</div>
                   </div>
                   <div class="ld-rate-divider"></div>
                   <div class="ld-rate-block" style="text-align:right;">
-                    <div class="ld-rate-value" style="font-size:18px; color:var(--amber);">&#128666; DV</div>
+                    <div class="ld-rate-value" style="font-size:15px; color:var(--amber);">&#128666; DV</div>
                     <div class="ld-rate-label">Dry Van 53'</div>
                   </div>
                 </div>
@@ -2242,9 +2233,9 @@
 
     // Slide direction: going forward = slide right in, going back = slide left in
     if (n > currentScreen) {
-      next.style.transform = 'translate3d(40px, 0, 0)';
+      next.style.transform = 'translateX(40px)';
     } else {
-      next.style.transform = 'translate3d(-40px, 0, 0)';
+      next.style.transform = 'translateX(-40px)';
     }
 
     prev.classList.remove('active');
