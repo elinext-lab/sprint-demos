@@ -25,7 +25,6 @@
       flex-direction: column;
     }
 
-    /* Header — matches elinext.com white nav */
     header {
       background: #ffffff;
       border-bottom: 1px solid #e5e5e5;
@@ -41,11 +40,10 @@
       gap: 12px;
       text-decoration: none;
       color: #1a1a2e;
+      flex-shrink: 0;
     }
 
-    .logo img {
-      height: 32px;
-    }
+    .logo img { height: 32px; }
 
     .logo-divider {
       width: 1px;
@@ -59,6 +57,7 @@
       font-weight: 500;
       color: #757575;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
     nav {
@@ -76,9 +75,7 @@
       white-space: nowrap;
     }
 
-    nav a:hover {
-      color: #1a1a2e;
-    }
+    nav a:hover { color: #1a1a2e; }
 
     nav .cta-nav {
       padding: 8px 16px;
@@ -91,9 +88,7 @@
       font-size: 13px;
     }
 
-    nav .cta-nav:hover {
-      background: #e0b535;
-    }
+    nav .cta-nav:hover { background: #e0b535; }
 
     /* Hero */
     .hero {
@@ -135,109 +130,72 @@
       font-size: 17px;
       color: #616161;
       line-height: 1.7;
-      margin-bottom: 48px;
+      margin-bottom: 40px;
       max-width: 580px;
     }
 
-    /* Stats */
-    .stats {
-      display: flex;
-      gap: 64px;
-      margin-top: 48px;
-      padding: 40px 0;
-      border-top: 1px solid #eeeeee;
-      border-bottom: 1px solid #eeeeee;
-    }
-
-    .stat { text-align: center; }
-
-    .stat-number {
-      font-size: 36px;
-      font-weight: 700;
-      color: #1a1a2e;
-    }
-
-    .stat-label {
-      font-size: 13px;
-      color: #9e9e9e;
-      margin-top: 6px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Grid of prototypes */
-    .grid-section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 60px 40px 80px;
-      width: 100%;
-    }
-
-    .grid-section h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #1a1a2e;
-    }
-
-    .grid-section .section-desc {
-      font-size: 15px;
-      color: #757575;
-      margin-bottom: 36px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
+    /* Process flow */
+    .process {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 16px 20px;
-      background: #fafafa;
-      border: 1px solid #eeeeee;
-      border-radius: 8px;
-      text-decoration: none;
-      color: #1a1a2e;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      margin-bottom: 40px;
     }
 
-    .card:hover {
-      border-color: #F2C53D;
-      box-shadow: 0 2px 12px rgba(242, 197, 61, 0.15);
-      transform: translateY(-1px);
+    .process-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
     }
 
-    .card-icon {
-      width: 40px;
-      height: 40px;
+    .process-icon {
+      width: 56px;
+      height: 56px;
       background: #FFF8E1;
-      border-radius: 8px;
+      border: 1px solid #F2C53D;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
     }
 
-    .card-icon svg {
-      width: 20px;
-      height: 20px;
+    .process-icon svg {
+      width: 24px;
+      height: 24px;
       color: #C49A00;
     }
 
-    .card-name {
-      font-size: 14px;
+    .process-label {
+      font-size: 12px;
       font-weight: 600;
+      color: #757575;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .card-type {
-      font-size: 12px;
-      color: #9e9e9e;
-      margin-top: 2px;
+    .process-arrow {
+      color: #dadada;
+      font-size: 20px;
+      margin-top: -20px;
+    }
+
+    /* CTA */
+    .cta-hero {
+      display: inline-block;
+      padding: 14px 32px;
+      background: #F2C53D;
+      color: #1a1a2e;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .cta-hero:hover {
+      background: #e0b535;
+      transform: translateY(-1px);
     }
 
     /* Footer */
@@ -260,37 +218,21 @@
 
     footer a:hover { color: #1a1a2e; }
 
-    /* CTA button */
-    .cta-hero {
-      display: inline-block;
-      padding: 14px 28px;
-      background: #F2C53D;
-      color: #1a1a2e;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 15px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.1s;
-      margin-top: 8px;
-    }
-
-    .cta-hero:hover {
-      background: #e0b535;
-      transform: translateY(-1px);
-    }
-
     @media (max-width: 640px) {
       h1 { font-size: 28px; }
       .hero { padding: 48px 20px 40px; }
-      .stats { flex-direction: column; gap: 24px; }
       header { padding: 12px 16px; }
       nav { gap: 12px; }
       nav a { font-size: 13px; }
       nav .cta-nav { padding: 6px 12px; font-size: 12px; }
       .logo-sub { font-size: 12px; }
-      .grid-section { padding: 40px 20px 60px; }
-      .grid { grid-template-columns: 1fr; }
       .cta-hero { font-size: 14px; padding: 12px 24px; }
+      .process { gap: 8px; }
+      .process-icon { width: 44px; height: 44px; }
+      .process-icon svg { width: 20px; height: 20px; }
+      .process-label { font-size: 10px; }
+      .process-arrow { font-size: 16px; }
+      footer { padding: 20px 16px; flex-direction: column; gap: 8px; }
     }
   </style>
 </head>
@@ -318,86 +260,44 @@
       and document what targeted fixes look like.
     </p>
 
-    <a class="cta-hero" href="mailto:yshauchenka+lab@elinext.com?subject=App%20Analysis%20Request&body=Hi%2C%0A%0ALink%20to%20my%20app%3A%20________%0A%0AI%E2%80%99m%20looking%20for%20a%20partner%20who%20can%20help%20with%3A%0A%0A">
-      Want an analysis of your app? Tell us about your challenge →
-    </a>
-  </div>
+    <div class="process">
+      <div class="process-step">
+        <div class="process-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+        <span class="process-label">Analyze</span>
+      </div>
+      <span class="process-arrow">→</span>
+      <div class="process-step">
+        <div class="process-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.384-3.19A.6.6 0 015.75 11.5V8.5a.6.6 0 01.286-.48l5.384-3.19a.6.6 0 01.6 0l5.384 3.19a.6.6 0 01.286.48v3a.6.6 0 01-.286.48l-5.384 3.19a.6.6 0 01-.6 0z" />
+          </svg>
+        </div>
+        <span class="process-label">Prototype</span>
+      </div>
+      <span class="process-arrow">→</span>
+      <div class="process-step">
+        <div class="process-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.384-3.19M15.804 11.98l5.384-3.19M4.26 9.262A7.5 7.5 0 0119.74 9.262M12 21v-6m0 0l-3-3m3 3l3-3" />
+          </svg>
+        </div>
+        <span class="process-label">Ship Fix</span>
+      </div>
+    </div>
 
-  <div class="grid-section">
-    <h2>Recent Analyses</h2>
-    <p class="section-desc">Each analysis targets a specific pain point found through app review mining and technical assessment.</p>
-    <div class="grid" id="grid"></div>
+    <a class="cta-hero" href="mailto:yshauchenka+lab@elinext.com?subject=App%20Analysis%20Request&body=Hi%2C%0A%0ALink%20to%20my%20app%3A%20%0A%0AI%E2%80%99m%20looking%20for%20a%20partner%20who%20can%20help%20with%3A%0A%0A">
+      Get a Free App Analysis →
+    </a>
   </div>
 
   <footer>
     <span>&copy; 2026 Elinext Group. All rights reserved.</span>
     <a href="https://www.elinext.com">elinext.com</a>
   </footer>
-
-  <script>
-    const prototypes = [
-      { name: "7shifts", label: "Workforce Management" },
-      { name: "alayacare", label: "Home Healthcare" },
-      { name: "axiscare", label: "Home Care Software" },
-      { name: "brightside-health", label: "Mental Health" },
-      { name: "buildops", label: "Construction Tech" },
-      { name: "clipboard-health", label: "Healthcare Staffing" },
-      { name: "companycam", label: "Field Documentation" },
-      { name: "curri", label: "Construction Logistics" },
-      { name: "deputy", label: "Shift Scheduling" },
-      { name: "doorloop", label: "Property Management" },
-      { name: "fieldpulse", label: "Field Service" },
-      { name: "fleetio", label: "Fleet Management" },
-      { name: "gigsmart", label: "Gig Marketplace" },
-      { name: "harri", label: "Hospitality HR" },
-      { name: "hover", label: "3D Home Modeling" },
-      { name: "instawork", label: "Staffing Platform" },
-      { name: "lawnstarter", label: "Lawn Care Marketplace" },
-      { name: "legion-technologies", label: "Workforce Optimization" },
-      { name: "monarch-money", label: "Personal Finance" },
-      { name: "nourish", label: "Nutrition & Dietetics" },
-      { name: "onfleet", label: "Delivery Management" },
-      { name: "quinyx", label: "Workforce Management" },
-      { name: "qwick", label: "Hospitality Staffing" },
-      { name: "rain", label: "Earned Wage Access" },
-      { name: "service-autopilot", label: "Field Service" },
-      { name: "service-fusion", label: "Field Service" },
-      { name: "servicetrade", label: "Commercial Services" },
-      { name: "shipwell", label: "Freight & Logistics" },
-      { name: "simpro", label: "Trade Services" },
-      { name: "skedulo", label: "Mobile Workforce" },
-      { name: "skimmer", label: "Pool Service" },
-      { name: "spectora", label: "Home Inspection" },
-      { name: "sprinter-health", label: "Mobile Health" },
-      { name: "traba", label: "Light Industrial Staffing" },
-      { name: "trucksmarter", label: "Trucking & Freight" },
-      { name: "turvo", label: "Supply Chain" },
-      { name: "veryable", label: "On-Demand Labor" },
-      { name: "vivian-health", label: "Healthcare Jobs" },
-      { name: "voize", label: "Care Documentation" },
-      { name: "when-i-work", label: "Employee Scheduling" },
-      { name: "workiz", label: "Field Service" },
-      { name: "workwhile", label: "Hourly Workforce" },
-      { name: "zuper", label: "Field Service" }
-    ];
-
-    const grid = document.getElementById('grid');
-    prototypes.forEach(p => {
-      const display = p.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      grid.innerHTML += `
-        <a href="${p.name}/" class="card">
-          <div class="card-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-            </svg>
-          </div>
-          <div>
-            <div class="card-name">${display}</div>
-            <div class="card-type">${p.label}</div>
-          </div>
-        </a>`;
-    });
-  </script>
 
 </body>
 </html>
