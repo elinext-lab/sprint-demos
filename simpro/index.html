@@ -412,7 +412,7 @@
       width: 85%;
       text-align: center;
     }
-    .modal-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .modal-icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; }
     .modal-title {
       font-size: 0.72rem; font-weight: 700;
       color: var(--red-l); margin-bottom: 0.25rem;
@@ -464,9 +464,9 @@
       display: flex; gap: 0.6rem; align-items: flex-start;
       font-size: 0.88rem; color: var(--grey-2);
     }
-    .diff-list li .icon { flex-shrink: 0; font-size: 0.85rem; margin-top: 0.05rem; }
-    .diff-list.bad  li .icon { color: var(--red-l); }
-    .diff-list.good li .icon { color: var(--green); }
+    .diff-list li .icon { flex-shrink: 0; font-size: 0.85rem; margin-top: 0.05rem; display: flex; align-items: center; justify-content: center; }
+    .diff-list.bad  li .icon { color: var(--red-l); display: flex; align-items: center; justify-content: center; }
+    .diff-list.good li .icon { color: var(--green); display: flex; align-items: center; justify-content: center; }
 
     /* ─── RATING / COMPETITIVE GAP ──────────────────────────────────────── */
     .ratings-table {
@@ -535,7 +535,7 @@
       transition: border-color 0.2s, transform 0.15s;
     }
     .cap-card:hover { border-color: rgba(26,106,255,0.4); transform: translateY(-2px); }
-    .cap-card .cap-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+    .cap-card .cap-icon { font-size: 1.4rem; margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: center; }
     .cap-card .cap-title { font-weight: 700; color: var(--white); font-size: 0.9rem; margin-bottom: 0.35rem; }
     .cap-card .cap-body  { font-size: 0.8rem; color: var(--grey-2); line-height: 1.5; }
 

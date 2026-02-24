@@ -126,8 +126,7 @@
     border: 2px solid #1E3555;
     overflow: hidden;
     box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px #0F1929;
-    position: relative;
-  }
+    position: relative; max-width: 280px; min-height: 500px;}
   .phone-notch {
     width: 80px;
     height: 28px;
@@ -162,7 +161,7 @@
     color: #7A96B5;
   }
   .status-bar .time { color: #C0D4E8; font-size: 13px; font-weight: 700; }
-  .status-icons { display: flex; gap: 4px; align-items: center; }
+  .status-icons { display: flex; gap: 4px; align-items: center; justify-content: center; }
   .signal-bars { display: flex; gap: 1px; align-items: flex-end; }
   .signal-bar { width: 3px; background: #C0D4E8; border-radius: 1px; }
 
@@ -235,7 +234,7 @@
   .offline-banner.syncing-mode {
     background: #3B7DD8;
   }
-  .offline-icon { font-size: 14px; }
+  .offline-icon { font-size: 14px; display: flex; align-items: center; justify-content: center; }
   .offline-action { margin-left: auto; font-size: 11px; opacity: 0.85; }
 
   /* Stats Strip */
@@ -400,7 +399,7 @@
     transition: color 0.15s;
   }
   .nav-item.nav-active { color: #3B7DD8; }
-  .nav-icon { font-size: 20px; }
+  .nav-icon { font-size: 20px; display: flex; align-items: center; justify-content: center; }
   .nav-badge {
     position: absolute; top: -4px; right: -4px;
     background: #FF3B30; color: white; border-radius: 10px;
@@ -477,7 +476,7 @@
     padding: 0;
   }
   .photo-zone:hover { border-color: #3B7DD8; background: #F0F6FF; }
-  .photo-icon { font-size: 36px; color: #B0C8E0; margin-bottom: 8px; }
+  .photo-icon { font-size: 36px; color: #B0C8E0; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
   .photo-prompt { font-size: 15px; font-weight: 700; color: #3B7DD8; margin-bottom: 4px; }
   .photo-sub { font-size: 12px; color: #7A96B5; }
   .photo-preview {
@@ -553,8 +552,8 @@
   }
   .barcode-zone:hover { border-color: #3B7DD8; }
   .barcode-zone.scanned { border-color: #00C896; background: #EEFBF5; }
-  .barcode-icon { font-size: 24px; color: #3B7DD8; }
-  .barcode-icon.scanned-icon { color: #00C896; }
+  .barcode-icon { font-size: 24px; color: #3B7DD8; display: flex; align-items: center; justify-content: center; }
+  .barcode-icon.scanned-icon { color: #00C896; display: flex; align-items: center; justify-content: center; }
   .barcode-info { flex: 1; }
   .barcode-label { font-size: 13px; font-weight: 600; color: #1A2A3A; }
   .barcode-val { font-size: 11px; color: #7A96B5; font-family: monospace; }
@@ -601,7 +600,7 @@
     text-align: center;
   }
   .success-overlay.show { display: flex; }
-  .success-icon { font-size: 64px; margin-bottom: 16px; }
+  .success-icon { font-size: 64px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
   .success-title { font-size: 22px; font-weight: 800; color: #1A2A3A; margin-bottom: 8px; }
   .success-sub { font-size: 14px; color: #7A96B5; margin-bottom: 24px; }
   .success-detail { background: #F4F6F9; border-radius: 14px; padding: 16px; width: 100%; text-align: left; margin-bottom: 24px; }
@@ -740,7 +739,7 @@
     display: none;
   }
   .route-accepted.show { display: block; }
-  .route-accepted-icon { font-size: 40px; margin-bottom: 8px; }
+  .route-accepted-icon { font-size: 40px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
   .route-accepted-title { font-size: 16px; font-weight: 800; color: #00A87A; margin-bottom: 4px; }
   .route-accepted-sub { font-size: 12px; color: #7A96B5; }
 
