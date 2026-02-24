@@ -171,10 +171,12 @@
       background: #1C1C1E;
       border-radius: 32px;
       padding: 16px;
-      width: 220px;
+      width: 280px;
       margin: 0 auto 24px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      position: relative; max-width: 280px; min-height: 500px;}
+      position: relative;
+      min-height: 500px;
+    }
     .phone-screen {
       background: var(--white);
       border-radius: 20px;
@@ -667,6 +669,11 @@
       text-decoration: none;
     }
     .sticky-nav a:hover { color: var(--gray-900); }
+
+    @media (max-width: 700px) {
+      .dashboard-grid-2col { grid-template-columns: 1fr !important; }
+      .phone-mockup { width: 260px; }
+    }
   </style>
 </head>
 <body>
@@ -849,8 +856,7 @@
     <h3>What the Manager Sees: Before and After</h3>
     <p class="section-desc">The supervisor dashboard shows the real cost of silent failures — and what proper visibility looks like.</p>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-      @media(max-width:700px) { display: block; }
+    <div class="dashboard-grid-2col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
 
       <!-- Before: manager dashboard -->
       <div class="dashboard-mockup">
@@ -1038,8 +1044,8 @@
 
     <div class="offer-grid">
       <div class="offer-item">
-        <div class="offer-value">$14–18K</div>
-        <div class="offer-label">Fixed-range engagement</div>
+        <div class="offer-value">Scoped</div>
+        <div class="offer-label">Fixed-scope engagement</div>
       </div>
       <div class="offer-item">
         <div class="offer-value">6–8 wk</div>
@@ -1056,9 +1062,9 @@
       FCM high-priority channels. Phase 2 (optional): token refresh hardening, WorkChat notification reliability, crash telemetry.
     </div>
 
-    
+    <a class="cta-button" href="https://www.elinext.com/contacts/">
       Request a 20-Minute Call
-    
+    </a>
     <div class="contact-line">
       Elinext Mobile Engineering, Elinext &nbsp;|&nbsp;
       <a href="https://www.elinext.com/contacts/" style="color:inherit;text-decoration:underline;">elinext.com/contacts/</a>
