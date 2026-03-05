@@ -308,12 +308,14 @@
     <div id="protoForm" style="display:none;max-width:480px;margin:2rem auto 0;background:#f8f9fa;border-radius:16px;padding:2rem;text-align:left;">
       <h3 style="margin-bottom:0.5rem;font-size:1.2rem;color:#111;">Get your free prototype</h3>
       <p style="margin-bottom:1.5rem;font-size:0.9rem;color:#666;">Paste your app link. We'll email you a working prototype within 24 hours.</p>
-      <form id="leadForm" onsubmit="return submitLeadForm(event)">
-        <label style="display:block;margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;color:#333;">📱 App Store or Google Play URL *</label>
-        <input type="url" id="appUrl" required placeholder="https://apps.apple.com/... or https://play.google.com/..." style="width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;">
+      <form id="leadForm" onsubmit="return submitLeadForm(event)" novalidate>
+        <label style="display:block;margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;color:#333;">📱 Link to your mobile app *</label>
+        <input type="text" id="appUrl" placeholder="App Store, Google Play, or any app link" style="width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:8px;font-size:0.95rem;margin-bottom:0.2rem;">
+        <div id="appUrlError" style="display:none;color:#dc2626;font-size:0.8rem;margin-bottom:0.8rem;">Please paste a link to your app</div>
         
-        <label style="display:block;margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;color:#333;">📧 Your email *</label>
-        <input type="email" id="leadEmail" required placeholder="Where to send the prototype" style="width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:8px;font-size:0.95rem;margin-bottom:1rem;">
+        <label style="display:block;margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;color:#333;">✉️ Your email *</label>
+        <input type="text" id="leadEmail" placeholder="You'll get a reply here" style="width:100%;padding:0.7rem;border:1px solid #ddd;border-radius:8px;font-size:0.95rem;margin-bottom:0.2rem;">
+        <div id="emailError" style="display:none;color:#dc2626;font-size:0.8rem;margin-bottom:0.8rem;">Please enter a valid email</div>
         
         <button type="button" onclick="document.getElementById('extraFields').style.display=document.getElementById('extraFields').style.display==='none'?'block':'none'" style="background:none;border:none;color:#2563eb;cursor:pointer;font-size:0.85rem;margin-bottom:1rem;padding:0;">⚡ More details (optional)</button>
         
@@ -340,6 +342,29 @@
     <script>
     function submitLeadForm(e) {
       e.preventDefault();
+      
+      // Custom validation (no browser native popups)
+      var appUrl = document.getElementById('appUrl').value.trim();
+      var email = document.getElementById('leadEmail').value.trim();
+      var hasError = false;
+      
+      document.getElementById('appUrlError').style.display = 'none';
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('appUrl').style.borderColor = '#ddd';
+      document.getElementById('leadEmail').style.borderColor = '#ddd';
+      
+      if (!appUrl || !appUrl.match(/^https?:\/\/.+/)) {
+        document.getElementById('appUrlError').style.display = 'block';
+        document.getElementById('appUrl').style.borderColor = '#dc2626';
+        hasError = true;
+      }
+      if (!email || !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        document.getElementById('emailError').style.display = 'block';
+        document.getElementById('leadEmail').style.borderColor = '#dc2626';
+        hasError = true;
+      }
+      if (hasError) return false;
+      
       var btn = document.getElementById('submitBtn');
       btn.textContent = 'Sending...';
       btn.disabled = true;
