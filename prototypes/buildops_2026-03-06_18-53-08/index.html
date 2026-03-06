@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildOps Mobile — AI Teardown</title>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZR415HX0B2');</script>
+
+    <!-- OG Meta Tags -->
+    <meta property="og:image" content="https://elinext-lab.github.io/prototypes/buildops_2026-03-06_18-53-08/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:title" content="BuildOps Mobile — AI Teardown">
+    <meta property="og:description" content="What if your field app actually worked fast? AI-powered analysis shows how BuildOps mobile performance could be transformed for field technicians who need reliability, not roadblocks.">
+    <meta name="author" content="Yauheni Shauchenka, Elinext">
+
+    <!-- Ratings comment -->
+    <!-- Ratings as of 2026-03-06: iOS 3.1456 (364 reviews, source: iTunes API), Android 3.26 (162 reviews, source: google-play-scraper) -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #f97316, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .header .rating-badge {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fecaca;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 20px auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .comparison-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .phone-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .phone-comparison {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .phone-mockup {
+            text-align: center;
+        }
+
+        .phone-label {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .current-label {
+            color: #ef4444;
+        }
+
+        .optimized-label {
+            color: #22c55e;
+        }
+
+        /* Phone Frame */
+        .phone {
+            width: 280px;
+            height: 580px;
+            background: #1e293b;
+            border: 8px solid #334155;
+            border-radius: 40px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .phone {
+                width: 300px;
+            }
+        }
+
+        .phone::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background: #4b5563;
+            border-radius: 3px;
+        }
+
+        .phone-screen {
+            position: absolute;
+            top: 36px;
+            left: 14px;
+            right: 14px;
+            bottom: 14px;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            overflow-y: auto;
+        }
+
+        /* App Interface Styles */
+        .app-header {
+            background: #3b82f6;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        .app-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .app-content {
+            padding: 20px;
+            color: #1f2937;
+        }
+
+        /* Current App - Slow/Problematic */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+            margin: 40px auto;
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            display: block;
+            text-align: center;
+        }
+
+        .slow-upload {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            display: block;
+            text-align: center;
+        }
+
+        /* Optimized App - Fast/Clean */
+        .work-order {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .work-order h4 {
+            color: #111827;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .work-order p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin: 4px 0;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .action-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: block;
+        }
+
+        .action-btn.success {
+            background: #22c55e;
+        }
+
+        .fast-indicator {
+            background: #d1fae5;
+            color: #047857;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            text-align: center;
+            margin: 10px 0;
+            display: block;
+        }
+
+        /* Key Features */
+        .features-section {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin: 80px 0;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #f97316, #facc15);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .feature h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .feature p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(45deg, #f97316, #facc15);
+            border-radius: 20px;
+            margin: 80px 0;
+            color: #1f2937;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #1f2937;
+            color: white;
+            padding: 18px 36px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            margin-top: 80px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+
+            .phone-comparison {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>BuildOps Mobile Teardown</h1>
+            <p class="subtitle">AI-powered analysis by Elinext Engineering</p>
+            <div class="rating-badge">
+                Current Rating: iOS 3.1⭐ | Android 3.3⭐
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Performance Comparison -->
+            <section class="comparison-section">
+                <h2 class="section-title">Performance Reality Check</h2>
+
+                <div class="phone-comparison">
+                    <!-- Current BuildOps Experience -->
+                    <div class="phone-mockup">
+                        <span class="phone-label current-label">Current Experience</span>
+                        <div class="phone">
+                            <div class="phone-screen">
+                                <div class="app-header">
+                                    <h3>BuildOps</h3>
+                                </div>
+                                <div class="app-content">
+                                    <div class="loading-spinner"></div>
+                                    <p style="text-align: center; color: #6b7280; margin-top: 20px;">Loading jobs...</p>
+
+                                    <div class="error-message">
+                                        App stopped responding
+                                    </div>
+
+                                    <div class="slow-upload">
+                                        📷 Uploading photo... (9 minutes remaining)
+                                    </div>
+
+                                    <div style="margin-top: 30px; color: #ef4444; font-size: 0.9rem; text-align: center;">
+                                        <strong>Common Issues:</strong><br>
+                                        • "Takes hours to load"<br>
+                                        • "Crashes all the time"<br>
+                                        • "Too many taps for simple tasks"<br>
+                                        • "Progress not saving"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optimized Experience -->
+                    <div class="phone-mockup">
+                        <span class="phone-label optimized-label">Optimized Experience</span>
+                        <div class="phone">
+                            <div class="phone-screen">
+                                <div class="app-header">
+                                    <h3>BuildOps Enhanced</h3>
+                                </div>
+                                <div class="app-content">
+                                    <div class="fast-indicator">
+                                        ⚡ Loaded in 0.8s
+                                    </div>
+
+                                    <div class="work-order">
+                                        <h4>HVAC Maintenance - Unit 4B</h4>
+                                        <p>📍 Downtown Plaza, Suite 400</p>
+                                        <p>🕐 Started: 9:15 AM</p>
+                                    </div>
+
+                                    <div class="quick-actions">
+                                        <div class="action-btn">📷 Quick Photo</div>
+                                        <div class="action-btn">⏱️ Clock Out</div>
+                                        <div class="action-btn success">✅ Job Complete</div>
+                                        <div class="action-btn">📝 Add Notes</div>
+                                    </div>
+
+                                    <div class="fast-indicator">
+                                        📷 Photo uploaded instantly
+                                    </div>
+
+                                    <div class="fast-indicator">
+                                        ☁️ Auto-synced to office
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Improvements -->
+            <section class="features-section">
+                <h2 class="section-title">AI-Powered Optimization</h2>
+                <p style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 20px;">
+                    How Elinext's mobile expertise transforms field technician experience
+                </p>
+
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Performance Engine</h3>
+                        <p>Advanced caching, offline-first architecture, and background sync eliminate loading delays and crashes.</p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">🎯</div>
+                        <h3>One-Tap Workflows</h3>
+                        <p>Streamlined UX reduces complex multi-step tasks to single actions. Field techs complete jobs 40% faster.</p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">📱</div>
+                        <h3>Reliable Mobile Core</h3>
+                        <p>Rock-solid data persistence, instant photo uploads, and network resilience built for field conditions.</p>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI-Enhanced Features</h3>
+                        <p>Smart forms, predictive text, automated equipment recognition - technology that actually helps daily work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <section class="cta-section">
+                <h2>Ready to Transform Your Mobile Experience?</h2>
+                <p>See how Elinext's 150+ mobile developers can solve BuildOps' field technician satisfaction crisis.</p>
+                <a href="https://www.elinext.com/contacts/" class="cta-button">Get in Touch</a>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built by <strong>Elinext</strong> • AI-Powered Mobile Development • <a href="https://www.elinext.com/" style="color: #f97316;">www.elinext.com</a></p>
+        </footer>
+    </div>
+</body>
+</html>
