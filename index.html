@@ -337,8 +337,8 @@
       <div id="formError" style="display:none;text-align:center;padding:2rem 0;">
         <div style="font-size:2rem;margin-bottom:0.5rem;">⚠️</div>
         <h3 style="color:#dc2626;margin-bottom:0.5rem;">Couldn't deliver email</h3>
-        <p style="color:#666;margin-bottom:1rem;">We weren't able to send to that address. Please check your email and try again.</p>
-        <button onclick="document.getElementById('formError').style.display='none';document.getElementById('leadForm').style.display='block';document.querySelector('#protoForm h3').style.display='';document.querySelector('#protoForm > p').style.display=''" style="padding:0.6rem 1.5rem;background:none;border:1px solid #2563eb;color:#2563eb;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:600;">← Try again</button>
+        <p id="formErrorText" style="color:#666;margin-bottom:1rem;">We weren't able to send to that address. Please check your email and try again.</p>
+        <button onclick="document.getElementById('formError').style.display='none';document.getElementById('leadForm').style.display='block';document.querySelector('#protoForm h3').style.display='';document.querySelector('#protoForm > p').style.display='';document.getElementById('submitBtn').textContent='Get Free Prototype →';document.getElementById('submitBtn').disabled=false" style="padding:0.6rem 1.5rem;background:none;border:1px solid #2563eb;color:#2563eb;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:600;">← Try again</button>
       </div>
     </div>
 
@@ -400,6 +400,7 @@
             document.getElementById('formSuccess').style.display = 'block';
             gtag('event','submit_prototype_request',{event_category:'CTA',event_label:'form_submit',value:1});
           } else if (result.status === 'email_failed') {
+            document.getElementById('formErrorText').innerHTML = 'We couldn\'t deliver to <strong>' + data.email + '</strong>. Please check the address and try again.';
             document.getElementById('formError').style.display = 'block';
             gtag('event','email_delivery_failed',{event_category:'form',event_label:data.email});
           } else {
