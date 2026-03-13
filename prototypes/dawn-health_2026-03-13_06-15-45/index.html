@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ekiva MS Mobile - Instant Value Check-in</title>
+  <meta name="description" content="What if Dawn Health could turn Ekiva MS symptom logging into a 60-second, trust-building check-in that gives patients immediate value and cleaner visit prep?">
+  <link rel="canonical" href="https://elinext-lab.github.io/prototypes/dawn-health_2026-03-13_06-15-45/">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-ZR415HX0B2');</script>
+
+  <meta property="og:image" content="https://elinext-lab.github.io/prototypes/dawn-health_2026-03-13_06-15-45/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://elinext-lab.github.io/prototypes/dawn-health_2026-03-13_06-15-45/">
+  <meta property="og:title" content="Dawn Health Mobile - AI Teardown">
+  <meta property="og:description" content="What if Ekiva MS turned symptom logging into a faster, more trustworthy check-in that gives patients an instant visit-ready summary instead of making data entry feel like homework?">
+  <meta property="og:type" content="website">
+  <meta name="author" content="Yauheni Shauchenka, Elinext">
+
+  <!-- Ratings as of 2026-03-13: iOS 3.00 (12 ratings, source: iTunes Lookup API, Germany), Android 3.84 (72 ratings, source: Google Play scraper for https://play.google.com/store/apps/details?id=com.dawnhealth.neurohealth&hl=en&gl=us) -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0a1320;
+      --bg-soft: #111b2a;
+      --panel: rgba(10, 20, 32, 0.88);
+      --panel-solid: #111b2a;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eef4fb;
+      --muted: #96a8bd;
+      --accent: #ff7b42;
+      --accent-soft: #ffcfba;
+      --mint: #7ee0bb;
+      --warn: #f7c468;
+      --danger: #ff6f76;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 123, 66, 0.16), transparent 26%),
+        radial-gradient(circle at 88% 18%, rgba(126, 224, 187, 0.12), transparent 22%),
+        linear-gradient(180deg, #09111d 0%, #0b1522 46%, #09111d 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .shell {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .shell::before,
+    .shell::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      width: 24rem;
+      height: 24rem;
+      border-radius: 999px;
+      filter: blur(90px);
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .shell::before {
+      top: 3rem;
+      left: -7rem;
+      background: rgba(255, 123, 66, 0.24);
+    }
+
+    .shell::after {
+      right: -7rem;
+      bottom: 4rem;
+      background: rgba(126, 224, 187, 0.16);
+    }
+
+    .hero,
+    .evidence,
+    .prototype,
+    .closing {
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
+
+    .hero {
+      padding: 76px 20px 42px;
+      text-align: center;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .phone-tag,
+    .metric-chip,
+    .cta-note {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .phone-tag,
+    .metric-chip,
+    .cta-note {
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      padding: 8px 14px;
+      color: var(--accent-soft);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-lockup {
+      width: 96px;
+      height: 96px;
+      margin: 20px auto 18px;
+      padding: 10px;
+      border-radius: 28px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      box-shadow: 0 14px 48px rgba(0,0,0,0.34);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand-lockup img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+
+    h1 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2.7rem, 5vw, 5.2rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      max-width: 1020px;
+      margin: 0 auto 18px;
+      text-align: center;
+    }
+
+    h1 span { color: var(--accent-soft); }
+
+    .hero-subtitle {
+      max-width: 760px;
+      margin: 0 auto 14px;
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .hero-personal {
+      max-width: 620px;
+      margin: 0 auto 30px;
+      color: #c2cedb;
+      font-size: 0.96rem;
+      text-align: center;
+    }
+
+    .hero-grid {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .hero-card {
+      background: rgba(12, 21, 35, 0.82);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px 20px 18px;
+      text-align: left;
+      box-shadow: var(--shadow);
+      min-height: 148px;
+    }
+
+    .hero-card strong {
+      display: block;
+      font-family: "Sora", sans-serif;
+      font-size: 1.48rem;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .hero-card .metric-chip {
+      margin: 0 0 12px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d1dbe6;
+    }
+
+    .section-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .evidence {
+      padding: 34px 0 26px;
+    }
+
+    .section-kicker {
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      background: rgba(126,224,187,0.08);
+      color: #a8f0d0;
+      border: 1px solid rgba(126,224,187,0.16);
+    }
+
+    .section-heading {
+      max-width: 740px;
+      margin: 0 auto 22px;
+      text-align: center;
+    }
+
+    .section-heading h2 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .evidence-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel h3 {
+      font-family: "Sora", sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .panel p,
+    .panel li {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .review-list,
+    .fix-list,
+    .benchmark-list {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .review-card,
+    .fix-item,
+    .benchmark-item {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 14px 16px;
+    }
+
+    .review-card span,
+    .benchmark-item span,
+    .fix-item span {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #c7d3df;
+      margin-bottom: 8px;
+    }
+
+    .review-card strong,
+    .benchmark-item strong,
+    .fix-item strong {
+      display: block;
+      font-family: "Sora", sans-serif;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .benchmark-score {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      color: #d5dce4;
+      font-size: 0.92rem;
+    }
+
+    .score-bar {
+      width: 82px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .score-fill {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), #f6d47d);
+    }
+
+    .prototype {
+      padding: 42px 0 36px;
+    }
+
+    .phone-grid {
+      display: grid;
+      gap: 22px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      justify-items: center;
+    }
+
+    .phone-group {
+      width: 100%;
+      text-align: center;
+    }
+
+    .phone-tag {
+      padding: 7px 11px;
+      margin-bottom: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d1dce7;
+    }
+
+    .phone-caption {
+      max-width: 280px;
+      margin: 14px auto 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .phone {
+      position: relative;
+      width: 280px;
+      height: 580px;
+      padding: 14px;
+      border-radius: 44px;
+      background: linear-gradient(180deg, #162233 0%, #09111b 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 20px 55px rgba(0,0,0,0.45);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 112px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.42);
+      z-index: 3;
+    }
+
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border-radius: 32px;
+      background: #f3f7fb;
+      color: #16202d;
+      padding: 36px 14px 14px;
+      text-align: left;
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .screen-title {
+      font-family: "Sora", sans-serif;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .screen-subtitle {
+      color: #5c6b79;
+      font-size: 0.84rem;
+      margin-top: 4px;
+    }
+
+    .badge-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb187, #ff7b42);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .store-shot {
+      position: relative;
+      display: block;
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #dfe8f0;
+      border: 1px solid rgba(22,32,45,0.08);
+      box-shadow: 0 16px 32px rgba(27,42,58,0.10);
+    }
+
+    .store-shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .overlay-note {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2;
+      background: rgba(10, 19, 32, 0.82);
+      color: #edf4fa;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 10px 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .overlay-note strong {
+      display: block;
+      font-size: 0.86rem;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .overlay-note p {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #ced8e2;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: #586776;
+      font-size: 0.82rem;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: #d7e1ea;
+      overflow: hidden;
+    }
+
+    .progress-bar span {
+      display: block;
+      width: 66%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff9162, #ff7b42);
+    }
+
+    .glass-card,
+    .insight-card,
+    .summary-card,
+    .quick-action,
+    .tiny-chart {
+      border-radius: 22px;
+      background: white;
+      border: 1px solid rgba(16,28,40,0.08);
+      box-shadow: 0 14px 26px rgba(27,42,58,0.08);
+    }
+
+    .glass-card {
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .card-label {
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7f8f9f;
+      margin-bottom: 6px;
+    }
+
+    .card-heading {
+      font-family: "Sora", sans-serif;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      letter-spacing: -0.03em;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #f4f7fb;
+      font-size: 0.8rem;
+      color: #445363;
+    }
+
+    .toggle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .toggle {
+      border-radius: 18px;
+      padding: 12px 10px;
+      background: #f6f9fc;
+      text-align: center;
+      border: 1px solid rgba(21,33,47,0.08);
+      font-size: 0.82rem;
+      color: #4c5c6d;
+    }
+
+    .toggle.active {
+      background: linear-gradient(180deg, #fff4ef 0%, #ffe8dc 100%);
+      border-color: rgba(255,123,66,0.32);
+      color: #8d4320;
+    }
+
+    .insight-card {
+      padding: 16px;
+      margin-bottom: 12px;
+      background: linear-gradient(180deg, #112134 0%, #162a41 100%);
+      color: #edf4fb;
+    }
+
+    .insight-card p { color: #cad6e2; font-size: 0.86rem; line-height: 1.55; }
+    .insight-card strong { display: block; font-family: "Sora", sans-serif; margin-bottom: 8px; }
+
+    .insight-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: #d7e1ea;
+      font-size: 0.8rem;
+    }
+
+    .summary-card {
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+      color: #506172;
+      font-size: 0.82rem;
+    }
+
+    .pill-soft {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #edf5f1;
+      color: #24684c;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tiny-chart {
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .bar-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: #576878;
+    }
+
+    .bar-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #e2ebf3;
+      overflow: hidden;
+    }
+
+    .bar-track span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6dd3ab, #43bb8b);
+    }
+
+    .quick-action {
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .quick-action strong {
+      display: block;
+      font-family: "Sora", sans-serif;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .action-rows {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .action-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #f7fafc;
+      color: #4d5f72;
+      font-size: 0.82rem;
+    }
+
+    .action-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff9367, #ff7b42);
+      flex-shrink: 0;
+    }
+
+    .closing {
+      padding: 32px 0 72px;
+    }
+
+    .closing-panel {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,123,66,0.18), transparent 24%),
+        linear-gradient(180deg, rgba(12,21,35,0.94) 0%, rgba(9,17,28,0.94) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .closing-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .closing-panel h2 {
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+      max-width: 640px;
+      text-align: left;
+    }
+
+    .closing-panel p {
+      max-width: 640px;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .closing-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .closing-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: #d8e2eb;
+      line-height: 1.55;
+    }
+
+    .closing-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 10px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cta-note {
+      padding: 7px 11px;
+      margin: 0;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d7e0ea;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8d5d 0%, #ff6f33 100%);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 18px 38px rgba(255, 111, 51, 0.28);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 42px rgba(255, 111, 51, 0.34);
+    }
+
+    .fine-print {
+      margin-top: 18px;
+      color: #8193a6;
+      font-size: 0.83rem;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    @media (max-width: 1120px) {
+      .phone-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .phone-group:last-child { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 920px) {
+      .evidence-grid,
+      .closing-grid,
+      .phone-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .closing-grid {
+        align-items: start;
+      }
+
+      .cta-wrap {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero { padding-top: 64px; }
+      .hero-card { min-height: auto; }
+      .phone { width: 300px; }
+      .panel,
+      .closing-panel { padding: 22px; }
+      .phone-caption { max-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <span class="eyebrow">Elinext AI teardown</span>
+      <div class="brand-lockup">
+        <img src="./assets/ekiva-icon.jpg" alt="Ekiva MS icon">
+      </div>
+      <h1>What if <span>every symptom log</span> paid the patient back right away?</h1>
+      <p class="hero-subtitle">
+        A concept built around the public feedback on Ekiva MS: make symptom entry lighter, safer,
+        and visibly useful in under a minute.
+      </p>
+      <p class="hero-personal">
+        Built for Kristiyan Dobrev, Tech Lead at Dawn Health, whose remit sits directly inside
+        Apple-first, medical-grade mobile product delivery.
+      </p>
+
+      <div class="hero-grid">
+        <article class="hero-card">
+          <span class="metric-chip">Store signal</span>
+          <strong>iOS 3.0 / 12</strong>
+          <p>German App Store rating for Ekiva MS as retrieved on 2026-03-13. Small sample, but public trust is fragile.</p>
+        </article>
+        <article class="hero-card">
+          <span class="metric-chip">Scale signal</span>
+          <strong>Android 3.84 / 72</strong>
+          <p>Google Play still shows 100,000+ installs, so even small flow friction compounds quickly across a real user base.</p>
+        </article>
+        <article class="hero-card">
+          <span class="metric-chip">Review signal</span>
+          <strong>"Impossible to enter details"</strong>
+          <p>The sharpest public complaints point to brittle data entry and a weak value loop after logging.</p>
+        </article>
+        <article class="hero-card">
+          <span class="metric-chip">Prototype angle</span>
+          <strong>60-second check-in</strong>
+          <p>Replace heavy logging with a short adaptive flow that returns a visit-ready summary without straying into unsafe advice.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="evidence">
+      <div class="section-wrap">
+        <span class="section-kicker">Public evidence</span>
+        <div class="section-heading">
+          <h2>The product promise is right. The daily-value loop looks too weak.</h2>
+          <p>
+            Dawn's own Ekiva case page says the app should fit into daily life without friction and
+            support better HCP conversations. The public review signal suggests that promise is not
+            landing reliably enough in the moment of data entry.
+          </p>
+        </div>
+
+        <div class="evidence-grid">
+          <article class="panel">
+            <h3>What public users are saying</h3>
+            <div class="review-list">
+              <div class="review-card">
+                <span>iOS review · Germany</span>
+                <strong>"Funktioniert nicht"</strong>
+                <p>Literal translation: "Doesn't work."</p>
+              </div>
+              <div class="review-card">
+                <span>iOS review · Germany</span>
+                <strong>"They only want to pull data"</strong>
+                <p>A translated 1-star review complains the app asks for effort without delivering enough patient value back.</p>
+              </div>
+              <div class="review-card">
+                <span>Android review</span>
+                <strong>"Imposable to enter details"</strong>
+                <p>The wording is rough, but the signal is clear: input friction is still visible in the public record.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h3>Why this matters now</h3>
+            <div class="fix-list">
+              <div class="fix-item">
+                <span>Official product promise</span>
+                <strong>Ekiva should reduce patient effort</strong>
+                <p>Dawn's case page says the product was designed to fit daily life and help patients feel empowered before consultations.</p>
+              </div>
+              <div class="fix-item">
+                <span>Competitor bar</span>
+                <strong>Brisa's public rating base is stronger</strong>
+                <p>Brisa sits at 3.97 on iOS Germany with 106 ratings and leans harder into appointment planning and visible value.</p>
+              </div>
+              <div class="fix-item">
+                <span>Opportunity</span>
+                <strong>Make every check-in visibly useful</strong>
+                <p>Shorter logging, saved progress, instant trend framing, and one-tap export can improve trust without bloating scope.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="evidence-grid" style="margin-top: 16px;">
+          <article class="panel">
+            <h3>Benchmark pressure</h3>
+            <div class="benchmark-list">
+              <div class="benchmark-item">
+                <span>Lighthouse mobile performance</span>
+                <strong>Dawn Health website</strong>
+                <p>Public web performance is 50 / 100 on mobile. Not catastrophic, but still heavy for a trust-first health brand.</p>
+                <div class="benchmark-score">
+                  <div class="score-bar"><span class="score-fill" style="width: 50%;"></span></div>
+                  <span>50 / 100</span>
+                </div>
+              </div>
+              <div class="benchmark-item">
+                <span>Direct app competitor</span>
+                <strong>Brisa app site</strong>
+                <p>Brisa's public web surface scores 63 / 100 on mobile and its store ratings suggest stronger perceived utility.</p>
+                <div class="benchmark-score">
+                  <div class="score-bar"><span class="score-fill" style="width: 63%;"></span></div>
+                  <span>63 / 100</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h3>Prototype principle</h3>
+            <p>
+              Do not add more tasks. Compress the logging flow until it feels closer to sending
+              yourself a timestamped note, then convert the captured data into something patients and
+              clinicians can use immediately.
+            </p>
+            <ul class="benchmark-list" style="margin-top: 16px;">
+              <li class="benchmark-item">
+                <span>Keep</span>
+                <strong>Symptom tracking, trends, visit preparation</strong>
+                <p>Those are already aligned with the product thesis.</p>
+              </li>
+              <li class="benchmark-item">
+                <span>Change</span>
+                <strong>The effort-to-value ratio at check-in time</strong>
+                <p>That is the narrowest place to win back trust and improve retention.</p>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="prototype">
+      <div class="section-wrap">
+        <span class="section-kicker">Current vs improved</span>
+        <div class="section-heading">
+          <h2>Before: form-heavy logging. After: fast capture plus an immediate payoff.</h2>
+          <p>
+            The concept below keeps Ekiva's core job to be done intact, but tightens the moment that
+            determines whether patients come back tomorrow.
+          </p>
+        </div>
+
+        <div class="phone-grid">
+          <div class="phone-group">
+            <span class="phone-tag">Current public flow</span>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="screen-header">
+                  <div>
+                    <div class="screen-title">Ekiva MS</div>
+                    <div class="screen-subtitle">App Store screenshot</div>
+                  </div>
+                  <div class="badge-dot">!</div>
+                </div>
+                <div class="store-shot">
+                  <img src="./assets/ekiva-store-screen-1.jpg" alt="Current Ekiva MS App Store screenshot">
+                  <div class="overlay-note">
+                    <strong>Public friction signal</strong>
+                    <p>Users should not have to wonder whether logging is worth the effort or whether the flow will fail mid-entry.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="phone-caption">
+              The existing product promise is solid, but public feedback suggests the logging experience still feels too brittle and too one-sided.
+            </p>
+          </div>
+
+          <div class="phone-group">
+            <span class="phone-tag">Improved check-in</span>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="screen-header">
+                  <div>
+                    <div class="screen-title">Daily check-in</div>
+                    <div class="screen-subtitle">Takes under 60 seconds</div>
+                  </div>
+                  <div class="badge-dot">3</div>
+                </div>
+
+                <div class="progress-row">
+                  <span>2 of 3 steps</span>
+                  <div class="progress-bar"><span></span></div>
+                </div>
+
+                <div class="glass-card">
+                  <div class="card-label">Today</div>
+                  <div class="card-heading">How is walking feeling right now?</div>
+                  <div class="chip-row">
+                    <div class="chip">Stable</div>
+                    <div class="chip">Slightly worse</div>
+                    <div class="chip">Noticeably worse</div>
+                  </div>
+                </div>
+
+                <div class="glass-card">
+                  <div class="card-label">Fast context</div>
+                  <div class="card-heading">Anything different today?</div>
+                  <div class="toggle-grid">
+                    <div class="toggle active">Poor sleep</div>
+                    <div class="toggle">Heat</div>
+                    <div class="toggle">Medication change</div>
+                    <div class="toggle active">High fatigue</div>
+                  </div>
+                </div>
+
+                <div class="insight-card">
+                  <strong>Instant patient payoff</strong>
+                  <p>Your last three higher-fatigue days were also the days with poorer walking confidence. We will add this to your next visit brief automatically.</p>
+                  <div class="insight-line">
+                    <span>Draft saved automatically</span>
+                    <span>Ready for export</span>
+                  </div>
+                </div>
+
+                <div class="quick-action">
+                  <div class="card-label">Next best step</div>
+                  <strong>Add a note while it is still fresh</strong>
+                  <div class="action-rows">
+                    <div class="action-item"><span class="action-dot"></span><span>"More right-leg heaviness after stairs"</span></div>
+                    <div class="action-item"><span class="action-dot"></span><span>Attach to next consultation summary</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="phone-caption">
+              Instead of a dense form, the app narrows the decision load and returns visible value immediately after input.
+            </p>
+          </div>
+
+          <div class="phone-group">
+            <span class="phone-tag">Visit-ready summary</span>
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="screen-header">
+                  <div>
+                    <div class="screen-title">Consultation brief</div>
+                    <div class="screen-subtitle">Built from recent check-ins</div>
+                  </div>
+                  <div class="badge-dot">&#8599;</div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="card-label">Ready to share</div>
+                  <div class="card-heading">March visit summary</div>
+                  <span class="pill-soft">Patient reviewed</span>
+                  <div class="summary-row">
+                    <span>Walking confidence</span>
+                    <strong>Down 12%</strong>
+                  </div>
+                  <div class="summary-row">
+                    <span>Fatigue-heavy days</span>
+                    <strong>5 this week</strong>
+                  </div>
+                  <div class="summary-row">
+                    <span>Most common context</span>
+                    <strong>Poor sleep</strong>
+                  </div>
+                </div>
+
+                <div class="tiny-chart">
+                  <div class="card-label">What changed</div>
+                  <div class="card-heading">Trend snapshot</div>
+                  <div class="bar-row">
+                    <div class="bar-item">
+                      <span>Walking</span>
+                      <div class="bar-track"><span style="width: 58%;"></span></div>
+                      <strong>58</strong>
+                    </div>
+                    <div class="bar-item">
+                      <span>Energy</span>
+                      <div class="bar-track"><span style="width: 42%;"></span></div>
+                      <strong>42</strong>
+                    </div>
+                    <div class="bar-item">
+                      <span>Mood</span>
+                      <div class="bar-track"><span style="width: 71%;"></span></div>
+                      <strong>71</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="quick-action">
+                  <div class="card-label">Prepared with guardrails</div>
+                  <strong>Suggested talking points</strong>
+                  <div class="action-rows">
+                    <div class="action-item"><span class="action-dot"></span><span>Discuss walking decline on fatigue-heavy days</span></div>
+                    <div class="action-item"><span class="action-dot"></span><span>Review sleep pattern before medication change</span></div>
+                    <div class="action-item"><span class="action-dot"></span><span>Export PDF and send to clinic portal</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="phone-caption">
+              The payoff is not "more AI." It is a clearer, safer bridge from raw patient input to a better consultation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="section-wrap">
+        <div class="closing-panel">
+          <div class="closing-grid">
+            <div>
+              <span class="section-kicker" style="margin: 0 0 14px; width: fit-content; text-align: left;">Why it resonates</span>
+              <h2>This is a medical-grade trust problem, not a cosmetic design problem.</h2>
+              <p>
+                Kristiyan's own background points to pragmatic system design inside regulated mobile.
+                The strongest conversation opener is a concrete concept for reducing friction without
+                bloating scope or pretending to replace clinical judgment.
+              </p>
+              <ul class="closing-list">
+                <li>Shorter symptom capture with lower cognitive load</li>
+                <li>Immediate value back to the patient after each entry</li>
+                <li>Safer export into the consultation flow they already care about</li>
+              </ul>
+              <p class="fine-print">
+                Public inputs used here: Dawn Health product pages, App Store / Google Play metadata,
+                public review text, and benchmark web performance signals gathered on 2026-03-13.
+              </p>
+            </div>
+
+            <div class="cta-wrap">
+              <span class="cta-note">Elinext concept</span>
+              <a class="cta" href="https://www.elinext.com/contacts/" target="_blank" rel="noopener noreferrer">Get in Touch</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
