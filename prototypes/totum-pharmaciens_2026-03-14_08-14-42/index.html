@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Totum Pharmaciens Mobile — AI Teardown</title>
+  <meta name="description" content="What if Ed could prove every prescription reached the pharmacy, survive login failures, and replace message uncertainty with visible order confirmation for patients?">
+  <link rel="canonical" href="https://elinext-lab.github.io/prototypes/totum-pharmaciens_2026-03-14_08-14-42/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://elinext-lab.github.io/prototypes/totum-pharmaciens_2026-03-14_08-14-42/">
+  <meta property="og:image" content="https://elinext-lab.github.io/prototypes/totum-pharmaciens_2026-03-14_08-14-42/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:title" content="Totum Pharmaciens Mobile — AI Teardown">
+  <meta property="og:description" content="What if Ed could prove every prescription reached the pharmacy, survive login failures, and replace message uncertainty with visible order confirmation for patients?">
+  <meta name="author" content="Yauheni Shauchenka, Elinext">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Ratings as of 2026-03-14: iOS 4.86486 (37 ratings, source: iTunes Lookup API, France), Android 4.23810 (21 ratings, source: Google Play scraper, France) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZR415HX0B2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZR415HX0B2');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e1028;
+      --bg-2: #191c41;
+      --panel: #171932;
+      --panel-2: #f5f4ff;
+      --text: #f4f7ff;
+      --muted: #b9bfdc;
+      --purple: #3e2ca8;
+      --purple-dark: #27186f;
+      --mint: #39f0bd;
+      --mint-soft: #c4fff0;
+      --peach: #ffb671;
+      --rose: #ff7f97;
+      --shadow: 0 28px 80px rgba(5, 6, 19, 0.45);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(57, 240, 189, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 182, 113, 0.12), transparent 24%),
+        linear-gradient(180deg, #0b0e20 0%, #131736 40%, #1b1f45 100%);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page-shell {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 32px 20px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding-top: 34px;
+      padding-bottom: 28px;
+    }
+
+    .hero::before,
+    .hero::after,
+    .signals::before,
+    .closing::before {
+      content: "";
+      position: absolute;
+      inset: auto;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(8px);
+    }
+
+    .hero::before {
+      width: 340px;
+      height: 340px;
+      top: -80px;
+      left: -60px;
+      background: rgba(57, 240, 189, 0.12);
+    }
+
+    .hero::after {
+      width: 360px;
+      height: 360px;
+      top: 40px;
+      right: -120px;
+      background: rgba(255, 127, 151, 0.11);
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(22, 26, 56, 0.92), rgba(34, 38, 82, 0.86));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow);
+      border-radius: 36px;
+      padding: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 auto 16px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mint-soft);
+      background: rgba(57, 240, 189, 0.1);
+      border: 1px solid rgba(57, 240, 189, 0.22);
+    }
+
+    .eyebrow img {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+    }
+
+    .hero-copy {
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto 26px;
+    }
+
+    .hero-copy h1 {
+      font-family: "Space Grotesk", "Avenir Next", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 auto 18px;
+      max-width: 900px;
+    }
+
+    .hero-copy p {
+      max-width: 740px;
+      margin: 0 auto;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 26px auto 0;
+      max-width: 860px;
+    }
+
+    .metric {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      padding: 18px;
+      text-align: left;
+    }
+
+    .metric span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.45rem;
+      line-height: 1.1;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-top: 28px;
+    }
+
+    .review-callout {
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 28px;
+      padding: 24px;
+      min-height: 100%;
+    }
+
+    .review-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 127, 151, 0.14);
+      color: #ffd4dc;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .review-callout blockquote {
+      margin: 18px 0;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: #fff7f9;
+    }
+
+    .review-callout p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .phone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .phone-wrap {
+      text-align: center;
+    }
+
+    .phone-wrap .label {
+      display: inline-block;
+      margin: 0 auto 14px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.84rem;
+      letter-spacing: 0.04em;
+    }
+
+    .phone {
+      position: relative;
+      width: 280px;
+      height: 580px;
+      margin: 0 auto;
+      padding: 16px 12px 14px;
+      background: linear-gradient(180deg, #141414, #242424);
+      border-radius: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 118px;
+      height: 26px;
+      border-radius: 0 0 16px 16px;
+      background: #040404;
+      z-index: 3;
+    }
+
+    .phone::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+    }
+
+    .screen {
+      position: relative;
+      height: 100%;
+      overflow: auto;
+      border-radius: 28px;
+      padding: 36px 14px 14px;
+      background: #ffffff;
+      color: #1d2144;
+      scrollbar-width: none;
+    }
+
+    .screen::-webkit-scrollbar {
+      display: none;
+    }
+
+    .current-shot {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(10, 14, 35, 0.08);
+      background: #4326a8;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .current-shot img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .screen-note {
+      display: block;
+      margin-top: 12px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #5c648f;
+      text-align: left;
+    }
+
+    .proto-screen {
+      background:
+        radial-gradient(circle at top right, rgba(57, 240, 189, 0.18), transparent 30%),
+        linear-gradient(180deg, #f7f6ff 0%, #ecebff 100%);
+    }
+
+    .app-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .app-top strong,
+    .app-top span,
+    .status-pill,
+    .section-kicker,
+    .order-card strong,
+    .order-card span,
+    .timeline-item strong,
+    .timeline-item span,
+    .mini-tile strong,
+    .mini-tile span,
+    .fallback-card strong,
+    .fallback-card span,
+    .bubble,
+    .bubble-meta,
+    .proof-note {
+      display: block;
+    }
+
+    .app-top strong {
+      font-size: 0.94rem;
+    }
+
+    .app-top span {
+      font-size: 0.78rem;
+      color: #636b97;
+      margin-top: 3px;
+    }
+
+    .status-pill {
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(57, 240, 189, 0.18);
+      color: #155f4f;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .order-card,
+    .proof-strip,
+    .fallback-card {
+      border-radius: 24px;
+      padding: 16px;
+      background: #ffffff;
+      box-shadow: 0 20px 35px rgba(44, 47, 91, 0.12);
+      margin-bottom: 14px;
+    }
+
+    .section-kicker {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6d74a2;
+      margin-bottom: 10px;
+    }
+
+    .order-card strong {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .order-card span {
+      font-size: 0.82rem;
+      color: #69709c;
+      margin-bottom: 12px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      background: rgba(62, 44, 168, 0.14);
+      color: #3d2ea5;
+    }
+
+    .timeline-item strong {
+      font-size: 0.86rem;
+      color: #1f2247;
+    }
+
+    .timeline-item span {
+      margin-top: 3px;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: #69709c;
+    }
+
+    .proof-strip {
+      background: linear-gradient(135deg, #2f2290, #4c32bf);
+      color: #f7f9ff;
+    }
+
+    .proof-strip .section-kicker,
+    .proof-strip .proof-note {
+      color: rgba(244, 247, 255, 0.78);
+    }
+
+    .bubble {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 18px 18px 18px 6px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+
+    .bubble-meta {
+      margin-top: 8px;
+      font-size: 0.74rem;
+      letter-spacing: 0.02em;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-tile {
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(14, 16, 40, 0.04);
+      border: 1px solid rgba(26, 29, 70, 0.08);
+    }
+
+    .mini-tile strong {
+      font-size: 0.8rem;
+      color: #202447;
+    }
+
+    .mini-tile span {
+      margin-top: 5px;
+      font-size: 0.74rem;
+      color: #68709b;
+      line-height: 1.4;
+    }
+
+    .fallback-card {
+      background: linear-gradient(180deg, #fffaf2, #fff2de);
+      border: 1px solid rgba(255, 182, 113, 0.35);
+    }
+
+    .fallback-card strong {
+      font-size: 0.92rem;
+      color: #613f1f;
+      margin-bottom: 8px;
+    }
+
+    .fallback-card span {
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #7c5f44;
+    }
+
+    .signals {
+      padding-top: 12px;
+      padding-bottom: 20px;
+    }
+
+    .signals::before {
+      width: 320px;
+      height: 320px;
+      right: -100px;
+      bottom: -80px;
+      background: rgba(57, 240, 189, 0.11);
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      background: rgba(245, 244, 255, 0.98);
+      color: #1c2144;
+      border-radius: 34px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+    }
+
+    .panel-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 22px;
+      align-items: start;
+      margin-bottom: 24px;
+    }
+
+    .panel-head h2,
+    .closing h2 {
+      font-family: "Space Grotesk", "Avenir Next", sans-serif;
+      font-size: clamp(1.9rem, 4vw, 3.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      margin: 0 0 12px;
+    }
+
+    .panel-head p,
+    .closing p {
+      margin: 0;
+      color: #56608e;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .quote-tile {
+      border-radius: 24px;
+      background: linear-gradient(135deg, #1b1f45, #3a2ca9);
+      color: #f7f8ff;
+      padding: 22px;
+    }
+
+    .quote-tile span {
+      display: block;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(244, 247, 255, 0.74);
+      margin-bottom: 10px;
+    }
+
+    .quote-tile strong {
+      display: block;
+      font-size: 1.08rem;
+      line-height: 1.65;
+      font-weight: 600;
+    }
+
+    .signal-grid,
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .signal-card,
+    .trust-card {
+      border-radius: 24px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid rgba(31, 36, 71, 0.08);
+      box-shadow: 0 18px 32px rgba(31, 36, 71, 0.08);
+    }
+
+    .signal-card span,
+    .trust-card span {
+      display: block;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7a83b0;
+      margin-bottom: 10px;
+    }
+
+    .signal-card strong,
+    .trust-card strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+      margin-bottom: 10px;
+      color: #1b2147;
+    }
+
+    .signal-card p,
+    .trust-card p {
+      margin: 0;
+      color: #60688f;
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .trust {
+      padding-top: 8px;
+      padding-bottom: 22px;
+    }
+
+    .closing {
+      padding-top: 6px;
+      padding-bottom: 44px;
+    }
+
+    .closing::before {
+      width: 300px;
+      height: 300px;
+      left: -80px;
+      bottom: -60px;
+      background: rgba(255, 182, 113, 0.12);
+    }
+
+    .closing-card {
+      background: linear-gradient(145deg, rgba(24, 27, 59, 0.96), rgba(47, 30, 122, 0.95));
+      border-radius: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow);
+      padding: 34px;
+      text-align: center;
+    }
+
+    .closing-card h2,
+    .closing-card p,
+    .closing-card .eyebrow {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--mint), #88ffd9);
+      color: #12242a;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      box-shadow: 0 18px 40px rgba(57, 240, 189, 0.28);
+    }
+
+    .footnote {
+      margin-top: 18px;
+      color: rgba(244, 247, 255, 0.74);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 1080px) {
+      .hero-layout,
+      .panel-head,
+      .signal-grid,
+      .trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero-card,
+      .panel,
+      .closing-card {
+        padding: 22px;
+        border-radius: 28px;
+      }
+
+      .hero-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .phone {
+        width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <section class="section hero">
+      <div class="container">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <span class="eyebrow">
+              <img src="./assets/icon.png" alt="Ed app icon">
+              Totum Pharmaciens x Ed
+            </span>
+            <h1>What if every prescription came with proof the pharmacy received it?</h1>
+            <p>Recent Ed reviews do not ask for more surface area. They ask for certainty: the message sent, the login recovered, and the patient no longer guessing whether the pharmacy ever saw the request.</p>
+            <div class="hero-metrics">
+              <div class="metric">
+                <span>Recent break</span>
+                <strong>Messages disappear after send</strong>
+              </div>
+              <div class="metric">
+                <span>Store signal</span>
+                <strong>4.86 iOS / 4.24 Android</strong>
+              </div>
+              <div class="metric">
+                <span>Why it matters</span>
+                <strong>300-pharmacy network means small trust breaks scale fast</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-layout">
+            <aside class="review-callout">
+              <span class="review-tag">Public evidence</span>
+              <blockquote>
+                “Les messages envoyés à la pharmacie s'effacent immédiatement après envoi...”
+              </blockquote>
+              <p>A February 5, 2026 Android review says the request vanishes right after send and never reaches the pharmacy. Another says login still fails even after password reset. For a medication workflow, that is a trust failure, not just an inconvenience.</p>
+            </aside>
+
+            <div class="phone-grid">
+              <div class="phone-wrap">
+                <span class="label">Current public surface</span>
+                <div class="phone">
+                  <div class="screen">
+                    <div class="current-shot">
+                      <img src="./assets/current-1.png" alt="Current Ed App Store screenshot showing pharmacist chat">
+                    </div>
+                    <small class="screen-note">Official App Store screenshot. Clear conversation UI, but recent reviews suggest the system trust layer underneath can still fail at send and login.</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="phone-wrap">
+                <span class="label">Prototype: confidence after send</span>
+                <div class="phone">
+                  <div class="screen proto-screen">
+                    <div class="app-top">
+                      <div>
+                        <strong>Pharmacie du Theatre</strong>
+                        <span>Ordonnance envoyee a 14:21</span>
+                      </div>
+                      <span class="status-pill">Connected</span>
+                    </div>
+
+                    <div class="order-card">
+                      <span class="section-kicker">Prescription status</span>
+                      <strong>Ordonnance #2481</strong>
+                      <span>One visible chain instead of a silent chat send.</span>
+                      <div class="timeline">
+                        <div class="timeline-item">
+                          <div class="dot">1</div>
+                          <div>
+                            <strong>Received by pharmacy</strong>
+                            <span>14:22. Server receipt stored. Patient can see proof immediately.</span>
+                          </div>
+                        </div>
+                        <div class="timeline-item">
+                          <div class="dot">2</div>
+                          <div>
+                            <strong>Pharmacist reviewing</strong>
+                            <span>ETA 7 min. Patient sees who owns the next step.</span>
+                          </div>
+                        </div>
+                        <div class="timeline-item">
+                          <div class="dot">3</div>
+                          <div>
+                            <strong>Ready for pickup or delivery</strong>
+                            <span>Expected by 18:10. Action choice stays visible.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="proof-strip">
+                      <span class="section-kicker">Secure message proof</span>
+                      <span class="proof-note">Last patient message</span>
+                      <div class="bubble">Bonjour, j'ai ajoute mon ordonnance. Pouvez-vous confirmer la preparation ?</div>
+                      <span class="bubble-meta">Delivered to pharmacy server • Read by Silvie at 14:24</span>
+                    </div>
+
+                    <div class="mini-grid">
+                      <div class="mini-tile">
+                        <strong>Draft saved</strong>
+                        <span>If auth expires, the message stays local and retries safely.</span>
+                      </div>
+                      <div class="mini-tile">
+                        <strong>Receipt trail</strong>
+                        <span>Every important event is timestamped and visible.</span>
+                      </div>
+                    </div>
+
+                    <div class="fallback-card">
+                      <strong>Can't log in?</strong>
+                      <span>Magic link, SMS code, or pharmacy-assisted recovery. The app should feel recoverable, not terminal, when auth breaks.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section signals">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>The reviews point to one job: remove doubt from the moment of care coordination.</h2>
+              <p>Ed already has the right user behavior target. The opportunity is to make the most sensitive interaction feel auditable and safe: upload, send, recover, confirm. That is what patients remember.</p>
+            </div>
+            <div class="quote-tile">
+              <span>Why the wedge matters</span>
+              <strong>When the request is medication-related, a missing confirmation feels closer to abandonment than to a normal app bug.</strong>
+            </div>
+          </div>
+
+          <div class="signal-grid">
+            <div class="signal-card">
+              <span>Review cluster</span>
+              <strong>Auth + send</strong>
+              <p>The negative Android reviews are concentrated on login failure, missing codes, and messages that appear to vanish after send.</p>
+            </div>
+            <div class="signal-card">
+              <span>Category pressure</span>
+              <strong>1,821 ratings</strong>
+              <p>Livmed's visible iOS rating base is 49x larger than Ed's, which means trust and convenience expectations are already well established in the French pharmacy app market.</p>
+            </div>
+            <div class="signal-card">
+              <span>Prototype response</span>
+              <strong>Status everywhere</strong>
+              <p>The concept adds server receipts, pharmacy acknowledgement, saved drafts, and multi-path recovery without bloating the core product.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section trust">
+      <div class="container">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Three mobile changes that could move trust faster than a broad redesign.</h2>
+              <p>This is intentionally boring in the right way. Reliability wins here because the app is sitting between a patient, a prescription, and a local pharmacy workflow.</p>
+            </div>
+            <div>
+              <p><strong>Prototype thesis:</strong> keep the current Ed behavior model, then add the missing proof layer that makes every step legible to the patient.</p>
+            </div>
+          </div>
+
+          <div class="trust-grid">
+            <div class="trust-card">
+              <span>1. Confirmation</span>
+              <strong>Visible pharmacy receipt</strong>
+              <p>Every prescription upload and chat request gets a status trail instead of disappearing into silence.</p>
+            </div>
+            <div class="trust-card">
+              <span>2. Recovery</span>
+              <strong>Multi-path login fallback</strong>
+              <p>Magic link, SMS code, and pharmacy-assisted recovery stop auth errors from becoming dead ends.</p>
+            </div>
+            <div class="trust-card">
+              <span>3. Continuity</span>
+              <strong>Draft-safe background retry</strong>
+              <p>If network or auth breaks mid-send, the order is preserved locally and retried with clear patient messaging.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section closing">
+      <div class="container">
+        <div class="closing-card">
+          <span class="eyebrow">
+            <img src="./assets/icon.png" alt="Ed app icon">
+            Elinext reliability concept
+          </span>
+          <h2>A small trust layer can feel bigger than ten new features.</h2>
+          <p>This concept is aimed at one specific Ed failure mode documented in public reviews: patients lose confidence when login or message delivery becomes ambiguous. The fix is not theatrical. It is visible proof, resilient recovery, and calmer state handling.</p>
+          <div class="cta-row">
+            <a class="cta" href="https://www.elinext.com/contacts/" target="_blank" rel="noreferrer">Get in Touch</a>
+          </div>
+          <p class="footnote">Prepared for Vivien Tedesco based on CRM profile data, official Totum / store sources, and public review evidence captured on 2026-03-14.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
